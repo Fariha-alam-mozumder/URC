@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!--daisyUI-->
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!--taiwind-->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              clifford: '#da373d',
+            }
+          }
+        }
+      }
+    </script>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!--google font-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap" rel="stylesheet">
+
+    <!--font awesome-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Manrope:wght@200..800&family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/1c4c413664.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+    .lexend-font{
+        font-family: "Lexend", sans-serif;}
+    </style>
+
+</head>
+<body class="lexend-font">
+      <!--navbar-->
+      <nav class=" bg-[#F9F7F3] px-2 lg:px-24  pt-5 pb-8 ">
+        <div class="flex flex-row  lg:flex-row items-center lg:justify-between">
+             <button id="Home" class="bg-[#B4F461] lg:ml-12 mt-4 w-24 h-10 rounded-lg text-[#111111] font-bold lexend-font" >Home</button>
+            <div class=" flex items-center mt-2 ml-9 lg:-ml-12 gap-2">
+                <img src="assets/logo.png" >
+                <p class="lexend-font font-bold  mt-4 text-[#111111]">Donate Bangladesh</p>
+            </div>
+            <div class="  lg:mr-20 mr-2 mt-3 flex items-center gap-2">
+                <img src="assets/coin.png" >
+                <p  id="mainamount" class="text-[#111111]  opacity-60 font-medium lexend-font">5500 BDT</p>
+                
+            </div>
+         </div>
+    </nav>
+
+    <!--questions-->
+    <section class="px-4 lg:px-24  pt-5 pb-8"><h1 class=" my-12 mx-8  text-3xl lg:text-4xl ml-12 mt-20 font-semibold">Important FAQ <i class="fa-regular fa-circle-question"></i></h1>
+    <div class="mx-2 lg:mx-10 gap-10">
+
+        <!--first question-->
+        <div class="collapse collapse-arrow border ">
+            <input type="radio" name="my-accordion-2"  checked />
+            <div class="collapse-title text-base lg:text-xl font-medium">What is the Document Object Model(DOM)?</div>
+            <div class="collapse-content text-gray-600">
+              <p class="lg:text-base text-sm">The Document Object Model (DOM) is a programming interface provided by browsers that allows scripts, particularly JavaScript, to interact with the structure of a web page. When a web page is loaded, the browser creates a DOM of the page, which is a hierarchical tree-like structure that organizes the elements of the page as objects. This model enables dynamic access and manipulation of the content, structure, and style of a document.</p>
+            </div>
+        </div>
+
+         <!--second question-->
+         <div class="collapse collapse-arrow border ">
+            <input type="radio" name="my-accordion-2" />
+            <div class="collapse-title text-base lg:text-xl font-medium">How do you select an element from the DOM?</div>
+            <div class="collapse-content text-gray-600">
+             <p class="lg:text-base text-sm">To select an element from the DOM in JavaScript, you can use the following methods:<br>
+                1.getElementById(): Finds an element based on its unique ID.<br>
+                2.getElementsByTagName(): Searches for elements by tag name.<br>
+                3.getElementsByClassName(): Searches for elements by class name.<br>
+                4.getElementsByName(): Searches for elements by name attribute </p>
+            </div>
+          </div>
+
+           <!--Third question-->
+           <div class="collapse collapse-arrow border ">
+            <input type="radio" name="my-accordion-2" />
+            <div class="collapse-title text-base lg:text-xl font-medium">What is event delegation in the context of the DOM,and why it is useful?</div>
+            <div class="collapse-content text-gray-600">
+              <p class="lg:text-base text-sm">Event Delegation is a useful pattern that allows you to write cleaner code, and create fewer event listeners with similar logic.</p>
+            </div>
+          </div>
+
+          <!--forth question-->
+          <div class="collapse collapse-arrow border ">
+            <input type="radio" name="my-accordion-2"  />
+            <div class="collapse-title text-base lg:text-xl font-medium">How do you manipulate an element's attributes and styles using the DOM?</div>
+            <div class="collapse-content  text-gray-600">
+              <p class="lg:text-base text-sm">To manipulate an element's attributes and styles using the DOM, you can:<br>
+                1.Change and remove existing elements in the DOM.<br>
+                2.Create and add new elements to the page.<br>
+                3.Change the styles for elements.<br>
+                4.Add event listeners to the elements to make them interactive.</p>
+            </div>
+          </div>
+
+          </div>
+        </section>
+
+
+<!--connecting home page -->
+    <script>
+        document.getElementById('Home').addEventListener('click',function(){
+            window.location.href='donationpage.html';})
+    </script>
+  
+
+</body>
+</html>

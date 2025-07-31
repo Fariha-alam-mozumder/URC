@@ -1,0 +1,19 @@
+generator client {
+  provider = "prisma-client-js"
+  //output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Users {
+  id        Int      @id @default(autoincrement())
+  name      String  @db.VarChar(191)
+  email     String  @unique @db.VarChar(191) 
+  password  String
+  profile   String? //Nullable field for profile picture
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now())
+}
