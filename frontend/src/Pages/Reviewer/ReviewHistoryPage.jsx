@@ -1,10 +1,9 @@
 // components/Reviewer/ReviewHistoryPage.jsx
-import React from 'react';
+import React, { useState } from 'react';
 import StatCard from '../../components/Common/statcard';
 import ChartCard from '../../components/Common/ChartCard';
 import FilterBar from '../../components/Common/FilterBar';
 import ReviewTable from '../../components/Common/ReviewTable';
-
 import { FaCheckCircle, FaClock, FaUpload, FaClipboard } from 'react-icons/fa';
 
 const stats = [
@@ -13,8 +12,6 @@ const stats = [
   { title: 'Approval Rate', value: '78%', icon: <FaCheckCircle className="text-green-500" /> },
   { title: 'Documents Uploaded', value: '156', icon: <FaUpload className="text-purple-500" /> }
 ];
-
-const chartData = [1, 2, 3]; // Replace with real chart components later
 
 const tableData = [
   {
@@ -47,8 +44,31 @@ const tableData = [
 ];
 
 const ReviewHistoryPage = () => {
+  const [filters, setFilters] = useState({
+    search: '',
+    date: '',
+    status: 'All Status',
+    area: 'All Areas',
+    sort: 'Latest First',
+  });
+
+  const handleFilterChange = (name, value) => {
+    setFilters((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const filterConfig = [
+  { type: 'input', name: 'search', placeholder: 'Search by title or team', value: filters.search },
+  { type: 'input', name: 'date', inputType: 'date', placeholder: 'Select date', value: filters.date },
+  { type: 'select', name: 'status', options: ['All Status', 'Approved', 'Needs Revision', 'Rejected'], value: filters.status },
+  { type: 'select', name: 'area', options: ['All Areas', 'AI', 'Healthcare', 'IoT'], value: filters.area },
+  { type: 'select', name: 'sort', options: ['Latest First', 'Oldest First'], value: filters.sort },
+];
+
+
   return (
     <div className="p-6 space-y-6">
+      <h2 className="text-2xl font-bold">Review History</h2>
+
       {/* Stat Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {stats.map((stat, i) => (
@@ -60,11 +80,10 @@ const ReviewHistoryPage = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <ChartCard title="Monthly Review Activity" />
         <ChartCard title="Review Decision Distribution" />
-        
       </div>
 
       {/* Filters */}
-      <FilterBar />
+      <FilterBar filters={filterConfig} onFilterChange={handleFilterChange} />
 
       {/* Table */}
       <ReviewTable data={tableData} />

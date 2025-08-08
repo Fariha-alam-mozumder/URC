@@ -1,24 +1,30 @@
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
 const papers = [
   {
+    id: 1,
     title: 'Machine Learning Applications in Healthcare',
     author: 'John Smith',
     status: 'Pending',
     due: 'Jan 25, 2025',
-    Actions: 'Review'
+    action: 'Review'
   },
   {
+    id: 2,
     title: 'Data Mining Techniques for Social Networks',
     author: 'Emily Johnson',
     status: 'Completed',
     due: 'Jan 20, 2025',
-    Actions: 'View'
+    action: 'View'
   },
 ];
 
+
 const AssignedPapersTable = () => {
+  const navigate = useNavigate();
   return (
-    <div className="bg-white p-4 rounded-lg shadow">
-      <h2 className="text-lg font-semibold mb-4">Assigned Papers</h2>
+    <div className="bg-white p-6 rounded-lg shadow">
+      <h2 className="text-lg font-bold mb-4">Assigned Papers</h2>
       <table className="w-full table-auto text-left">
         <thead>
           <tr className="text-gray-600">
@@ -41,8 +47,24 @@ const AssignedPapersTable = () => {
                   {paper.status}
                 </span>
               </td>
-              <td className="py-2">{paper.due}</td>
-               <td className="py-2">{paper.Actions}</td>
+             <td className="py-2">
+  {paper.action === 'Review' ? (
+    <button
+      onClick={() => navigate(`/ReviewerDashboard/review/${paper.id}`)}
+      className="text-blue-600 hover:underline"
+    >
+      Review
+    </button>
+  ) : (
+    <button
+      onClick={() => navigate(`/ReviewerDashboard/view/${paper.id}`)}
+      className="text-green-600 hover:underline"
+    >
+      View
+    </button>
+  )}
+</td>
+
             </tr>
           ))}
         </tbody>

@@ -4,14 +4,14 @@ import { FaDownload, FaEye, FaPen } from 'react-icons/fa';
 
 const AssignedItemsPage = ({ title, description, items, reviewPathPrefix }) => {
   return (
-    <div className="flex flex-col">
+    <div className="flex p-6 flex-col  ">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-semibold">{title}</h2>
+        <h2 className="text-2xl font-bold ">{title}</h2>
         <div></div>
       </div>
 
-      <p className="text-gray-600 mb-6">{description}</p>
+     
 
       {/* Card Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">

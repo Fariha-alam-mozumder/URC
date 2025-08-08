@@ -1,48 +1,39 @@
-// components/Common/FilterBar.jsx
 import React from 'react';
 
-const FilterBar = ({ onSearchChange, onFilterChange }) => {
+const FilterBar = ({ filters, onFilterChange }) => {
   return (
-    <div className="flex flex-wrap sm:flex-nowrap gap-4 items-center mb-6">
-      <input
-        type="text"
-        placeholder="Search by title or team"
-        className="border px-3 py-2 rounded min-w-[180px] flex-1"
-        onChange={onSearchChange}
-      />
+    <div className="grid grid-cols-1 sm:grid-cols-5 gap-4 w-full mb-6">
+      {filters.map((filter, index) => {
+        const commonProps = {
+  className: 'border px-3 py-2 rounded-md text-sm w-full',
+  onChange: (e) => onFilterChange(filter.name, e.target.value),
+  value: filter.value || '',
+};
 
-      <input
-        type="date"
-        className="border px-3 py-2 rounded min-w-[180px] flex-1"
-      />
 
-      <select
-        className="border px-3 py-2 rounded min-w-[180px] flex-1"
-        onChange={(e) => onFilterChange('status', e.target.value)}
-      >
-        <option>All Status</option>
-        <option>Approved</option>
-        <option>Needs Revision</option>
-        <option>Rejected</option>
-      </select>
+        if (filter.type === 'input') {
+          return (
+            <input
+              key={index}
+              type={filter.inputType || 'text'}
+              placeholder={filter.placeholder}
+              {...commonProps}
+            />
+          );
+        }
 
-      <select
-        className="border px-3 py-2 rounded min-w-[180px] flex-1"
-        onChange={(e) => onFilterChange('area', e.target.value)}
-      >
-        <option>All Areas</option>
-        <option>AI</option>
-        <option>Healthcare</option>
-        <option>IoT</option>
-      </select>
+        if (filter.type === 'select') {
+          return (
+            <select key={index} {...commonProps}>
+              {filter.options.map((option, idx) => (
+                <option key={idx}>{option}</option>
+              ))}
+            </select>
+          );
+        }
 
-      <select
-        className="border px-3 py-2 rounded min-w-[180px] flex-1"
-        onChange={(e) => onFilterChange('sort', e.target.value)}
-      >
-        <option>Latest First</option>
-        <option>Oldest First</option>
-      </select>
+        return null;
+      })}
     </div>
   );
 };

@@ -19,6 +19,7 @@ export default function App() {
           <Route path="assignedpapers" element={<AssignedPapersPage />} />
           <Route path="assigned-proposals" element={<AssignedProposalsPage />} />
           <Route path="review/:paperId" element={<PaperReviewPage />} />
+          <Route path="reviewpage/:PaperId" element={<PaperReviewPage />} />
           <Route path="ReviewHistoryPage" element={<ReviewHistoryPage />} />
         </Route>
          <Route path="/AdminDashboard" element={<AdminDashboard />} />

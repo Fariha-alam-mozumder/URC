@@ -1,8 +1,6 @@
-// src/components/common/Sidebar.jsx
 import React from 'react';
-import { FaTimes } from 'react-icons/fa';
+import { FaTimes, FaBookOpen } from 'react-icons/fa';
 
-// Define default profiles per role
 const defaultProfiles = {
   teacher: {
     name: 'Dr. Sarah Johnson',
@@ -27,11 +25,11 @@ const defaultProfiles = {
 };
 
 const Sidebar = ({ role = 'teacher', isOpen, onClose, children, profile }) => {
-  const displayProfile = profile || defaultProfiles[role] || defaultProfiles['teacher'];
+  const displayProfile = profile || defaultProfiles[role] || defaultProfiles.teacher;
 
   return (
     <div className={`fixed inset-0 z-50 ${isOpen ? '' : 'pointer-events-none'}`}>
-      {/* Dark background overlay */}
+      {/* Overlay */}
       <div
         className={`fixed inset-0 bg-black bg-opacity-50 transition-opacity duration-300 ${
           isOpen ? 'opacity-100' : 'opacity-0'
@@ -39,29 +37,48 @@ const Sidebar = ({ role = 'teacher', isOpen, onClose, children, profile }) => {
         onClick={onClose}
       ></div>
 
-      {/* Sidebar panel */}
+      {/* Sidebar */}
       <aside
-  className={`fixed top-0 left-0 w-64 h-full bg-white shadow-lg p-4 z-50 overflow-y-auto transform transition-transform duration-300 ${
-    isOpen ? 'translate-x-0' : '-translate-x-full'
-  }`}
->
+        className={`fixed top-0 left-0 w-64 h-full bg-white shadow-lg z-50 transform transition-transform duration-300 ${
+          isOpen ? 'translate-x-0' : '-translate-x-full'
+        } flex flex-col`}
+      >
+        {/* Scrollable content */}
+        <div className="flex-1 overflow-y-auto p-4">
+          {/* Close button */}
+          <div className="flex justify-end mb-2">
+            <button onClick={onClose} className="text-gray-600 hover:text-black text-xl">
+              <FaTimes />
+            </button>
+          </div>
 
-        {/* Close button */}
-        <div className="flex justify-end mb-2">
-          <button onClick={onClose} className="text-gray-600 hover:text-black text-xl">
-            <FaTimes />
-          </button>
+          {/* Logo */}
+          <div className="flex items-center space-x-4 mb-3 p-3">
+            <div className="bg-black text-white p-2 rounded-lg">
+              <FaBookOpen className="text-xl" />
+            </div>
+            <div>
+              <h1 className="text-lg font-semibold">URCMS</h1>
+              <p className="text-sm text-gray-500 whitespace-nowrap">University Research Cell</p>
+            </div>
+          </div>
+
+          {/* Menu items */}
+          <nav className="flex flex-col gap-2">{children}</nav>
         </div>
 
-        {/* Profile */}
-        <div className="flex flex-col items-center mb-6">
-          <img src={displayProfile.avatar} className="rounded-full w-16 h-16" alt="avatar" />
-          <p className="mt-2 font-bold text-center">{displayProfile.name}</p>
-          <p className="text-sm text-gray-500">{displayProfile.title}</p>
+        {/* Fixed profile footer */}
+        <div className="p-4 border-t flex items-center bg-white">
+          <img
+            src={displayProfile.avatar}
+            className="rounded-full w-10 h-10"
+            alt="avatar"
+          />
+          <div className="flex flex-col ml-3">
+            <p className="font-bold">{displayProfile.name}</p>
+            <p className="text-sm text-gray-500">{displayProfile.title}</p>
+          </div>
         </div>
-
-        {/* Menu items */}
-        <nav className="flex flex-col gap-2">{children}</nav>
       </aside>
     </div>
   );
