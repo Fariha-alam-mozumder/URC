@@ -7,7 +7,7 @@ const PaperReviewPage = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 p-6">
       {/* Back Button Header */}
       <div className="flex items-center mb-6">
         <button
