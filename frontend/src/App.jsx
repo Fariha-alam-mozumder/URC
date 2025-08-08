@@ -1,6 +1,11 @@
+<<<<<<< HEAD
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Homepage from "./pages/home/Homepage";
 import LandingPage from "./pages/landingpage/LandingPage";
+=======
+
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+>>>>>>> origin/main
 import ReviewerDashboard from './Pages/Reviewer/reviewerDashboard';
 import ReviewerHome from './Pages/Reviewer/ReviewerHome';
 import AssignedPapersPage from './Pages/Reviewer/AssignedPapersPage';
