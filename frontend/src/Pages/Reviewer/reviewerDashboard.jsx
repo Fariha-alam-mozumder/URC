@@ -11,7 +11,6 @@ import Topbar from '../../components/Common/Topbar';
 import Sidebar from '../../components/Common/Sidebar';
 import LogoutModal from '../../components/Common/LogoutModal';
 
-
 const ReviewerDashboard = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
