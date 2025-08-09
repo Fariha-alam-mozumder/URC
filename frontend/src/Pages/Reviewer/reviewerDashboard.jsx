@@ -79,7 +79,7 @@ const ReviewerDashboard = () => {
 
         {/* Switch Role */}
        <Link
-        to="/teacher"
+        to="/teacher/teacher/home"
          onClick={() => setIsSidebarOpen(false)}
          className="flex items-center gap-3 px-4 py-2 hover:bg-blue-100 rounded-md text-blue-700 font-medium"
        >
