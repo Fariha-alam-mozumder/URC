@@ -1,0 +1,23 @@
+### Upload proposal PDF
+POST http://localhost:8000/api/proposals/upload
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywibmFtZSI6IkFwdW4gaGFpbiBUdXNoYXIiLCJlbWFpbCI6ImFwdW4udHVzaGFyMTIzQGdtYWlsLmNvbSIsInByb2ZpbGUiOm51bGwsImlhdCI6MTc1Mzk1OTg2NiwiZXhwIjoxNzg1NDk1ODY2fQ.TQ_zUJBdvd4nnO68oOGqdYiiuyWAk_h4AEObfPhJl_Y
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="title"
+
+AI in Quantum Computing
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="abstract"
+
+This research explores AI-optimized quantum algorithms.
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="team_id"
+
+1
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="proposal"; filename="proposal.pdf"
+Content-Type: application/pdf
+
+< ./files/proposal.pdf
+------WebKitFormBoundary7MA4YWxkTrZu0gW--

@@ -1,0 +1,25 @@
+### Create New Team
+POST http://localhost:8000/api/teams
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywibmFtZSI6IkFwdW4gaGFpbiBUdXNoYXIiLCJlbWFpbCI6ImFwdW4udHVzaGFyMTIzQGdtYWlsLmNvbSIsInByb2ZpbGUiOm51bGwsImlhdCI6MTc1Mzk1OTg2NiwiZXhwIjoxNzg1NDk1ODY2fQ.TQ_zUJBdvd4nnO68oOGqdYiiuyWAk_h4AEObfPhJl_Y
+Content-Type: application/json
+
+{
+  "team_name": "Quantum AI Research",
+  "team_description": "Research team exploring the intersection of quantum computing and artificial intelligence.",
+  "visibility": "PUBLIC",
+  "status": "ACTIVE",
+  "members": [
+    {
+      "user_id": 2,
+      "role_in_team": "MEMBER"
+    },
+    {
+      "user_id": 10,
+      "role_in_team": "MEMBER"
+    },
+    {
+      "user_id": 11,
+      "role_in_team": "TEAM_LEADER"
+    }
+  ]
+}

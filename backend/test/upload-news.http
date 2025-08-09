@@ -1,0 +1,19 @@
+### Upload News with Image
+POST http://localhost:8000/api/news HTTP/1.1
+Content-Type: multipart/form-data; boundary=MyBoundary
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywibmFtZSI6IkFwdW4gaGFpbiBUdXNoYXIiLCJlbWFpbCI6ImFwdW4udHVzaGFyMTIzQGdtYWlsLmNvbSIsInByb2ZpbGUiOm51bGwsImlhdCI6MTc1Mzk1OTg2NiwiZXhwIjoxNzg1NDk1ODY2fQ.TQ_zUJBdvd4nnO68oOGqdYiiuyWAk_h4AEObfPhJl_Y
+
+--MyBoundary
+Content-Disposition: form-data; name="title"
+
+Newest news 7
+--MyBoundary
+Content-Disposition: form-data; name="content"
+
+Contentttt news 7
+--MyBoundary
+Content-Disposition: form-data; name="image"; filename="images7.jpg"
+Content-Type: image/jpeg
+
+< ./sample.jpg
+--MyBoundary--
