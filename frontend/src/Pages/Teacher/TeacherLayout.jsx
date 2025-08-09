@@ -42,14 +42,14 @@ const TeacherLayout = () => {
       {/* Sidebar */}
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} role="teacher">
         <Link
-          to="/home"
+          to="teacher/home"
           onClick={() => setSidebarOpen(false)}
           className="flex items-center gap-3 px-4 py-2 hover:bg-gray-100 rounded-md text-gray-700"
         >
         <FaFileAlt /> Home
         </Link>
         <Link
-          to="/teacher"
+          to="teacher/dashboard"
           onClick={() => setSidebarOpen(false)}
           className="flex items-center gap-3 px-4 py-2 hover:bg-gray-100 rounded-md text-gray-700"
         >
@@ -81,7 +81,7 @@ const TeacherLayout = () => {
 
         {/* Switch Role */}
        <Link
-        to="/reviewer"
+        to="/ReviewerDashboard/reviewer/home"
          onClick={() => setSidebarOpen(false)}
          className="flex items-center gap-3 px-4 py-2 hover:bg-blue-100 rounded-md text-blue-700 font-medium"
        >
@@ -93,7 +93,7 @@ const TeacherLayout = () => {
       <div className="flex-1">
         <Topbar onMenuClick={() => setSidebarOpen(!sidebarOpen)}
         onLogout={handleLogoutClick} />
-        <main className="p-4 space-y-6">
+        <main className="">
           <Outlet />
         </main>
         {/* Logout Modal */}
