@@ -83,7 +83,7 @@ const ReviewerDashboard = () => {
       <div className="flex-1 flex flex-col">
         <Topbar onMenuClick={() => setIsSidebarOpen(true)}
          onLogout={handleLogoutClick} />
-        <main className="p-4">
+        <main className="">
   <Outlet context={{ toggleSidebar: () => setIsSidebarOpen(true) }} />
 </main>
 {/* Logout Modal */}
