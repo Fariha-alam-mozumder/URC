@@ -18,7 +18,11 @@ const AddReviewerModal = ({
     r.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     r.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
     r.department.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    r.domain.toLowerCase().includes(searchTerm.toLowerCase())
+    (Array.isArray(r.domain)
+      ? r.domain.some((d) =>
+          d.toLowerCase().includes(searchTerm.toLowerCase())
+        )
+      : r.domain.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
   const toggleSelect = (id) => {
@@ -84,13 +88,21 @@ const AddReviewerModal = ({
                 <div>
                   <div className="font-semibold">{r.name}</div>
                   <div className="text-gray-500 text-sm">{r.email}</div>
-                  <div className="text-sm">
-                    <span className="font-medium"></span> {r.department}
-                  </div>
-                  <div className="text-sm mt-1">
-                    <span className="inline-block bg-black text-white px-2 py-0.5 rounded cursor-pointer">
-                      {r.domain}
-                    </span>
+                  <div className="text-sm">{r.department}</div>
+
+                  {/* Multiple domain tags - small */}
+                  <div className="flex flex-wrap gap-0.5 mt-1">
+                    {(Array.isArray(r.domain) ? r.domain : [r.domain]).map(
+                      (domainItem, idx) => (
+                        <span
+                          key={idx}
+                          className="inline-block bg-black text-white px-1 py-0.5 rounded-sm text-[10px] cursor-pointer"
+                          title={domainItem}
+                        >
+                          {domainItem}
+                        </span>
+                      )
+                    )}
                   </div>
                 </div>
               </label>
