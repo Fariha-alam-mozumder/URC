@@ -8,6 +8,7 @@ export const AuthContext = createContext();
 export function AuthProvider({ children }) {
   const [token, setToken] = useState(null);
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true); // new loading state
 
   const setAuthFromToken = (newToken) => {
     try {
@@ -27,6 +28,7 @@ export function AuthProvider({ children }) {
     if (storedToken) {
       setAuthFromToken(storedToken);
     }
+    setLoading(false); // done loading (even if no token)
   }, []);
 
   const login = (newToken) => {
@@ -41,7 +43,7 @@ export function AuthProvider({ children }) {
   };
 
   return (
-    <AuthContext.Provider value={{ token, user, login, logout }}>
+    <AuthContext.Provider value={{ token, user, login, logout, loading }}>
       {children}
     </AuthContext.Provider>
   );
