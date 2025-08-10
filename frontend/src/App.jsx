@@ -21,6 +21,7 @@ import TeamDetails from "./Pages/Teacher/TeamDetails";
 import MyPapers from "./Pages/Teacher/MyPapers";
 import SubmissionHistory from "./Pages/Teacher/SubmissionHistory";
 
+
 // Admin page
 import AdminDashboard from "./Pages/Admin/AdminDashboard";
 
@@ -30,12 +31,18 @@ import LoginForm from "./AuthenticatePages/LoginForm";
 
 // PrivateRoute component for route protection
 import PrivateRoute from "./context/PrivateRoute";
+import VerifyPending from './AuthenticatePages/VerifyPendingPage';
 
 //! Role-based redirection component
 function RoleBasedRedirect() {
   const { user } = useContext(AuthContext);
 
   if (!user) return <Navigate to="/login" />;
+
+  if (!user.emailVerified) {
+    // or user.isVerified, depends on your user object
+    return <Navigate to="/verify" />;
+  }
 
   if (user.isMainAdmin || user.role === "ADMIN") {
     return <Navigate to="/admin" />;
@@ -57,6 +64,7 @@ export default function App() {
           {/* Public Routes */}
           <Route path="/" element={<LandingPage />} />
           <Route path="/signup" element={<SignUpForm />} />
+          <Route path= "/verify" element={<VerifyPending />} />
           <Route path="/login" element={<LoginForm />} />
 
           {/* Redirect to role-based dashboard */}

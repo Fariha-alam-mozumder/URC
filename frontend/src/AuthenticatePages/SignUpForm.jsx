@@ -59,7 +59,7 @@ export default function SignUpForm() {
         formData
       );
 
-      navigate("/verify-pending");
+      navigate("/verify");
 
     } catch (err) {
       if (err.response) {
@@ -137,29 +137,7 @@ export default function SignUpForm() {
               <option value="">Select Department</option>
               {[
                 "CSE",
-                "EEE",
-                "Pharmacy",
-                "Law",
-                "Economics",
-                "English",
-                "Mathematics",
-                "Physics",
-                "Chemistry",
-                "Statistics",
-                "Sociology",
-                "Political Science",
-                "Psychology",
-                "Journalism & Media Studies",
-                "Anthropology",
-                "Finance",
-                "Marketing",
-                "Accounting",
-                "Environmental Science",
-                "Geography",
-                "Public Administration",
-                "Islamic Studies",
-                "History",
-                "International Relations",
+                "EEE"
               ].map((dept) => (
                 <option key={dept} value={dept}>
                   {dept}
