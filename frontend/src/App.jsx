@@ -20,6 +20,8 @@ import AdminPapers from "./Pages/Admin/AdminPapers";
 import AdminProposals from "./Pages/Admin/AdminProposal";
 import WaitingAssignment from "./Pages/Admin/WaitingAssignment";
 import ReviewerCommittee from "./Pages/Admin/ReviewCommittee";
+import TeamsPage from "./Pages/Admin/Teams";
+import AdminTeamDetails from "./Pages/Admin/TeamDetail";
 function App() {
   return (
     <Router>
@@ -39,17 +41,14 @@ function App() {
 
          
 
-          <Route path="/AdminDashboard" element={<AdminDashboard />}>
+         <Route path="/AdminDashboard" element={<AdminDashboard />}>
           <Route index element={<AdminHome />} />
           <Route path="all-papers" element={<AdminPapers />} />
-          <Route path="proposals" element={<AdminProposals/>} />
+          <Route path="proposals" element={<AdminProposals />} />
           <Route path="waitingassignment" element={<WaitingAssignment />} />
-           <Route path="reviewercommittee" element={< ReviewerCommittee/>} />
-
-          {/* <Route path="assigned-proposals" element={<AssignedProposalsPage />} />
-          <Route path="review/:paperId" element={<PaperReviewPage />} />
-          <Route path="reviewpage/:PaperId" element={<PaperReviewPage />} />
-          <Route path="ReviewHistoryPage" element={<ReviewHistoryPage />} /> */} */
+          <Route path="reviewercommittee" element={<ReviewerCommittee />} />
+          <Route path="teams" element={<TeamsPage />} />
+          <Route path="teams/:id" element={<AdminTeamDetails />} />
         </Route>
 
          <Route path="/teacher" element={<TeacherLayout />}>

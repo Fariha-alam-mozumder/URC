@@ -7,21 +7,20 @@ const AddReviewerModal = ({
   onClose,
   potentialReviewers,
   onSendInvitation,
+  buttonLabel = "Send Invitation",
+  title = "Add Reviewer",
 }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedIds, setSelectedIds] = useState([]);
 
   if (!show) return null;
 
-  // Filter reviewers based on search term
   const filteredReviewers = potentialReviewers.filter((r) =>
     r.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     r.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
     r.department.toLowerCase().includes(searchTerm.toLowerCase()) ||
     (Array.isArray(r.domain)
-      ? r.domain.some((d) =>
-          d.toLowerCase().includes(searchTerm.toLowerCase())
-        )
+      ? r.domain.some((d) => d.toLowerCase().includes(searchTerm.toLowerCase()))
       : r.domain.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
@@ -33,7 +32,7 @@ const AddReviewerModal = ({
 
   const handleSend = () => {
     if (selectedIds.length === 0) {
-      alert("Please select at least one reviewer to invite.");
+      alert("Please select at least one reviewer.");
       return;
     }
     onSendInvitation(selectedIds);
@@ -52,7 +51,7 @@ const AddReviewerModal = ({
       >
         {/* Header */}
         <div className="flex justify-between items-center mb-4">
-          <h3 className="text-xl font-semibold">Add Reviewer</h3>
+          <h3 className="text-xl font-semibold">{title}</h3>
           <button
             onClick={onClose}
             className="text-gray-500 hover:text-gray-700"
@@ -90,14 +89,13 @@ const AddReviewerModal = ({
                   <div className="text-gray-500 text-sm">{r.email}</div>
                   <div className="text-sm">{r.department}</div>
 
-                  {/* Multiple domain tags - small */}
+                  {/* Multiple domain tags */}
                   <div className="flex flex-wrap gap-0.5 mt-1">
                     {(Array.isArray(r.domain) ? r.domain : [r.domain]).map(
                       (domainItem, idx) => (
                         <span
                           key={idx}
-                          className="inline-block bg-black text-white px-1 py-0.5 rounded-sm text-[10px] cursor-pointer"
-                          title={domainItem}
+                          className="inline-block bg-black text-white px-1 py-0.5 rounded-sm text-[10px]"
                         >
                           {domainItem}
                         </span>
@@ -112,10 +110,10 @@ const AddReviewerModal = ({
           )}
         </div>
 
-        {/* Send Invitation button */}
+        {/* Assign button */}
         <div className="absolute bottom-6 left-6 right-6">
           <CommonButton
-            label="Send Invitation"
+            label={buttonLabel}
             onClick={handleSend}
             className="w-full flex items-center justify-center"
           />
