@@ -1,9 +1,36 @@
-import React from "react";
+import React, { useState } from "react";
 import StatCard from "../../components/Common/StatCard";
 import PaperCard from "../../components/Admin/PaperCard";
+import AddReviewerModal from "../../components/Admin/AddReviewerModal";
 import { Users, ClipboardList, CheckCircle } from "lucide-react";
 
 const WaitingAssignment = () => {
+  const [showModal, setShowModal] = useState(false);
+
+  const potentialReviewers = [
+    {
+      id: 1,
+      name: "Alice Johnson",
+      email: "alice@example.com",
+      department: "Computer Science",
+      domain: ["AI", "Machine Learning", "Data Science"],
+    },
+    {
+      id: 2,
+      name: "Bob Smith",
+      email: "bob@example.com",
+      department: "Physics",
+      domain: ["Quantum Computing", "Optics"],
+    },
+    {
+      id: 3,
+      name: "Charlie Green",
+      email: "charlie@example.com",
+      department: "Engineering",
+      domain: ["Blockchain", "IoT", "Cybersecurity"],
+    },
+  ];
+
   const papers = [
     {
       id: "P011",
@@ -25,32 +52,20 @@ const WaitingAssignment = () => {
         "A study on how AI algorithms improve diagnostic accuracy and reduce errors in clinical practice...",
       keywords: ["Artificial Intelligence", "Healthcare", "Diagnostics"],
     },
-    {
-      id: "P013",
-      category: "Blockchain",
-      title: "Blockchain for Secure Supply Chains",
-      authors: "Prof. Henry Adams, Dr. Lisa Nguyen",
-      submittedDate: "2024-02-06",
-      abstract:
-        "Exploring the use of blockchain technology to enhance transparency and security in supply chain management...",
-      keywords: ["Blockchain", "Supply Chain", "Security"],
-    },
-    {
-      id: "P014",
-      category: "Quantum Computing",
-      title: "Quantum Algorithms for Optimization Problems",
-      authors: "Dr. Steven Patel, Prof. Maria Garcia",
-      submittedDate: "2024-02-08",
-      abstract:
-        "An overview of novel quantum algorithms and their application to complex optimization challenges...",
-      keywords: ["Quantum Computing", "Algorithms", "Optimization"],
-    },
   ];
 
+  const handleAssignClick = () => {
+    setShowModal(true);
+  };
+
+  const handleAssignReviewers = (ids) => {
+    console.log("Assigned reviewers:", ids);
+    setShowModal(false);
+  };
+
   return (
-    <div className=" max-w-full">
-        
-        <h2 className="text-2xl font-bold">Waiting Assignment</h2>
+    <div className="max-w-full">
+      <h2 className="text-2xl font-bold">Waiting Assignment</h2>
 
       {/* Top Stat Cards */}
       <div className="grid mt-4 mb-5 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
@@ -73,18 +88,30 @@ const WaitingAssignment = () => {
           icon={<CheckCircle className="text-green-500" size={24} />}
         />
       </div>
-      <div className="border border-box p-3 ">
 
       {/* Papers Awaiting Assignment */}
-      <div>
+      <div className="border border-box p-3">
         <h2 className="text-lg font-bold mb-4">Papers Awaiting Assignment</h2>
         <div className="space-y-4">
           {papers.map((paper, index) => (
-            <PaperCard key={index} {...paper} />
+            <PaperCard
+              key={index}
+              {...paper}
+              onAssign={handleAssignClick}
+            />
           ))}
         </div>
       </div>
-    </div>
+
+      {/* Modal */}
+      <AddReviewerModal
+  show={showModal}
+  onClose={() => setShowModal(false)}
+  potentialReviewers={potentialReviewers}
+  onSendInvitation={handleAssignReviewers}
+  buttonLabel="Send Assignment Invitation"
+  title="Assign Reviewer"
+/>
     </div>
   );
 };
