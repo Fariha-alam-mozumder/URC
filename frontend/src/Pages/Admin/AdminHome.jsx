@@ -16,30 +16,28 @@ const stats = [
 const reviewerData = [
   { name: "Dr. Sarah Johnson", assigned: 8, completed: 6, avgTimeDays: 4.2, pending: 2 },
   { name: "Prof. Michael Chen", assigned: 6, completed: 5, avgTimeDays: 3.8, pending: 1 },
-
-
 ];
 
 const AdminHome = () => {
   return (
-    <div className="p-6 space-y-6">
+    <div className=" space-y-4">
       <h2 className="text-2xl font-bold">Dashboard</h2>
 
       {/* Stat cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
         {stats.map((stat, index) => (
           <StatCard key={index} title={stat.title} value={stat.value} icon={stat.icon} />
         ))}
       </div>
 
       {/* Charts */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         <ChartCard title="Submission Trends" />
         <ChartCard title="Current Status Distribution" />
       </div>
 
       {/* Recent submissions + Reviewer workload side by side */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 border">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 border">
         <div className="lg:col-span-2">
           <RecentSubmission />
         </div>

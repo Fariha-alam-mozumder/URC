@@ -1,5 +1,4 @@
 // Pages/ReviewerHome.jsx
-import React from 'react';
 import {
   FaClipboard,
   FaCheckCircle,
