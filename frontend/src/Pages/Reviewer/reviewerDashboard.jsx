@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { FaExchangeAlt } from 'react-icons/fa';
+import { FaChartBar, FaExchangeAlt, FaHome } from 'react-icons/fa';
 import { FaHistory } from 'react-icons/fa';
 import { FaTachometerAlt } from 'react-icons/fa';
 import {
@@ -42,14 +42,14 @@ const ReviewerDashboard = () => {
           onClick={() => setIsSidebarOpen(false)}
           className="flex items-center gap-3 px-4 py-2 hover:bg-gray-100 rounded-md text-gray-700"
         >
-          <FaTachometerAlt /> Home
+          <FaHome /> Home
         </Link>
         <Link
   to="reviewer/dashboard"
   onClick={() => setIsSidebarOpen(false)}
   className="flex items-center gap-3 px-4 py-2 hover:bg-gray-100 rounded-md text-gray-700"
 >
-  <FaTachometerAlt /> Dashboard
+  <FaChartBar /> Dashboard
 </Link>
 
         <Link

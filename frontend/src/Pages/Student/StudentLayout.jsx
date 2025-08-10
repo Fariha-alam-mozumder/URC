@@ -12,7 +12,8 @@ import {
   FaUsers,
   FaHistory,
   FaChartBar,
-  FaExchangeAlt
+  FaExchangeAlt,
+  FaHome
 } from 'react-icons/fa';
 
 const StudentLayout = () => {
@@ -46,14 +47,14 @@ const StudentLayout = () => {
           onClick={() => setSidebarOpen(false)}
           className="flex items-center gap-3 px-4 py-2 hover:bg-gray-100 rounded-md text-gray-700"
         >
-        <FaFileAlt /> Home
+        <FaHome /> Home
         </Link>
         <Link
           to="student/dashboard"
           onClick={() => setSidebarOpen(false)}
           className="flex items-center gap-3 px-4 py-2 hover:bg-gray-100 rounded-md text-gray-700"
         >
-        <FaFileAlt /> Dashboard
+        <FaChartBar /> Dashboard
         </Link>
         <Link
           to="student/mypapers"
