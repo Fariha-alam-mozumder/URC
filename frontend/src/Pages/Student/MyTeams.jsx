@@ -5,10 +5,9 @@ import { useNavigate } from 'react-router-dom';
 // import PendingApplications from '../../components/teacher/TeamManagement/PendingApplication';
 // import TeamCard from '../../components/teacher/TeamManagement/TeamCard';
 import StatCard from '../../components/Common/statcard';
-import PendingApplications from '../../components/Teacher/TeamManagement/PendingApplication';
 import TeamCard from '../../components/Common/TeamCard';
 
-const TeamManagement = () => {
+const MyTeams = () => {
   const [showAllTeams, setShowAllTeams] = useState(false);
   const navigate = useNavigate();
 
@@ -62,24 +61,12 @@ const TeamManagement = () => {
     },
   ];
 
-  const pendingApplications = [
-    { name: 'Sarah Johnson', team: 'AI Research 2025', timeAgo: '2 hours ago' },
-    { name: 'Michael Chen', team: 'Quantum Computing Lab', timeAgo: '5 hours ago' },
-    { name: 'Emily Zhang', team: 'Biotech Innovation', timeAgo: '1 day ago' },
-  ];
-
   const visibleTeams = showAllTeams ? teamData : teamData.slice(0, 3);
 
   return (
     <div className="p-6 space-y-6">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-2xl font-bold">Team Management</h2>
-        <button
-          onClick={() => navigate('/teacher/team/create')}
-          className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded-md"
-        >
-          + Create New Team
-        </button>
       </div>
 
       {/* Stat Cards */}
@@ -92,7 +79,11 @@ const TeamManagement = () => {
       {/* Team Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-4">
         {visibleTeams.map((team) => (
-          <TeamCard key={team.id} {...team} />
+          <TeamCard
+            key={team.id}
+            {...team}
+            to={`/student/team/${encodeURIComponent(team.id)}`} // <-- route to student details
+          />
         ))}
       </div>
 
@@ -105,12 +96,10 @@ const TeamManagement = () => {
           {showAllTeams ? 'Show Less' : 'View All'}
         </button>
       </div>
-
-      {/* Pending Applications */}
-      <PendingApplications applications={pendingApplications} />
     </div>
   );
 };
 
 
-export default TeamManagement;
+
+export default MyTeams;
