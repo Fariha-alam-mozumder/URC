@@ -10,6 +10,8 @@ import {
   FaClock,
   FaCheckCircle,
   FaTachometerAlt,
+  FaChartBar,
+  FaHome,
 } from "react-icons/fa";
 
 const AdminDashboard = () => {
@@ -32,13 +34,20 @@ const AdminDashboard = () => {
         onClose={() => setIsSidebarOpen(false)}
         role="admin"
       >
-        
         <Link
           to="/AdminDashboard"
           onClick={() => setIsSidebarOpen(false)}
           className="flex items-center gap-3 px-4 py-2 hover:bg-gray-100 rounded-md text-gray-700"
         >
-          <FaTachometerAlt /> Dashboard
+          <FaHome /> Home
+        </Link>
+
+        <Link
+          to="/AdminDashboard/dash"
+          onClick={() => setIsSidebarOpen(false)}
+          className="flex items-center gap-3 px-4 py-2 hover:bg-gray-100 rounded-md text-gray-700"
+        >
+          <FaChartBar /> Dashboard
         </Link>
 
         <Link

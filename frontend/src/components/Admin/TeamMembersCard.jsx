@@ -5,9 +5,13 @@ import Card from "./Card";
 const TeamMembersCard = ({ members }) => (
   <Card icon={<FaUserFriends size={24} />} title={`Team Members (${members.length})`}>
     {members.length ? (
-      <ul className="list-disc list-inside text-gray-700">
+      <ul className="space-y-4">
         {members.map((m) => (
-          <li key={m.id}>{m.name}</li>
+          <li key={m.id} className="border-b pb-3 last:border-none">
+            <p className="font-medium text-gray-900">{m.name}</p>
+            <p className="text-sm text-gray-600">{m.department}</p>
+            <p className="text-sm text-gray-500">{m.email}</p>
+          </li>
         ))}
       </ul>
     ) : (
