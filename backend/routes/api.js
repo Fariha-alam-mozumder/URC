@@ -4,8 +4,8 @@ import authMiddleware from "../middleware/Authenticate.js";
 import ProfileController from "../controllers/ProfileController.js";
 import NewsController from "../controllers/NewsController.js";
 import redisCache from "../DB/redis.config.js";
-//import TeamController from "../controllers/TeamController.js";
-//import ProposalController from "../controllers/ProposalController.js";
+import TeamController from "../controllers/TeamController.js";
+import ProposalController from "../controllers/ProposalController.js";
 
 
 const router = Router()
@@ -14,6 +14,7 @@ router.post("/auth/register",  AuthController.register);
 router.post("/auth/login",  AuthController.login);
 router.get("/auth/verify/:token", AuthController.verifyEmail);
 router.get("/auth/verify-email", AuthController.verifyEmail);
+router.post("/auth/switch-role", authMiddleware, AuthController.switchRole);
 //router.get ("/auth/send-email",AuthController.sendTestEmail);
 
 //! Profile Routes
@@ -32,11 +33,11 @@ router.put("/news/:id", authMiddleware, NewsController.update)
 router.delete("/news/:id", authMiddleware, NewsController.destroy)
 
 // Team Routes (Protected)
-//router.post("/teams", authMiddleware, TeamController.store);
+router.post("/teams", authMiddleware, TeamController.store);
 // You can add more routes for teams (get/list/update/delete) as needed
 
 // Proposal Routes (Protected)
-//router.post("/proposals/upload", authMiddleware, ProposalController.upload);
+router.post("/proposals/upload", authMiddleware, ProposalController.upload);
 // Add more proposal routes if needed (list, update, delete, etc.)
 
 

@@ -1,7 +1,7 @@
-import path from 'path'
 import { supportedMimes } from "../config/filesystem.js";
 import { v4 as uuidv4 } from "uuid";
 import fs from "fs";
+import path from "path";
 
 // Validate only PDFs (maxSize in MB)
 export const fileValidator = (maxSize, mimeType) => {
@@ -36,7 +36,7 @@ export const uploadFile = async (file, isFile = true, type = 'pdf') => {
   }
 
   // return relative path (you can adjust to absolute URL if needed)
-    return `/files/${filename}` //// return relative URL path for frontend usage
+  return uploadPath
 }
 
 export const imageValidator = (size, mime) => {
@@ -47,6 +47,8 @@ export const imageValidator = (size, mime) => {
   }
   return null;
 };
+
+
 export const byteToMb = (bytes) => {
   return bytes / (1024 * 1024);
 };

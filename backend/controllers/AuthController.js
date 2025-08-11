@@ -138,7 +138,9 @@ class AuthController {
       });
 
       if (!user) {
-        return res.status(400).json({ error: "Invalid or expired verification token." });
+        return res
+          .status(400)
+          .json({ error: "Invalid or expired verification token." });
       }
 
       await prisma.user.update({
@@ -149,12 +151,11 @@ class AuthController {
       });
 
       res.redirect("http://localhost:5173/login?verified=true");
-      //res.redirect("http://localhost:5173/login"); 
- 
+      //res.redirect("http://localhost:5173/login");
     } catch (err) {
-    console.error(err);
-    res.status(400).send("Invalid or expired verification token.");
-  }
+      console.error(err);
+      res.status(400).send("Invalid or expired verification token.");
+    }
   }
 
   //! LOGIN
@@ -231,6 +232,87 @@ class AuthController {
     }
   }
 
+  static async switchRole(req, res) {
+    try {
+      const userId = req.user.id; // from auth middleware
+      const { newRole } = req.body;
+
+      if (!["TEACHER", "REVIEWER"].includes(newRole)) {
+        return res.status(400).json({ error: "Invalid role to switch." });
+      }
+
+      // Fetch user with related teacher info (if exists)
+      const user = await prisma.user.findUnique({
+        where: { user_id: userId },
+      });
+
+      if (!user) {
+        return res.status(404).json({ error: "User not found." });
+      }
+
+      if (user.role === newRole) {
+        return res.status(400).json({ error: `Already in role ${newRole}.` });
+      }
+
+      // Fetch teacher record for this user
+      const teacherRecord = await prisma.teacher.findFirst({
+        where: { user_id: userId },
+      });
+
+      // Check if switching to REVIEWER is allowed
+      if (newRole === "REVIEWER") {
+        if (!teacherRecord || teacherRecord.isReviewer === false) {
+          return res.status(403).json({
+            error:
+              "User is not authorized to switch to REVIEWER role. Must be a teacher marked as reviewer.",
+          });
+        }
+      }
+
+      // If switching back to TEACHER, no extra check needed
+
+      // Update user role in DB
+      await prisma.user.update({
+        where: { user_id: userId },
+        data: {
+          role: newRole,
+        },
+      });
+
+      // Issue new JWT token with updated role
+      const payloadData = {
+        id: user.user_id,
+        name: user.name,
+        email: user.email,
+        role: newRole,
+        emailVerified: !!user.isVerified,
+        isMainAdmin: !!user.isMainAdmin,
+      };
+
+      const token = jwt.sign(payloadData, process.env.JWT_SECRET, {
+        expiresIn: "30d",
+      });
+
+      return res.status(200).json({
+        success: true,
+        message: `Role switched to ${newRole} successfully.`,
+        token,
+        user: {
+          id: user.user_id,
+          name: user.name,
+          email: user.email,
+          role: newRole,
+          isMainAdmin: user.isMainAdmin,
+          emailVerified: !!user.isVerified,
+        },
+      });
+    } catch (error) {
+      console.error("SwitchRole error:", error);
+      return res.status(500).json({
+        error: "Something went wrong while switching roles.",
+      });
+    }
+  }
   /*/* Send test Email
   static async sendTestEmail(req, res) {
     try {
