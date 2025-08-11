@@ -42,7 +42,8 @@ function App() {
          
 
          <Route path="/AdminDashboard" element={<AdminDashboard />}>
-          <Route index element={<AdminHome />} />
+          <Route index element={<Homepage />} />
+           <Route path="/AdminDashboard/dash" element={<AdminHome />} />
           <Route path="all-papers" element={<AdminPapers />} />
           <Route path="proposals" element={<AdminProposals />} />
           <Route path="waitingassignment" element={<WaitingAssignment />} />
