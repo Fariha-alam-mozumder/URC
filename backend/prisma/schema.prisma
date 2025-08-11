@@ -180,6 +180,8 @@ model teacher {
   department_id Int?
   user_id       Int?
 
+  isReviewer    Boolean @default(false)
+
   user       user?       @relation(fields: [user_id], references: [user_id])
   department department? @relation(fields: [department_id], references: [department_id])
 

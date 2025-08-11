@@ -3,16 +3,20 @@ import { Navigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 
 export default function PrivateRoute({ children, allowedRoles }) {
-  const { token, user } = useContext(AuthContext);
+  const { token, user, currentViewRole, loading } = useContext(AuthContext);
+
+  if (loading || currentViewRole === null) {
+    return <div>Loading...</div>;
+  }
 
   if (!token || !user) {
     // Not logged in
-    return <Navigate to="/login" />;
+    return <Navigate to="/login" replace/>;
   }
 
-  if (!allowedRoles.includes(user.role)) {
+  if (!allowedRoles.includes(currentViewRole)) {
     // Role mismatch
-    return <Navigate to="/" />;
+    return <Navigate to="/home" replace/>;
   }
 
   return children;

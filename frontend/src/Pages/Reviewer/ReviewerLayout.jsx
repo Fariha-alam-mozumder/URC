@@ -1,19 +1,19 @@
 import React, { useState, useContext } from "react";
 import { Outlet, Link, useNavigate } from "react-router-dom";
-import Sidebar from "../../components/Common/Sidebar";
-import Topbar from "../../components/Common/Topbar";
-import LogoutModal from "../../components/Common/LogoutModal";
 import {
-  FaFileAlt,
-  FaUsers,
-  FaHistory,
-  FaChartBar,
   FaExchangeAlt,
+  FaHistory,
+  FaTachometerAlt,
+  FaFileAlt,
 } from "react-icons/fa";
+
+import Topbar from "../../components/Common/Topbar";
+import Sidebar from "../../components/Common/Sidebar";
+import LogoutModal from "../../components/Common/LogoutModal";
 import { AuthContext } from "./../../context/AuthContext";
 
-const TeacherLayout = () => {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+const ReviewerLayout = () => {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
 
   const { updateAuth, logout } = useContext(AuthContext);
@@ -29,12 +29,14 @@ const TeacherLayout = () => {
 
   const handleConfirmLogout = () => {
     setIsLogoutModalOpen(false);
-    logout(); // only clear auth token
-    navigate("/"); // react-router navigation without reload
+    // localStorage.removeItem("token"); // only clear auth token
+    logout(); // call logout from context
+    // Redirect to landing page after logout
+    navigate("/");
   };
 
-  //! Function to switch role to Reviewer via backend
-  const switchToReviewer = async () => {
+  // Switch role back to Teacher via backend
+  const switchToTeacher = async () => {
     try {
       const token = localStorage.getItem("token");
       const backendBaseUrl = "http://localhost:8000";
@@ -44,7 +46,7 @@ const TeacherLayout = () => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ newRole: "REVIEWER" }),
+        body: JSON.stringify({ newRole: "TEACHER" }),
       });
 
       const data = await response.json();
@@ -54,11 +56,9 @@ const TeacherLayout = () => {
         return;
       }
 
-      // Update token and user in context
       updateAuth(data.token, data.user);
-
-      // Navigate to reviewer home page
-      navigate("/reviewer/home");
+      navigate("/teacher/home");
+      
     } catch (error) {
       console.error("Error switching role:", error);
       alert("Something went wrong while switching roles.");
@@ -69,67 +69,73 @@ const TeacherLayout = () => {
     <div className="flex min-h-screen bg-gray-100">
       {/* Sidebar */}
       <Sidebar
-        isOpen={sidebarOpen}
-        onClose={() => setSidebarOpen(false)}
-        role="teacher"
+        isOpen={isSidebarOpen}
+        onClose={() => setIsSidebarOpen(false)}
+        role="reviewer"
       >
         <Link
-          to="/teacher/home"
-          onClick={() => setSidebarOpen(false)}
+          to="/reviewer/home"
+          onClick={() => setIsSidebarOpen(false)}
           className="flex items-center gap-3 px-4 py-2 hover:bg-gray-100 rounded-md text-gray-700"
         >
-          <FaFileAlt /> Home
+          <FaTachometerAlt /> Home
         </Link>
+
         <Link
-          to="/teacher/dashboard"
-          onClick={() => setSidebarOpen(false)}
+          to="/reviewer/dashboard"
+          onClick={() => setIsSidebarOpen(false)}
           className="flex items-center gap-3 px-4 py-2 hover:bg-gray-100 rounded-md text-gray-700"
         >
-          <FaFileAlt /> Dashboard
+          <FaTachometerAlt /> Dashboard
         </Link>
+
         <Link
-          to="/teacher/mypapers"
-          onClick={() => setSidebarOpen(false)}
+          to="/reviewer/assignedpapers"
+          onClick={() => setIsSidebarOpen(false)}
           className="flex items-center gap-3 px-4 py-2 hover:bg-gray-100 rounded-md text-gray-700"
         >
-          <FaFileAlt /> My Papers
+          <FaFileAlt /> Assigned Papers
         </Link>
+
         <Link
-          to="/teacher/team"
-          onClick={() => setSidebarOpen(false)}
+          to="/reviewer/assignedproposals"
+          onClick={() => setIsSidebarOpen(false)}
           className="flex items-center gap-3 px-4 py-2 hover:bg-gray-100 rounded-md text-gray-700"
         >
-          <FaUsers /> Team Management
+          <FaFileAlt /> Assigned Proposals
         </Link>
+
         <Link
-          to="/teacher/history"
-          onClick={() => setSidebarOpen(false)}
+          to="/reviewer/reviewhistory"
+          onClick={() => setIsSidebarOpen(false)}
           className="flex items-center gap-3 px-4 py-2 hover:bg-gray-100 rounded-md text-gray-700"
         >
-          <FaHistory /> Submission History
+          <FaHistory /> Review History
         </Link>
+
         {/* Divider */}
         <div className="border-t border-gray-300 my-3"></div>
 
-        {/* Switch Role Button */}
+        {/* Switch Role */}
         <button
-          type="button"
-          onClick={switchToReviewer}
+          onClick={switchToTeacher}
           className="flex items-center gap-3 px-4 py-2 hover:bg-blue-100 rounded-md text-blue-700 font-medium w-full text-left"
+          type="button"
         >
-          <FaExchangeAlt /> Switch to Reviewer
+          <FaExchangeAlt /> Switch to Teacher
         </button>
       </Sidebar>
 
-      {/* Main Content */}
-      <div className="flex-1">
+      {/* Main content */}
+      <div className="flex-1 flex flex-col">
         <Topbar
-          onMenuClick={() => setSidebarOpen(!sidebarOpen)}
+          onMenuClick={() => setIsSidebarOpen(true)}
           onLogout={handleLogoutClick}
         />
-        <main className="">
-          <Outlet />
+        <main>
+          <Outlet context={{ toggleSidebar: () => setIsSidebarOpen(true) }} />
         </main>
+
         {/* Logout Modal */}
         {isLogoutModalOpen && (
           <LogoutModal
@@ -143,4 +149,4 @@ const TeacherLayout = () => {
   );
 };
 
-export default TeacherLayout;
+export default ReviewerLayout;

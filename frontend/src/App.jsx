@@ -1,18 +1,24 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext, AuthProvider } from "./context/AuthContext.jsx";
+import { jwtDecode } from "jwt-decode";
 
 import LandingPage from "./pages/landingpage/LandingPage";
 
-// Reviewer pages
-import ReviewerDashboard from "./Pages/Reviewer/reviewerDashboard";
-import ReviewerHome from "./Pages/Reviewer/ReviewerHome";
+//! Reviewer pages
+import ReviewerLayout from "./Pages/Reviewer/ReviewerLayout.jsx";
+import ReviewerDashboard from "./Pages/Reviewer/reviewerDashboard.jsx";
 import AssignedPapersPage from "./Pages/Reviewer/AssignedPapersPage";
 import AssignedProposalsPage from "./Pages/Reviewer/AssignedProposalsPage";
 import PaperReviewPage from "./Pages/Reviewer/PaperReviewPage";
 import ReviewHistoryPage from "./Pages/Reviewer/ReviewHistoryPage";
 
-// Teacher pages
+//! Teacher pages
 import TeacherLayout from "./Pages/Teacher/TeacherLayout";
 import TeacherDashboard from "./Pages/Teacher/TeacherDashboard";
 import TeamManagement from "./Pages/Teacher/TeamManagement";
@@ -21,36 +27,44 @@ import TeamDetails from "./Pages/Teacher/TeamDetails";
 import MyPapers from "./Pages/Teacher/MyPapers";
 import SubmissionHistory from "./Pages/Teacher/SubmissionHistory";
 
-
-// Admin page
+//! Admin page
 import AdminDashboard from "./Pages/Admin/AdminDashboard";
 
-// Auth pages
-import SignUpForm from "./AuthenticatePages/SignUpForm";
-import LoginForm from "./AuthenticatePages/LoginForm";
+//! Auth pages
+import SignUpForm from "./AuthenticatePages/SignUpForm.jsx";
+import LoginForm from "./AuthenticatePages/LoginForm.jsx";
+import VerifyPending from "./AuthenticatePages/VerifyPendingPage.jsx";
 
-// PrivateRoute component for route protection
-import PrivateRoute from "./context/PrivateRoute";
-import VerifyPending from './AuthenticatePages/VerifyPendingPage';
+//! PrivateRoute component for route protection
+import PrivateRoute from "./context/PrivateRoute.jsx";
+import Homepage from "./Pages/home/Homepage";
 
 //! Role-based redirection component
 function RoleBasedRedirect() {
-  const { user } = useContext(AuthContext);
+  const { loading, user, currentViewRole } = useContext(AuthContext);
 
-  if (!user) return <Navigate to="/login" />;
+  if (loading) {
+    // You can render a spinner or blank screen until auth is loaded
+    return <div>Loading...</div>;
+  }
+
+  console.log("RoleBasedRedirect currentViewRole:", currentViewRole);
+  if (!user) return <Navigate to="/" />;
 
   if (!user.emailVerified) {
-    // or user.isVerified, depends on your user object
     return <Navigate to="/verify" />;
   }
 
-  if (user.isMainAdmin || user.role === "ADMIN") {
-    return <Navigate to="/admin" />;
-  } else if (
-    ["REVIEWER", "TEACHER", "STUDENT", "GENERALUSER"].includes(user.role)
-  ) {
-    // You can improve this if STUDENT and GENERALUSER go elsewhere
-    return <Navigate to="/reviewer" />;
+  if (currentViewRole === "ADMIN" || user.isMainAdmin) {
+    return <Navigate to="/admin/home" />;
+  } else if (currentViewRole === "REVIEWER") {
+    return <Navigate to="/reviewer/home" />;
+  } else if (currentViewRole === "TEACHER") {
+    return <Navigate to="/teacher/home" />;
+  } else if (currentViewRole === "STUDENT") {
+    return <Navigate to="/reviewer/home" />;
+  } else if (currentViewRole === "GENERALUSER") {
+    return <Navigate to="/reviewer/home" />;
   } else {
     return <Navigate to="/login" />;
   }
@@ -58,19 +72,19 @@ function RoleBasedRedirect() {
 
 export default function App() {
   return (
-    <AuthProvider>
-      <Router>
+    <Router>
+      <AuthProvider>
         <Routes>
           {/* Public Routes */}
           <Route path="/" element={<LandingPage />} />
           <Route path="/signup" element={<SignUpForm />} />
-          <Route path= "/verify" element={<VerifyPending />} />
           <Route path="/login" element={<LoginForm />} />
+          <Route path="/verify" element={<VerifyPending />} />
 
-          {/* Redirect to role-based dashboard */}
+          {/* Optional: root /home redirects to role-based home */}
           <Route path="/home" element={<RoleBasedRedirect />} />
 
-          {/* Admin Protected Routes */}
+          {/* Admin routes */}
           <Route
             path="/admin"
             element={
@@ -78,26 +92,32 @@ export default function App() {
                 <AdminDashboard />
               </PrivateRoute>
             }
-          />
+          >
+            <Route path="home" element={<Homepage />} />
+          </Route>
 
           {/* Reviewer Protected Routes */}
           <Route
             path="/reviewer"
             element={
-              <PrivateRoute allowedRoles={["REVIEWER", "STUDENT", "GENERALUSER", "TEACHER"]}>
-                <ReviewerDashboard />
+              <PrivateRoute
+                allowedRoles={["REVIEWER", "STUDENT", "GENERALUSER"]}
+              >
+                <ReviewerLayout />
               </PrivateRoute>
             }
           >
-            {/* Nested routes under /reviewer */}
-            <Route index element={<ReviewerHome />} />
-            <Route path="reviewer/dashboard" element={<ReviewerHome />} />
-            <Route path="reviewer/home" element={<ReviewerHome />} />
+            <Route index element={<Navigate to="home" replace />} />
+            <Route path="home" element={<Homepage />} />
+            <Route path="dashboard" element={<ReviewerDashboard />} />
             <Route path="assignedpapers" element={<AssignedPapersPage />} />
-            <Route path="assigned-proposals" element={<AssignedProposalsPage />} />
+            <Route
+              path="assignedproposals"
+              element={<AssignedProposalsPage />}
+            />
             <Route path="review/:paperId" element={<PaperReviewPage />} />
             <Route path="reviewpage/:PaperId" element={<PaperReviewPage />} />
-            <Route path="ReviewHistoryPage" element={<ReviewHistoryPage />} />
+            <Route path="reviewhistory" element={<ReviewHistoryPage />} />
           </Route>
 
           {/* Teacher Protected Routes */}
@@ -109,21 +129,24 @@ export default function App() {
               </PrivateRoute>
             }
           >
-            {/* Nested routes under /teacher */}
-            <Route index element={<TeacherDashboard />} />
-            <Route path="teacher/dashboard" element={<TeacherDashboard />} />
-            <Route path="teacher/home" element={<TeacherDashboard />} />
-            <Route path="teacher/team" element={<TeamManagement />} />
-            <Route path="team/create" element={<CreateTeam />} />
-            <Route path="team/:id" element={<TeamDetails />} />
+            <Route index element={<Navigate to="home" replace />} />
+            <Route path="home" element={<Homepage />} />
+            <Route path="dashboard" element={<TeacherDashboard />} />
+
+            <Route path="team">
+              <Route index element={<TeamManagement />} />
+              <Route path="create" element={<CreateTeam />} />
+              <Route path=":id" element={<TeamDetails />} />
+            </Route>
+
             <Route path="mypapers" element={<MyPapers />} />
-            <Route path="teacher/history" element={<SubmissionHistory />} />
+            <Route path="history" element={<SubmissionHistory />} />
           </Route>
 
-          {/* Catch all: redirect unknown paths to landing or login */}
+          {/* Catch all unknown routes */}
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
-      </Router>
-    </AuthProvider>
+      </AuthProvider>
+    </Router>
   );
 }
