@@ -15,6 +15,11 @@ import TeamDetails from "./Pages/Teacher/TeamDetails";
 import MyPapers from "./Pages/Teacher/MyPapers";
 import SubmissionHistory from "./Pages/Teacher/SubmissionHistory";
 import TeacherLayout from "./Pages/Teacher/TeacherLayout";
+import StudentLayout from "./Pages/Student/StudentLayout";
+import StudentDashboard from "./Pages/Student/StudentDashboard";
+import MyTeams from "./Pages/Student/MyTeams";
+import StudentTeamDetails from "./Pages/Student/StudentTeamDetails";
+import StudentMyPapers from "./Pages/Student/StudentMyPapers";
 
 function App() {
   return (
@@ -43,6 +48,19 @@ function App() {
           <Route path="team/:id" element={<TeamDetails />} />
           <Route path="mypapers" element={<MyPapers />} />
           <Route path="teacher/history" element={<SubmissionHistory />} />
+        </Route>
+        <Route path="/student" element={<StudentLayout />}>
+          {/* Default page for /teacher is dashboard */}
+          <Route index element={<Homepage />} />
+          <Route path="student/dashboard" element={<StudentDashboard />} />
+          <Route path="student/home" element={<Homepage />} />
+          <Route path="student/team" element={<MyTeams />} />
+          <Route path="team/:id" element={<StudentTeamDetails />} />
+          <Route path="student/mypapers" element={<StudentMyPapers />} />
+          {/* <Route path="team/create" element={<CreateTeam />} />
+          
+          <Route path="mypapers" element={<MyPapers />} />
+          <Route path="teacher/history" element={<SubmissionHistory />} /> */} 
         </Route>
 
 

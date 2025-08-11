@@ -1,7 +1,7 @@
 // components/teacher/CreateTeam/MemberManager.jsx
 import React, { useState } from 'react';
 // import MemberList from '../../teacher/TeamManagement/MemberList';
-import MemberList from '../TeamManagement/MemberList';
+import MemberList from '../../Common/MemberList';
 
 const ROLE_OPTIONS = ['Lead Researcher', 'Researcher', 'Assistant'];
 
