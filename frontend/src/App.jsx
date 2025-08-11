@@ -100,9 +100,7 @@ export default function App() {
           <Route
             path="/reviewer"
             element={
-              <PrivateRoute
-                allowedRoles={["REVIEWER", "STUDENT", "GENERALUSER"]}
-              >
+              <PrivateRoute allowedRoles={["REVIEWER"]}>
                 <ReviewerLayout />
               </PrivateRoute>
             }
@@ -141,6 +139,23 @@ export default function App() {
 
             <Route path="mypapers" element={<MyPapers />} />
             <Route path="history" element={<SubmissionHistory />} />
+          </Route>
+
+          {/* Student Protected Routes */}
+          <Route
+            path="/student"
+            element={
+              <PrivateRoute allowedRoles={["STUDENT"]}>
+                <StudentLayout />
+              </PrivateRoute>
+            }
+          >
+            <Route index element={<Navigate to="home" replace />} />
+            <Route path="home" element={<Homepage />} />
+            <Route path="dashboard" element={<StudentDashboard />} />
+            <Route path="team" element={<MyTeams />} />
+            <Route path="team/:id" element={<StudentTeamDetails />} />
+            <Route path="mypapers" element={<StudentMyPapers />} />
           </Route>
 
           {/* Catch all unknown routes */}

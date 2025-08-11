@@ -4,7 +4,7 @@ import { FaUserCircle } from 'react-icons/fa';
 
 const PendingApplications = ({ applications = [] }) => {
   return (
-    <div className="bg-white p-4 rounded shadow mt-6">
+    <div className="bg-white p-4 rounded shadow">
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-lg font-semibold">Pending Applications</h3>
         <button className="text-blue-600 text-sm hover:underline">View all</button>

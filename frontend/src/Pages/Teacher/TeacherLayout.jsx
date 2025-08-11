@@ -9,8 +9,15 @@ import {
   FaHistory,
   FaChartBar,
   FaExchangeAlt,
+<<<<<<< HEAD
 } from "react-icons/fa";
 import { AuthContext } from "./../../context/AuthContext";
+=======
+  FaHome,
+  FaAcquisitionsIncorporated,
+  Fa500Px
+} from 'react-icons/fa';
+>>>>>>> d6efbbd1544997856fd77a500e079b42a14d6e25
 
 const TeacherLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -78,14 +85,22 @@ const TeacherLayout = () => {
           onClick={() => setSidebarOpen(false)}
           className="flex items-center gap-3 px-4 py-2 hover:bg-gray-100 rounded-md text-gray-700"
         >
+<<<<<<< HEAD
           <FaFileAlt /> Home
+=======
+        <FaHome /> Home
+>>>>>>> d6efbbd1544997856fd77a500e079b42a14d6e25
         </Link>
         <Link
           to="/teacher/dashboard"
           onClick={() => setSidebarOpen(false)}
           className="flex items-center gap-3 px-4 py-2 hover:bg-gray-100 rounded-md text-gray-700"
         >
+<<<<<<< HEAD
           <FaFileAlt /> Dashboard
+=======
+        <FaChartBar /> Dashboard
+>>>>>>> d6efbbd1544997856fd77a500e079b42a14d6e25
         </Link>
         <Link
           to="/teacher/mypapers"

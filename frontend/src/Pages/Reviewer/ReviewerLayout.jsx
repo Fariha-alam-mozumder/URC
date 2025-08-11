@@ -5,12 +5,15 @@ import {
   FaHistory,
   FaTachometerAlt,
   FaFileAlt,
+  FaHome,
+  FaChartBar,
 } from "react-icons/fa";
 
 import Topbar from "../../components/Common/Topbar";
 import Sidebar from "../../components/Common/Sidebar";
 import LogoutModal from "../../components/Common/LogoutModal";
 import { AuthContext } from "./../../context/AuthContext";
+import AssignedPapersTable from "../../components/Reviewer/AssignedPapersTable";
 
 const ReviewerLayout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -39,7 +42,13 @@ const ReviewerLayout = () => {
   const switchToTeacher = async () => {
     try {
       const token = localStorage.getItem("token");
-      const backendBaseUrl = "http://localhost:8000";
+      if (!token) {
+        alert("You are not logged in.");
+        navigate("/login");
+        return;
+      }
+      const backendBaseUrl =
+        import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
       const response = await fetch(`${backendBaseUrl}/api/auth/switch-role`, {
         method: "POST",
         headers: {
@@ -58,7 +67,6 @@ const ReviewerLayout = () => {
 
       updateAuth(data.token, data.user);
       navigate("/teacher/home");
-      
     } catch (error) {
       console.error("Error switching role:", error);
       alert("Something went wrong while switching roles.");
@@ -78,7 +86,7 @@ const ReviewerLayout = () => {
           onClick={() => setIsSidebarOpen(false)}
           className="flex items-center gap-3 px-4 py-2 hover:bg-gray-100 rounded-md text-gray-700"
         >
-          <FaTachometerAlt /> Home
+          <FaHome /> Home
         </Link>
 
         <Link
@@ -86,7 +94,7 @@ const ReviewerLayout = () => {
           onClick={() => setIsSidebarOpen(false)}
           className="flex items-center gap-3 px-4 py-2 hover:bg-gray-100 rounded-md text-gray-700"
         >
-          <FaTachometerAlt /> Dashboard
+          <FaChartBar /> Dashboard
         </Link>
 
         <Link
@@ -145,6 +153,7 @@ const ReviewerLayout = () => {
           />
         )}
       </div>
+      <AssignedPapersTable reviewPathPrefix="/reviewer/reviewpage/" />
     </div>
   );
 };

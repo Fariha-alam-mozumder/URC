@@ -1,23 +1,22 @@
-import React from 'react';
+// src/pages/Student/StudentDashboard.jsx
+import React, { useState } from 'react';
 import { FaClipboard, FaCheckCircle, FaClock, FaExclamationTriangle } from 'react-icons/fa';
+// Remove unused icons/imports unless you need them later
+// import { Outlet, Link } from 'react-router-dom';
 import StatCard from '../../components/Common/statcard';
-// import RecentSubmission from '../../components/Teacher/RecentSubmission';
-import TeamActivity from '../../components/Teacher/TeamActivity';
 import RecentSubmission from '../../components/Common/RecentSubmission';
-const TeacherDashboard = () => {
+
+const StudentDashboard = () => {
   return (
     <div className="p-6 space-y-6">
       {/* Header */}
       <div>
         <h2 className="text-2xl font-bold">Dashboard</h2>
-        {/* <p className="text-gray-600">
-          Manage your team's paper submissions and track progress
-        </p> */}
       </div>
 
       {/* Stat Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-         <StatCard
+        <StatCard
     title="Total Papers"
     value={24}
     icon={<FaClipboard className="text-green-500 text-xl" />}
@@ -42,9 +41,14 @@ const TeacherDashboard = () => {
       {/* Bottom sections */}
       <div className="flex flex-col lg:flex-row gap-4">
         <RecentSubmission />
-        <TeamActivity />
+        {/* <TeamActivity /> */}
       </div>
+
+      {/* Example: you can wire these when you add UI triggers */}
+      {/* <button onClick={handleLogoutClick}>Logout</button> */}
+      {/* {isLogoutModalOpen && <LogoutModal onClose={handleCloseModal} onConfirm={handleConfirmLogout} />} */}
     </div>
   );
 };
-export default TeacherDashboard;
+
+export default StudentDashboard;
