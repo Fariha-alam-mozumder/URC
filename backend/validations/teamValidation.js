@@ -14,7 +14,7 @@ export const teamSchema = vine.object({
     .array(
       vine.object({
         user_id: vine.number().positive(),
-        role_in_team: vine.enum(["TEAM_LEADER", "CO_LEADER", "MEMBER"]),
+        role_in_team: vine.enum(["LEAD", "RESEARCHER", "ASSISTANT"]),
       })
     )
     .optional(),

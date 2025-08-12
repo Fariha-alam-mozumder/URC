@@ -36,6 +36,7 @@ import StudentMyPapers from "./Pages/Student/StudentMyPapers";
 
 //! Admin page
 import AdminDashboard from "./Pages/Admin/AdminDashboard";
+import AdminHome from "./Pages/Admin/AdminHome";
 
 //! Auth pages
 import SignUpForm from "./AuthenticatePages/SignUpForm.jsx";
@@ -61,6 +62,8 @@ function RoleBasedRedirect() {
   if (!user.emailVerified) {
     return <Navigate to="/verify" />;
   }
+  console.log("User object:", user);
+console.log("user.emailVerified:", user?.emailVerified);
 
   if (currentViewRole === "ADMIN" || user.isMainAdmin) {
     return <Navigate to="/admin/home" />;
@@ -69,9 +72,9 @@ function RoleBasedRedirect() {
   } else if (currentViewRole === "TEACHER") {
     return <Navigate to="/teacher/home" />;
   } else if (currentViewRole === "STUDENT") {
-    return <Navigate to="/reviewer/home" />;
+    return <Navigate to="/student/home" />;
   } else if (currentViewRole === "GENERALUSER") {
-    return <Navigate to="/reviewer/home" />;
+    return <Navigate to="/home" />;
   } else {
     return <Navigate to="/login" />;
   }
@@ -100,7 +103,9 @@ export default function App() {
               </PrivateRoute>
             }
           >
-            <Route path="home" element={<Homepage />} />
+            <Route index element={<Navigate to="home" replace />} />
+            <Route path="home" element={<AdminHome />} />
+            <Route path="dashboard" element={<AdminDashboard  />} />
           </Route>
 
           {/* Reviewer Protected Routes */}

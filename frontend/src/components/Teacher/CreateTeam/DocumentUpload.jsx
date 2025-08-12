@@ -3,46 +3,34 @@ import React, { useState } from "react";
 import UploadDocModal from "./UploadModal";
 
 const DocumentUploader = ({
-  paperFile, onPaperChange,
-  proposalFile, onProposalChange,
-  notes, onNotesChange,
+  paperFile,
+  onPaperChange,
+  proposalFile,
+  onProposalSubmit,  // match prop name here
+  notes,
+  onNotesChange,
 }) => {
   const [modalKind, setModalKind] = useState(null); // 'paper' | 'proposal'
 
   const handleSubmitDoc = ({ title, abstract, file, kind }) => {
+    console.log("Sending from DocumentUploader:", { title, abstract, file, kind: "proposal" });
     const payload = { title, abstract, fileName: file.name, file };
-    console.log("Upload payload:", payload);
+    console.log("Proposal Upload payload:", payload);
 
     if (kind === "paper") {
       onPaperChange?.(file);
     } else {
-      onProposalChange?.(file);
+      onProposalSubmit?.({ title, abstract, file, kind });
     }
+
     // TODO: send `payload` via FormData to your API if needed
   };
 
   return (
     <section className="bg-white rounded-lg shadow p-5 space-y-4">
-      <h3 className="font-semibold">Documents</h3>
+      <h3 className="font-semibold">Documents & Resources</h3>
 
       <div className="grid gap-3 md:grid-cols-2">
-        <div className="border rounded p-3">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium">Upload New Paper</p>
-              <p className="text-xs text-gray-500">
-                {paperFile ? paperFile.name : "No file selected"}
-              </p>
-            </div>
-            <button
-              onClick={() => setModalKind("paper")}
-              className="px-3 py-1.5 text-sm bg-blue-600 text-white rounded hover:bg-blue-700"
-            >
-              Upload New
-            </button>
-          </div>
-        </div>
-
         <div className="border rounded p-3">
           <div className="flex items-center justify-between">
             <div>
@@ -60,15 +48,6 @@ const DocumentUploader = ({
           </div>
         </div>
       </div>
-
-      {/* <div>
-        <label className="text-sm font-medium">Research materials / notes</label>
-        <textarea
-          className="mt-1 w-full border rounded px-3 py-2 min-h-[96px]"
-          value={notes}
-          onChange={(e) => onNotesChange?.(e.target.value)}
-        />
-      </div> */}
 
       {/* Modal */}
       <UploadDocModal

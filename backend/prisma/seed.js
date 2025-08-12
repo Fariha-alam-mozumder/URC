@@ -4,7 +4,7 @@ import bcrypt from "bcryptjs";
 const prisma = new PrismaClient();
 
 async function main() {
-  // Check if admin user already exists
+  //  Check if admin user already exists
   // const existingAdmin = await prisma.user.findFirst({
   //   where: { role: "ADMIN" },
   // });
@@ -48,7 +48,7 @@ async function main() {
 
   // console.log(`Inserted ${result.count} departments.`);
 
-  //  // Create domains (example domains including common domain)
+  // // Create domains (example domains including common domain)
   // const domainsData = [
   //   { domain_name: "Artificial Intelligence" },    // common domain
   //   { domain_name: "Machine Learning" },
@@ -161,11 +161,14 @@ async function main() {
 
   // console.log('Userdomain seeding completed.');
 
-  await prisma.teacher.update({
-    where: { teacher_id: 3 },
-    data: { isReviewer: true },
-  });
-  console.log("Teacher with ID 3 is now a reviewer.");
+  const existing = await prisma.teacher.findUnique({ where: { teacher_id: 3 } });
+  if (existing) {
+    await prisma.teacher.update({
+      where: { teacher_id: 3 },
+      data: { isReviewer: true },
+    });
+    console.log("Teacher with ID 3 is now a reviewer.");
+  }
 }
 
 main()

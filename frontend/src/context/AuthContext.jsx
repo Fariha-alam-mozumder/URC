@@ -15,16 +15,10 @@ export function AuthProvider({ children }) {
 
   const normalizeUser = (u) => {
     if (!u) return u;
-    const verified =
-      u.emailVerified ??
-      u.isEmailVerified ?? // API variant
-      u.isemailVerified ?? // typo safeguard
-      u.email_verified ?? // snake_case
-      u.isVerified ?? // DB field leaked to client
-      u.verified ??
-      false;
-
-    return { ...u, emailVerified: Boolean(verified) };
+    return {
+      ...u,
+      emailVerified: Boolean(u.emailVerified || false),
+    };
   };
 
   const safeDecode = (token) => {
