@@ -1,18 +1,13 @@
-// src/components/teacher/CreateTeam/UploadDocModal.jsx
 import React, { useEffect, useMemo, useRef, useState } from "react";
 
 const countWords = (text) =>
-  (text || "")
-    .trim()
-    .replace(/\s+/g, " ")
-    .split(" ")
-    .filter(Boolean).length;
+  (text || "").trim().replace(/\s+/g, " ").split(" ").filter(Boolean).length;
 
 const UploadDocModal = ({
   open,
   onClose,
-  onSubmit,          // ({title, abstract, file, kind}) => void
-  kind = "paper",    // "paper" | "proposal"
+  onSubmit, // function called with { title, abstract, file, kind }
+  kind = "paper", // "paper" | "proposal"
 }) => {
   const [title, setTitle] = useState("");
   const [abstract, setAbstract] = useState("");
@@ -24,7 +19,7 @@ const UploadDocModal = ({
 
   useEffect(() => {
     if (!open) {
-      // reset when closing
+      // reset form when modal closes
       setTitle("");
       setAbstract("");
       setFile(null);
@@ -39,9 +34,11 @@ const UploadDocModal = ({
     if (!abstract.trim()) return alert("Please write an abstract.");
     if (overLimit) return alert("Abstract must be 200 words or fewer.");
     if (!file) return alert("Please attach a document.");
+
+    console.log("Modal submitting:", { title, abstract, file, kind });
     onSubmit?.({ title: title.trim(), abstract: abstract.trim(), file, kind });
     onClose?.();
-  };
+  }; 
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
@@ -71,9 +68,13 @@ const UploadDocModal = ({
 
           <div>
             <div className="flex items-center justify-between">
-              <label className="text-sm font-medium">Abstract (≤ 200 words)</label>
+              <label className="text-sm font-medium">
+                Abstract (≤ 200 words)
+              </label>
               <span
-                className={`text-xs ${overLimit ? "text-red-600" : "text-gray-500"}`}
+                className={`text-xs ${
+                  overLimit ? "text-red-600" : "text-gray-500"
+                }`}
               >
                 {words}/200
               </span>

@@ -39,6 +39,8 @@ router.post("/teams", authMiddleware, TeamController.store);
 // Proposal Routes (Protected)
 router.post("/proposals/upload", authMiddleware, ProposalController.upload);
 // Add more proposal routes if needed (list, update, delete, etc.)
+router.get("/members", authMiddleware, TeamController.listMembers);
 
+router.get("/me/context", authMiddleware, TeamController.creatorContext);  
 
 export default router
