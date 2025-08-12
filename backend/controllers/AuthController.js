@@ -198,6 +198,7 @@ class AuthController {
         name: findUser.name,
         email: findUser.email,
         role: findUser.role,
+        emailVerified: findUser.isVerified,
       };
 
       const token = jwt.sign(payloadData, process.env.JWT_SECRET, {
