@@ -19,7 +19,7 @@ const AssignedPapersPage = () => {
       title="Assigned Papers"
       description="Review and manage your assigned research papers"
       items={papers}
-      reviewPathPrefix="/ReviewerDashboard/review/"
+      reviewPathPrefix="/ReviewerLayout/review/"
     />
   );
 };

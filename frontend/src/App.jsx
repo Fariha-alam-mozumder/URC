@@ -12,7 +12,7 @@ import LandingPage from "./pages/landingpage/LandingPage";
 
 //! Reviewer pages
 import ReviewerLayout from "./Pages/Reviewer/ReviewerLayout.jsx";
-import ReviewerDashboard from "./Pages/Reviewer/reviewerDashboard.jsx";
+import ReviewerDashboard from "./Pages/Reviewer/ReviewerDashboard.jsx";
 import AssignedPapersPage from "./Pages/Reviewer/AssignedPapersPage";
 import AssignedProposalsPage from "./Pages/Reviewer/AssignedProposalsPage";
 import PaperReviewPage from "./Pages/Reviewer/PaperReviewPage";
@@ -26,6 +26,13 @@ import CreateTeam from "./Pages/Teacher/CreateTeam";
 import TeamDetails from "./Pages/Teacher/TeamDetails";
 import MyPapers from "./Pages/Teacher/MyPapers";
 import SubmissionHistory from "./Pages/Teacher/SubmissionHistory";
+
+//! Student pages
+import StudentLayout from "./Pages/Student/StudentLayout";
+import StudentDashboard from "./Pages/Student/StudentDashboard";
+import MyTeams from "./Pages/Student/MyTeams";
+import StudentTeamDetails from "./Pages/Student/StudentTeamDetails";
+import StudentMyPapers from "./Pages/Student/StudentMyPapers";
 
 //! Admin page
 import AdminDashboard from "./Pages/Admin/AdminDashboard";
@@ -157,6 +164,8 @@ export default function App() {
             <Route path="team/:id" element={<StudentTeamDetails />} />
             <Route path="mypapers" element={<StudentMyPapers />} />
           </Route>
+
+          
 
           {/* Catch all unknown routes */}
           <Route path="*" element={<Navigate to="/" />} />
