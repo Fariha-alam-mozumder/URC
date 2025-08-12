@@ -17,10 +17,26 @@ const TeacherDashboard = () => {
 
       {/* Stat Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard title="Total Papers" value={24} icon={<FaClipboard />} />
-        <StatCard title="Submitted" value={18} icon={<FaCheckCircle />} />
-        <StatCard title="Under Review" value={4} icon={<FaClock />} />
-        <StatCard title="Pending" value={2} icon={<FaExclamationTriangle />} />
+         <StatCard
+    title="Total Papers"
+    value={24}
+    icon={<FaClipboard className="text-green-500 text-xl" />}
+  />
+  <StatCard
+    title="Submitted"
+    value={18}
+    icon={<FaCheckCircle className="text-blue-500 text-xl" />}
+  />
+  <StatCard
+    title="Under Review"
+    value={4}
+    icon={<FaClock className="text-yellow-500 text-xl" />}
+  />
+  <StatCard
+    title="Pending"
+    value={2}
+    icon={<FaExclamationTriangle className="text-purple-500 text-xl" />}
+  />
       </div>
 
       {/* Bottom sections */}
