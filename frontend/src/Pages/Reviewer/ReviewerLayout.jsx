@@ -13,7 +13,7 @@ import Topbar from "../../components/Common/Topbar";
 import Sidebar from "../../components/Common/Sidebar";
 import LogoutModal from "../../components/Common/LogoutModal";
 import { AuthContext } from "./../../context/AuthContext";
-import AssignedPapersTable from "../../components/Reviewer/AssignedPapersTable";
+// import AssignedPapersTable from "../../components/Reviewer/AssignedPapersTable";
 
 const ReviewerLayout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -153,7 +153,7 @@ const ReviewerLayout = () => {
           />
         )}
       </div>
-      <AssignedPapersTable reviewPathPrefix="/reviewer/reviewpage/" />
+      {/* <AssignedPapersTable reviewPathPrefix="/reviewer/reviewpage/" /> */}
     </div>
   );
 };

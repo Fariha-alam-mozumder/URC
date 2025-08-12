@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from "react-router-dom";
 import { FaClipboard, FaCheckCircle, FaClock, FaExclamationTriangle } from 'react-icons/fa';
 // import { useNavigate } from 'react-router-dom';
 // import StatCard from '../../components/common/statcard';
@@ -10,7 +11,7 @@ import TeamCard from '../../components/Common/TeamCard';
 
 const TeamManagement = () => {
   const [showAllTeams, setShowAllTeams] = useState(false);
-  // const navigate = useNavigate();
+   const navigate = useNavigate();
 
   const statData = [
     { title: 'Total Papers', value: 24, icon: <FaClipboard /> },
