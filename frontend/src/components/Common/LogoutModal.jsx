@@ -1,7 +1,18 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../../context/AuthContext';
 
-const LogoutModal = ({ isOpen, onClose, onConfirm }) => {
+const LogoutModal = ({ isOpen, onClose }) => {
+  const navigate = useNavigate();
+  const { logout } = useContext(AuthContext);
+  
   if (!isOpen) return null;
+
+  const handleLogout = () => {
+    logout();    // call logout from context or props
+    onClose();   // close the modal
+    navigate('/'); // redirect to landing/login page
+  };
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-30 z-50">
@@ -16,7 +27,7 @@ const LogoutModal = ({ isOpen, onClose, onConfirm }) => {
             Cancel
           </button>
           <button
-            onClick={onConfirm}
+            onClick={handleLogout}
             className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded"
           >
             Logout

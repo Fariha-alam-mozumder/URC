@@ -1,107 +1,102 @@
-// components/teacher/TeamManagement/DocumentList.jsx
-import React, { useState } from 'react';
-import { FaFileAlt, FaDownload, FaTrash } from 'react-icons/fa';
+// src/components/Teacher/TeamManagement/DocumentList.jsx
+import React from 'react';
+import { FaFileAlt, FaTrash, FaDownload, FaUpload } from 'react-icons/fa';
 
-const DocumentList = () => {
-  const [documents, setDocuments] = useState([
-    {
-      id: 1,
-      name: 'Project Proposal.pdf',
-      size: '2.4 MB',
-      uploadedAt: 'Jan 15, 2025',
-    },
-    {
-      id: 2,
-      name: 'Literature Review.docx',
-      size: '1.8 MB',
-      uploadedAt: 'Feb 2, 2025',
-    },
-    {
-      id: 3,
-      name: 'Progress Presentation.pptx',
-      size: '5.2 MB',
-      uploadedAt: 'Feb 8, 2025',
-    },
-  ]);
+const fmt = (bytes) => {
+  if (bytes == null) return '';
+  const units = ['B','KB','MB','GB']; let i = 0; let v = bytes;
+  while (v >= 1024 && i < units.length - 1) { v /= 1024; i++; }
+  return `${v.toFixed(1)} ${units[i]}`;
+};
 
-  const handleUpload = (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    const uploadedDoc = {
-      id: Date.now(),
-      name: file.name,
-      size: `${(file.size / (1024 * 1024)).toFixed(1)} MB`,
-      uploadedAt: new Date().toLocaleDateString('en-US', {
-        month: 'short',
-        day: 'numeric',
-        year: 'numeric',
-      }),
-    };
-
-    setDocuments([uploadedDoc, ...documents]);
-  };
-
-  const handleDownload = (docName) => {
-    alert(`Downloading ${docName}...`);
-  };
-
-  const handleDelete = (id) => {
-    const updatedDocs = documents.filter((doc) => doc.id !== id);
-    setDocuments(updatedDocs);
+/**
+ * Props:
+ * - documents: [{ id, name, sizeBytes, uploadedAt (string|Date), href? }]
+ * - canManage?: boolean (default true) -> shows Upload & Delete when true
+ * - onUploadClick?: () => void
+ * - onDelete?: (doc) => void
+ * - onDownload?: (doc) => void   // optional; falls back to <a href>
+ */
+const DocumentList = ({
+  documents = [],
+  canManage = true,
+  onUploadClick,
+  onDelete,
+  onDownload,
+}) => {
+  const handleDownload = (doc) => {
+    if (onDownload) return onDownload(doc);
+    // default: if a href exists, trigger a download
+    if (doc.href) {
+      const a = document.createElement('a');
+      a.href = doc.href;
+      a.download = doc.name || 'file';
+      a.click();
+    } else {
+      console.log('Download requested for:', doc);
+    }
   };
 
   return (
-    <div className="bg-white p-4 rounded shadow">
-      <div className="flex justify-between items-center mb-4">
-        <h3 className="text-lg font-semibold">Documents & Resources</h3>
-        <label className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded cursor-pointer">
-          Upload
-          <input
-            type="file"
-            onChange={handleUpload}
-            className="hidden"
-          />
-        </label>
+    <section className="bg-white rounded-lg shadow p-4">
+      <div className="flex items-center justify-between mb-3">
+        <h3 className="font-semibold">Resources</h3>
+
+        {canManage && (
+          <button
+            onClick={onUploadClick}
+            className="inline-flex items-center gap-2 px-3 py-1.5 text-sm rounded bg-blue-600 text-white hover:bg-blue-700"
+          >
+            <FaUpload /> Upload
+          </button>
+        )}
       </div>
 
-      {documents.length === 0 ? (
-        <p className="text-gray-500">No documents uploaded.</p>
-      ) : (
-        <ul className="space-y-3">
-          {documents.map((doc) => (
-            <li
-              key={doc.id}
-              className="flex items-center justify-between bg-gray-50 p-3 rounded border"
-            >
-              <div className="flex items-center gap-2">
-                <FaFileAlt className="text-gray-500" />
-                <div>
-                  <p className="font-medium text-sm">{doc.name}</p>
-                  <p className="text-xs text-gray-400">
-                    Uploaded {doc.uploadedAt} • {doc.size}
-                  </p>
+      <div className="space-y-3">
+        {documents.length === 0 && (
+          <div className="text-sm text-gray-500">No documents yet.</div>
+        )}
+
+        {documents.map((doc) => (
+          <div
+            key={doc.id}
+            className="flex items-center justify-between border rounded-lg px-3 py-2"
+          >
+            <div className="flex items-center gap-3">
+              <FaFileAlt className="text-gray-500" />
+              <div>
+                <div className="font-medium text-sm">{doc.name}</div>
+                <div className="text-xs text-gray-500">
+                  Uploaded {doc.uploadedAt} • {fmt(doc.sizeBytes)}
                 </div>
               </div>
-              <div className="flex gap-2">
+            </div>
+
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => handleDownload(doc)}
+                className="p-2 rounded hover:bg-gray-100"
+                title="Download"
+                aria-label="Download"
+              >
+                <FaDownload />
+              </button>
+
+              {canManage && (
                 <button
-                  className="text-sm text-blue-600 hover:underline"
-                  onClick={() => handleDownload(doc.name)}
-                >
-                  <FaDownload />
-                </button>
-                <button
-                  className="text-sm text-red-600 hover:underline"
-                  onClick={() => handleDelete(doc.id)}
+                  onClick={() => onDelete?.(doc)}
+                  className="p-2 rounded hover:bg-gray-100 text-red-600"
+                  title="Delete"
+                  aria-label="Delete"
                 >
                   <FaTrash />
                 </button>
-              </div>
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
   );
 };
 

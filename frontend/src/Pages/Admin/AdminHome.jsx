@@ -25,4 +25,4 @@ const AdminHome = () => {
   );
 };
 
-export default ReviewerHome;
+export default AdminHome;
