@@ -1,12 +1,14 @@
-// src/layouts/TeacherLayout.jsx
-import React, { useState } from 'react';
-import { Outlet, Link } from 'react-router-dom';
+// src/layouts/studentLayout.jsx
+import React, { useState, useContext } from 'react';
+import { Outlet, Link, useNavigate } from 'react-router-dom';
 // import Sidebar from '../../components/Common/Sidebar';
 // import Topbar from '../../components/Common/Topbar';
 // import LogoutModal from '../../components/Common/LogoutModal';
 import Sidebar from '../../components/Common/Sidebar';
 import Topbar from '../../components/Common/Topbar';
 import LogoutModal from '../../components/Common/LogoutModal';
+import { AuthContext } from "../../context/AuthContext";
+
 import {
   FaFileAlt,
   FaUsers,
@@ -20,6 +22,9 @@ const StudentLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
 
+  
+    const { updateAuth, logout } = useContext(AuthContext);
+    const navigate = useNavigate();
   
   const handleLogoutClick = () => {
     setIsLogoutModalOpen(true);

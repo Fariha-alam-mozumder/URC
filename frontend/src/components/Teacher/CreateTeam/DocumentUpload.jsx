@@ -26,7 +26,7 @@ const DocumentUploader = ({
       <h3 className="font-semibold">Documents</h3>
 
       <div className="grid gap-3 md:grid-cols-2">
-        {/* <div className="border rounded p-3">
+        <div className="border rounded p-3">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium">Upload New Paper</p>
@@ -41,7 +41,7 @@ const DocumentUploader = ({
               Upload New
             </button>
           </div>
-        </div> */}
+        </div>
 
         <div className="border rounded p-3">
           <div className="flex items-center justify-between">

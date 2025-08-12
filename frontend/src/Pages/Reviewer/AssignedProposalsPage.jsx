@@ -16,7 +16,7 @@ const AssignedProposalsPage = () => {
       title="Assigned Proposals"
       description="Review and manage your assigned research proposals"
       items={proposals}
-      reviewPathPrefix="/ReviewerDashboard/review/"
+      reviewPathPrefix="/ReviewerLayout/review/"
     />
   );
 };
