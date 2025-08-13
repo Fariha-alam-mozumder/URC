@@ -5,10 +5,10 @@ import ProfileController from "../controllers/ProfileController.js";
 import NewsController from "../controllers/NewsController.js";
 import redisCache from "../DB/redis.config.js";
 import TeamController from "../controllers/teacher/TeamController.js";
-//import StudentTeamController from "../controllers/student/StudentTeamController.js";
 import TeamDetails from "../controllers/teacher/TeamDetails.js";
 import PaperController from "../controllers/teacher/PaperController.js";
 import ProposalController from "../controllers/teacher/ProposalController.js";
+import StudentTeamController from "../controllers/student/StudentTeamController.js";
 
 const router = Router()
 
@@ -59,4 +59,24 @@ router.get("/me/context", authMiddleware, TeamController.creatorContext);
 
 
 
-export default router
+// // Paper routes  
+// router.post("/papers/upload", authMiddleware, PaperController.upload);
+// router.get("/teams/:teamId/papers", authMiddleware, PaperController.getTeamPapers);
+
+// // Member routes (existing)
+// router.get("/members", authMiddleware, TeamController.listMembers);
+// router.get("/me/context", authMiddleware, TeamController.creatorContext);
+//router.post("/teacher/teams/:id/add-members", authMiddleware, TeamDetails.addMembersToTeam);
+
+//! Student routes
+router.get("/student/my-teams", authMiddleware, StudentTeamController.myTeams);
+router.get("/student/teams/:id", authMiddleware, StudentTeamController.getTeamById);
+router.get("/student/my-teams/papers", authMiddleware, StudentTeamController.getAllTeamPapers);
+
+// router.get("/teams/:id/proposals", authMiddleware, StudentTeamController.getProposalsByTeamId);
+
+
+
+
+
+export default router;

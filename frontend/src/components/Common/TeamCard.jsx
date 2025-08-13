@@ -1,9 +1,9 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { FaUsers, FaEllipsisV } from "react-icons/fa";
-
 const TeamCard = ({
   id,
+  title, // This will always be the display name, not the ID
   title, // This will always be the display name, not the ID
   created,
   description,
@@ -11,6 +11,8 @@ const TeamCard = ({
   members,
   clickable = true,
   createdBy,
+  to, // Optional: override navigation path
+  onCardClick, // Optional: custom click handler
   to, // Optional: override navigation path
   onCardClick, // Optional: custom click handler
 }) => {
@@ -84,6 +86,7 @@ const TeamCard = ({
         >
           {status || "Status Unknown"}
         </span>
+
         <div className="flex items-center gap-1">
           <FaUsers />
           <span>{members} members</span>
