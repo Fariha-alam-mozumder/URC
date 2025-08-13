@@ -113,6 +113,16 @@ class TeamController {
         });
         console.log("Team created:", team);
 
+        // Add creator as a member first
+        await db.teammember.create({
+          data: {
+            team_id: team.team_id,
+            user_id: Number(req.user.id),
+            role_in_team: "LEAD", // or another default role if you prefer
+          },
+        });
+        console.log(`Added creator ${req.user.id} as LEAD`);
+
         if (Array.isArray(payload.members)) {
           for (const member of payload.members) {
             await db.teammember.create({
@@ -130,9 +140,9 @@ class TeamController {
         console.error("DB operation failed:", dbErr);
         throw dbErr;
       }
-console.log("req.body:", req.body);
-console.log("req.file:", req.file);
-console.log("req.files:", req.files);
+      console.log("req.body:", req.body);
+      console.log("req.file:", req.file);
+      console.log("req.files:", req.files);
 
 
       const file = req.files?.proposal || req.files?.file || req.files?.proposalFile;
