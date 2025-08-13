@@ -5,7 +5,7 @@ import { Vine, errors } from "@vinejs/vine";
 
 class TeamDetails {
   // GET /api/teams/my-teams
-  static async myTeams(req, res) {
+  static async index(req, res) {
     try {
       const userId = req.user?.user_id; // from auth middleware
       if (!userId) {
