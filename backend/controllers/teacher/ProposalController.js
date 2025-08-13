@@ -1,3 +1,4 @@
+// controllers/ProposalController.js
 import db from "../../DB/db.config.js";
 import { proposalValidator } from "../../validations/proposalValidation.js";
 import { fileValidator, uploadFile } from "../../utils/helper.js";
@@ -23,11 +24,20 @@ class ProposalController {
           .json({ errors: { proposal: "Proposal PDF file is required" } });
       }
 
-      // Validate file size and mimetype (max 10MB, PDF only)
+      // Validate file size and mimetype (max 100MB, PDF only)
       try {
-        fileValidator(10, file.mimetype)(file);
+        fileValidator(100, file.mimetype)(file);
       } catch (e) {
         return res.status(400).json({ errors: { proposal: e.message } });
+      }
+
+      // Get teacher record for the logged-in user
+      const teacher = await db.teacher.findFirst({
+        where: { user_id: Number(req.user.id) }
+      });
+
+      if (!teacher) {
+        return res.status(400).json({ error: "User is not a teacher" });
       }
 
       // Upload PDF file to disk
@@ -40,7 +50,10 @@ class ProposalController {
           abstract: payload.abstract,
           pdf_path,
           team_id: Number(payload.team_id),
-          submitted_by: req.user.user_id, // assuming logged in user is teacher
+          submitted_by: teacher.teacher_id,
+          domain_id: payload.domain_id || null,
+          file_size: file.size,
+          status: "PENDING",
         },
       });
 
@@ -54,6 +67,35 @@ class ProposalController {
         return res.status(422).json({ errors: err.messages });
       }
       console.error("Proposal upload error:", err);
+      return res.status(500).json({ error: "Internal Server Error" });
+    }
+  }
+
+  // Get proposals for a specific team
+  static async getTeamProposals(req, res) {
+    try {
+      const { teamId } = req.params;
+      
+      const proposals = await db.proposal.findMany({
+        where: { team_id: Number(teamId) },
+        include: {
+          teacher: {
+            include: {
+              user: {
+                select: { name: true, email: true }
+              }
+            }
+          },
+          domain: {
+            select: { domain_name: true }
+          }
+        },
+        orderBy: { created_at: 'desc' }
+      });
+
+      return res.json({ data: proposals });
+    } catch (err) {
+      console.error("Get team proposals error:", err);
       return res.status(500).json({ error: "Internal Server Error" });
     }
   }

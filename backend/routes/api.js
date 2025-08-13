@@ -5,10 +5,10 @@ import ProfileController from "../controllers/ProfileController.js";
 import NewsController from "../controllers/NewsController.js";
 import redisCache from "../DB/redis.config.js";
 import TeamController from "../controllers/teacher/TeamController.js";
-import ProposalController from "../controllers/teacher/ProposalController.js";
 //import StudentTeamController from "../controllers/student/StudentTeamController.js";
 import TeamDetails from "../controllers/teacher/TeamDetails.js";
-
+import PaperController from "../controllers/teacher/PaperController.js";
+import ProposalController from "../controllers/teacher/ProposalController.js";
 
 const router = Router()
 
@@ -36,16 +36,22 @@ router.delete("/news/:id", authMiddleware, NewsController.destroy)
 
 //! Teacher Routes
 //! Team Routes (Protected)
-router.post("/teams", authMiddleware, TeamController.store);
-// You can add more routes for teams (get/list/update/delete) as needed
-// Proposal Routes (Protected)
+// Team routes (existing)
+router.get("/teacher/my-teams", authMiddleware, TeamDetails.index);
+router.get("/teacher/teams/:id", authMiddleware, TeamDetails.getTeamById);
+
+// Proposal routes
 router.post("/proposals/upload", authMiddleware, ProposalController.upload);
-// Add more proposal routes if needed (list, update, delete, etc.)
+router.get("/teams/:teamId/proposals", authMiddleware, ProposalController.getTeamProposals);
+
+// Paper routes  
+router.post("/papers/upload", authMiddleware, PaperController.upload);
+router.get("/teams/:teamId/papers", authMiddleware, PaperController.getTeamPapers);
+
+// Member routes (existing)
 router.get("/members", authMiddleware, TeamController.listMembers);
 router.get("/me/context", authMiddleware, TeamController.creatorContext);
-router.get("/myteams", authMiddleware, TeamDetails.index)
-
-
+//router.post("/teacher/teams/:id/add-members", authMiddleware, TeamDetails.addMembersToTeam);
 //Student routes
 // router.get("/my-teams", authMiddleware, StudentTeamController.myTeams);
 // router.get("/teams/:id", authMiddleware, StudentTeamController.getTeamById);

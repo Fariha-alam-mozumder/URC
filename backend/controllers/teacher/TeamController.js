@@ -91,8 +91,6 @@ class TeamController {
           role_in_team: role
         };
       });
-
-      console.log("Received body:", body);
       const validator = vine.compile(teamSchema);
       const payload = await validator.validate(body);
       // After validation
@@ -192,7 +190,7 @@ class TeamController {
   }
 
 
-  // --------- Service: get candidates with dept + (optional) domainIds ----------
+  // Updated getPotentialTeamMembers method in TeamController.js
   static async getPotentialTeamMembers({ departmentId, creatorUserId, domainIds }) {
     // 1) Dept
     let deptId = departmentId ?? null;
@@ -222,10 +220,29 @@ class TeamController {
         ? { user: { userdomain: { some: { domain_id: { in: domIds } } } } }
         : {};
 
-    // 4) Students + Teachers in dept (+ domain filter)
+    // 4) Students + Teachers in dept (+ domain filter) with domain information
     const students = await db.student.findMany({
       where: { department_id: deptId, ...domainFilter },
-      include: { user: { select: { user_id: true, name: true, email: true, role: true } } },
+      include: {
+        user: {
+          select: {
+            user_id: true,
+            name: true,
+            email: true,
+            role: true,
+            userdomain: {
+              include: {
+                domain: {
+                  select: {
+                    domain_id: true,
+                    domain_name: true
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
     });
 
     const teachers = await db.teacher.findMany({
@@ -234,12 +251,51 @@ class TeamController {
         ...(creatorUserId ? { NOT: { user_id: creatorUserId } } : {}),
         ...domainFilter,
       },
-      include: { user: { select: { user_id: true, name: true, email: true, role: true } } },
+      include: {
+        user: {
+          select: {
+            user_id: true,
+            name: true,
+            email: true,
+            role: true,
+            userdomain: {
+              include: {
+                domain: {
+                  select: {
+                    domain_id: true,
+                    domain_name: true
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+    });
+
+    // Helper function to get matching domains
+    const getMatchingDomains = (userDomains) => {
+      if (!domIds || domIds.length === 0) return [];
+
+      const userDomainIds = userDomains.map(ud => ud.domain.domain_id);
+      return userDomains
+        .filter(ud => domIds.includes(ud.domain.domain_id))
+        .map(ud => ud.domain.domain_name);
+    };
+
+    // Format the response with domain information
+    const formatUser = (userRecord) => ({
+      user_id: userRecord.user.user_id,
+      name: userRecord.user.name,
+      email: userRecord.user.email,
+      role: userRecord.user.role,
+      domains: userRecord.user.userdomain.map(ud => ud.domain.domain_name),
+      matchingDomains: getMatchingDomains(userRecord.user.userdomain)
     });
 
     return [
-      ...students.map((s) => ({ user_id: s.user.user_id, name: s.user.name, email: s.user.email, role: s.user.role })),
-      ...teachers.map((t) => ({ user_id: t.user.user_id, name: t.user.name, email: t.user.email, role: t.user.role })),
+      ...students.map(formatUser),
+      ...teachers.map(formatUser),
     ];
   }
 
