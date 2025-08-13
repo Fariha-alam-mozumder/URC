@@ -2,6 +2,10 @@ import { supportedMimes } from "../config/filesystem.js";
 import { v4 as uuidv4 } from "uuid";
 import fs from "fs";
 import path from "path";
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Validate only PDFs (maxSize in MB)
 export const fileValidator = (maxSize, mimeType) => {
@@ -9,7 +13,6 @@ export const fileValidator = (maxSize, mimeType) => {
     throw new Error('Only PDF files are allowed')
   }
   // For express-fileupload, size is in bytes
-  // You'll need to pass the file object to get size in bytes
   return (file) => {
     const sizeMB = file.size / (1024 * 1024)
     if (sizeMB > maxSize) {
@@ -18,12 +21,16 @@ export const fileValidator = (maxSize, mimeType) => {
   }
 }
 
-// Upload PDF file, returns relative file path string
+// FIXED: Upload PDF file to the correct directory that will be served by Express
 export const uploadFile = async (file, isFile = true, type = 'pdf') => {
   const ext = path.extname(file.name || '')
   const filename = `${uuidv4()}${ext}`
-  const uploadDir = type === 'pdf' ? 'public/files' : 'public/images'
+  
+  // CHANGED: Upload PDFs to public/documents instead of public/files
+  // This way they can be accessed via /documents/ URL
+  const uploadDir = type === 'pdf' ? 'public/documents' : 'public/images'
 
+  // Ensure directory exists
   await fs.promises.mkdir(uploadDir, { recursive: true })
 
   const uploadPath = path.join(uploadDir, filename)
@@ -31,12 +38,12 @@ export const uploadFile = async (file, isFile = true, type = 'pdf') => {
   if (isFile) {
     await file.mv(uploadPath) // express-fileupload method
   } else {
-    // handle other upload methods if needed
     await fs.promises.writeFile(uploadPath, file.data)
   }
 
-  // return relative path (you can adjust to absolute URL if needed)
-  return uploadPath
+  // IMPORTANT: Return path that will work with static file serving
+  // Since Express serves public/ as static, we return the path relative to public/
+  return type === 'pdf' ? `documents/${filename}` : `images/${filename}`
 }
 
 export const imageValidator = (size, mime) => {
@@ -48,53 +55,57 @@ export const imageValidator = (size, mime) => {
   return null;
 };
 
-
 export const byteToMb = (bytes) => {
   return bytes / (1024 * 1024);
 };
 
-//! Storing a profile image to avoid filename conflicts (ex: 2 different profile image with same name "a.jpg")
-//! This ensures the filename is globally unique
 export const generateRandomNum = () => {
   return uuidv4();
 };
 
-//* returning image url
+// Get document URL (for PDFs)
+export const getDocumentUrl = (docPath) => {
+  if (!docPath) {
+    return null;
+  }
+  // Since Express serves public/ as static files, and docPath is relative to public/
+  return `${process.env.APP_URL}/${docPath}`;
+};
+
 export const getImageUrl = (imgName) => {
   if (!imgName) {
-    // return dummy image from local public/images directory
     return `${process.env.APP_URL}/images/default.png`;
   }
-  //return the whole image url
   return `${process.env.APP_URL}/images/${imgName}`;
 };
 
-//* To delete the previous image to update an image of a news
+// Remove document file
+export const removeDocument = (docPath) => {
+  if (!docPath) return;
+  
+  const fullPath = path.join(process.cwd(), "public", docPath);
+  
+  if (fs.existsSync(fullPath)) {
+    fs.unlinkSync(fullPath);
+  }
+};
+
 export const removeImage = (imageName) => {
   const path = process.cwd() + "/public/images/" + imageName;
 
   if (fs.existsSync(path)) {
-    //! Checks if a file or directory exists at the given path.
-    fs.unlinkSync(path); //! Deletes a file at the given path synchronously.
+    fs.unlinkSync(path);
   }
-
-  // This is blocking (synchronous). If you're deleting files in a high-traffic API, consider using the async version:
-  // fs.unlink(path, (err) => {
-  //   if (err) console.error(err);
-  // });
 };
 
-//! upload new image
 export const uploadImage = (image) => {
   const imgExt = image?.name.split(".");
   const imageName = generateRandomNum() + "." + imgExt[1];
-  const uploadPath = process.cwd() + "/public/images/" + imageName; //! cwd: Current Path Directory
+  const uploadPath = process.cwd() + "/public/images/" + imageName;
 
   image.mv(uploadPath, (err) => {
     if (err) throw err;
-    //console.log("Image uploaded to:", uploadPath);
   });
-  //* file uploaded
 
   return imageName;
 };

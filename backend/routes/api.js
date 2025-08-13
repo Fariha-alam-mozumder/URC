@@ -4,9 +4,11 @@ import authMiddleware from "../middleware/Authenticate.js";
 import ProfileController from "../controllers/ProfileController.js";
 import NewsController from "../controllers/NewsController.js";
 import redisCache from "../DB/redis.config.js";
-import TeamController from "../controllers/TeamController.js";
-import ProposalController from "../controllers/ProposalController.js";
-
+import StudentTeamController from "../controllers/student/StudentTeamController.js";
+// import TeamController from "../controllers/teacher/TeamController.js";
+// import TeamDetails from "../controllers/teacher/TeamDetails.js";
+// import PaperController from "../controllers/teacher/PaperController.js";
+// import ProposalController from "../controllers/teacher/ProposalController.js";
 
 const router = Router()
 
@@ -33,14 +35,36 @@ router.put("/news/:id", authMiddleware, NewsController.update)
 router.delete("/news/:id", authMiddleware, NewsController.destroy)
 
 // Team Routes (Protected)
-router.post("/teams", authMiddleware, TeamController.store);
-// You can add more routes for teams (get/list/update/delete) as needed
+// router.post("/teams", authMiddleware, TeamController.store);
 
-// Proposal Routes (Protected)
-router.post("/proposals/upload", authMiddleware, ProposalController.upload);
-// Add more proposal routes if needed (list, update, delete, etc.)
-router.get("/members", authMiddleware, TeamController.listMembers);
+//! Teacher Routes
+//! Team Routes (Protected)
+// Team routes (existing)
+// router.get("/teacher/my-teams", authMiddleware, TeamDetails.index);
+// router.get("/teacher/teams/:id", authMiddleware, TeamDetails.getTeamById);
 
-router.get("/me/context", authMiddleware, TeamController.creatorContext);  
+// // Proposal routes
+// router.post("/proposals/upload", authMiddleware, ProposalController.upload);
+// router.get("/teams/:teamId/proposals", authMiddleware, ProposalController.getTeamProposals);
 
-export default router
+// // Paper routes  
+// router.post("/papers/upload", authMiddleware, PaperController.upload);
+// router.get("/teams/:teamId/papers", authMiddleware, PaperController.getTeamPapers);
+
+// // Member routes (existing)
+// router.get("/members", authMiddleware, TeamController.listMembers);
+// router.get("/me/context", authMiddleware, TeamController.creatorContext);
+//router.post("/teacher/teams/:id/add-members", authMiddleware, TeamDetails.addMembersToTeam);
+
+//! Student routes
+router.get("/student/my-teams", authMiddleware, StudentTeamController.myTeams);
+router.get("/student/teams/:id", authMiddleware, StudentTeamController.getTeamById);
+router.get("/student/my-teams/papers", authMiddleware, StudentTeamController.getAllTeamPapers);
+
+// router.get("/teams/:id/proposals", authMiddleware, StudentTeamController.getProposalsByTeamId);
+
+
+
+
+
+export default router;
