@@ -4,8 +4,8 @@ import authMiddleware from "../middleware/Authenticate.js";
 import ProfileController from "../controllers/ProfileController.js";
 import NewsController from "../controllers/NewsController.js";
 import redisCache from "../DB/redis.config.js";
-import TeamController from "../controllers/TeamController.js";
-import ProposalController from "../controllers/ProposalController.js";
+import TeamController from "../controllers/teacher/TeamController.js";
+import ProposalController from "../controllers/teacher/ProposalController.js";
 
 
 const router = Router()
