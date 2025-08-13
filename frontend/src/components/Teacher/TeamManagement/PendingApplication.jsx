@@ -1,13 +1,15 @@
 // components/teacher/PendingApplications.jsx
-import React from 'react';
-import { FaUserCircle } from 'react-icons/fa';
+import React from "react";
+import { FaUserCircle } from "react-icons/fa";
 
 const PendingApplications = ({ applications = [] }) => {
   return (
     <div className="bg-white p-4 rounded shadow">
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-lg font-semibold">Pending Applications</h3>
-        <button className="text-blue-600 text-sm hover:underline">View all</button>
+        <button className="text-blue-600 text-sm hover:underline">
+          View all
+        </button>
       </div>
 
       {applications.length === 0 ? (
@@ -24,16 +26,21 @@ const PendingApplications = ({ applications = [] }) => {
                 <div>
                   <p className="font-medium text-sm">{app.name}</p>
                   <p className="text-sm text-gray-500">
-                    Wants to join <span className="font-medium text-gray-700">{app.team}</span>
+                    Wants to join{" "}
+                    <span className="font-medium text-gray-700">
+                      {app.team}
+                    </span>
                   </p>
-                  <p className="text-xs text-gray-400 mt-1">Applied {app.timeAgo}</p>
+                  <p className="text-xs text-gray-400 mt-1">
+                    Applied {app.timeAgo}
+                  </p>
                 </div>
               </div>
               <div className="flex gap-2 mt-2 sm:mt-0">
-                <button className="px-3 py-1 text-sm rounded bg-green-500 text-white hover:bg-green-600">
+                <button className="px-3 py-1 text-sm rounded bg-green-100 text-green-700 hover:bg-green-200">
                   Approve
                 </button>
-                <button className="px-3 py-1 text-sm rounded bg-red-500 text-white hover:bg-red-600">
+                <button className="px-3 py-1 text-sm rounded bg-red-100 text-red-700 hover:bg-red-200">
                   Reject
                 </button>
               </div>

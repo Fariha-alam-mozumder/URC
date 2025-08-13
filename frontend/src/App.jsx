@@ -19,7 +19,7 @@ import PaperReviewPage from "./Pages/Reviewer/PaperReviewPage";
 import ReviewHistoryPage from "./Pages/Reviewer/ReviewHistoryPage";
 
 //! Teacher pages
-import TeacherLayout from "./Pages/Teacher/TeacherLayout";
+import TeacherLayout from "./Pages/Teacher/TeacherLayout.jsx";
 import TeacherDashboard from "./Pages/Teacher/TeacherDashboard";
 import TeamManagement from "./Pages/Teacher/TeamManagement";
 import CreateTeam from "./Pages/Teacher/CreateTeam";

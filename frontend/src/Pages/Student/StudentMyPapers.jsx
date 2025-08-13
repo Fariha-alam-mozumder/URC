@@ -1,103 +1,203 @@
-import React, { useRef, useState } from 'react';  // ✅ Added useState
-// import PaperCard from '../../components/teacher/MyPapers/PaperCard';
-// import FilterBar from '../../components/common/FilterBar';
-// import UploadDocModal from '../../components/teacher/CreateTeam/UploadModal';
-import PaperCard from '../../components/Common/PaperCard';
-import FilterBar from '../../components/Common/FilterBar';
+import React, { useRef, useState, useEffect } from "react";
+import PaperCard from "../../components/Common/PaperCard";
+import FilterBar from "../../components/Common/FilterBar";
+import axios from "axios";
 
 const StudentMyPapers = () => {
   // filters
-  const [searchQuery, setSearchQuery] = useState('');
-  const [statusFilter, setStatusFilter] = useState('All Status');
-  const [roleFilter, setRoleFilter] = useState('All Roles');
-  const [yearFilter, setYearFilter] = useState('All Years');
-  const [sortFilter, setSortFilter] = useState('Latest First');
+  const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState("All Status");
+  //const [roleFilter, setRoleFilter] = useState("All Roles");
+  const [yearFilter, setYearFilter] = useState("All Years");
+  const [sortFilter, setSortFilter] = useState("Latest First");
 
   // list
-  const [papers, setPapers] = useState([
-    {
-      title: 'Sustainable Energy Solutions for Smart Cities',
-      team: 'Green Tech Initiative',
-      date: '2024-08-01',
-      lastEditor: 'Dr. Robert Chen',
-      status: 'Draft',
-      role: 'Mentor',
-      reviewers: [],
-      comments: 0,
-    },
-    {
-      title: 'Machine Learning Applications in Healthcare Diagnostics',
-      team: 'AI Healthcare Team',
-      date: '2024-07-15',
-      lastEditor: 'Dr. Robert Chen',
-      status: 'Under Review',
-      role: 'Lead Author',
-      reviewers: ['Dr. Sarah Johnson', 'Prof. Michael Chen'],
-      comments: 1,
-    },
-  ]);
-
-  // upload modal
-  const [showUpload, setShowUpload] = useState(false);
+  const [papers, setPapers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const filters = [
-    { type: 'input', name: 'search', placeholder: 'Search papers by title...' },
-    { type: 'select', name: 'status', options: ['All Status', 'Draft', 'Under Review', 'Published'] },
-    { type: 'select', name: 'role', options: ['All Roles', 'Mentor', 'Lead Author', 'Reviewer'] },
-    { type: 'select', name: 'year', options: ['All Years', '2025', '2024'] },
-    { type: 'select', name: 'sort', options: ['Latest First', 'Oldest First'] },
+    { 
+      type: "input", 
+      name: "search", 
+      placeholder: "Search papers by title...",
+      value: searchQuery  // Add current value
+    },
+    {
+      type: "select",
+      name: "status",
+      options: ["All Status", "Accepted", "Rejected", "Pending","Under Review"],
+      value: statusFilter  // Add current value
+    },
+    // {
+    //   type: "select",
+    //   name: "role",
+    //   options: ["All Roles", "Mentor", "Lead Author", "Reviewer"],
+    //   value: roleFilter  // Add current value
+    // },
+    { 
+      type: "select", 
+      name: "year", 
+      options: ["All Years", "2025", "2024"],
+      value: yearFilter  // Add current value
+    },
+    { 
+      type: "select", 
+      name: "sort", 
+      options: ["Latest First", "Oldest First"],
+      value: sortFilter  // Add current value
+    },
   ];
 
-  const onFilterChange = {
-    search: setSearchQuery,
-    status: setStatusFilter,
-    role: setRoleFilter,
-    year: setYearFilter,
-    sort: setSortFilter,
+  // FIXED: Create a proper function that handles filter changes
+  const handleFilterChange = (filterName, value) => {
+    console.log(`Filter ${filterName} changed to:`, value);
+    
+    switch(filterName) {
+      case 'search':
+        setSearchQuery(value);
+        break;
+      case 'status':
+        setStatusFilter(value);
+        break;
+      // case 'role':
+      //   setRoleFilter(value);
+      //   break;
+      case 'year':
+        setYearFilter(value);
+        break;
+      case 'sort':
+        setSortFilter(value);
+        break;
+      default:
+        console.warn('Unknown filter:', filterName);
+    }
   };
 
-  // basic filtering (title only for demo)
-  const filteredPapers = papers.filter((p) =>
-    p.title.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  useEffect(() => {
+    const fetchPapers = async () => {
+      try {
+        setLoading(true);
+        setError(null);
 
+        const res = await axios.get(
+          "http://localhost:8000/api/student/my-teams/papers",
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+            withCredentials: true,
+          }
+        );
+
+        const formatted = res.data.data.map((p) => {
+          console.log(` Processing paper: ${p.title}`);
+          console.log(` PDF path: "${p.pdf_path}"`);
+          console.log(` Download URL: "${p.download_url}"`);
+
+          return {
+            id: p.paper_id,
+            title: p.title,
+            team: p.team?.team_name || "Unknown Team",
+            date: new Date(p.created_at).toLocaleDateString("en-GB", {
+              day: "2-digit",
+              month: "short",
+              year: "numeric",
+            }),
+            lastEditor: p.teacher?.user?.name || "Unknown",
+            status: p.status,
+            role: "Contributor",
+            reviewers: [],
+            comments: 0,
+            fileUrl: p.download_url,
+          };
+        });
+
+        console.log("Formatted papers:", formatted);
+        setPapers(formatted);
+      } catch (err) {
+        console.error("❌ Error fetching papers:", err);
+        setError(err.response?.data?.message || "Failed to fetch papers");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPapers();
+  }, []);
+
+  // ENHANCED: Apply all filters, not just search
+  const filteredPapers = papers.filter((paper) => {
+    // Search filter
+    if (searchQuery && !paper.title.toLowerCase().includes(searchQuery.toLowerCase())) {
+      return false;
+    }
+  
+    // Status filter
+    if (statusFilter !== "All Status" && paper.status !== statusFilter.toUpperCase()) {
+      return false;
+    }
+    
+    // Role filter (you might need to adjust this based on your data structure)
+    // if (roleFilter !== "All Roles" && paper.role !== roleFilter) {
+    //   return false;
+    // }
+    
+    // Year filter
+    if (yearFilter !== "All Years") {
+      const paperYear = new Date(paper.date).getFullYear().toString();
+      if (paperYear !== yearFilter) {
+        return false;
+      }
+    }
+    
+    return true;
+  }).sort((a, b) => {
+    // Sort filter
+    const dateA = new Date(a.date);
+    const dateB = new Date(b.date);
+    
+    if (sortFilter === "Latest First") {
+      return dateB - dateA;
+    } else if (sortFilter === "Oldest First") {
+      return dateA - dateB;
+    }
+    
+    return 0;
+  });
+
+  if (loading) return <p className="p-6">Loading papers...</p>;
+  if (error) return <p className="p-6 text-red-600">Error: {error}</p>;
 
   return (
     <div className="p-6 space-y-6">
-      {/* Header */}
       <div className="flex justify-between items-center mb-4">
-        <div>
-          <h2 className="text-2xl font-bold">My Papers</h2>
-          {/* <p className="text-gray-500 text-sm">Manage all your research papers and submissions</p> */}
-        </div>
+        <h2 className="text-2xl font-bold">My Papers</h2>
       </div>
 
-      {/* Filters */}
-      <FilterBar filters={filters} onFilterChange={onFilterChange} />
+      {/* FIXED: Pass the function, not the object */}
+      <FilterBar filters={filters} onFilterChange={handleFilterChange} />
 
-      {/* Paper List */}
       <div className="space-y-4">
-        {filteredPapers.map((paper, index) => (
-          <PaperCard
-  role="student"                // hides Edit automatically
-  paper={{
-    id: 'sust-2024-02',
-    title: 'Sustainable Energy Solutions for Smart Cities',
-    team: 'Green Tech Initiative',
-    date: '2024-08-01',
-    lastEditor: 'Dr. Robert Chen',
-    status: 'Draft',
-    role: 'Contributor',
-    comments: 0,
-    fileUrl: '/files/smart-cities.pdf',
-  }}
-/>
-
-        ))}
+        {filteredPapers.length === 0 ? (
+          searchQuery || statusFilter !== "All Status" || yearFilter !== "All Years" ? (
+            <p>No papers match your current filters.</p>
+          ) : (
+            <p>No papers found.</p>
+          )
+        ) : (
+          <>
+            <p className="text-sm text-gray-600">
+              Showing {filteredPapers.length} of {papers.length} papers
+            </p>
+            {filteredPapers.map((paper) => (
+              <PaperCard key={paper.id} paper={paper} role="student" />
+            ))}
+          </>
+        )}
       </div>
-
-      
     </div>
   );
 };
+
 export default StudentMyPapers;
