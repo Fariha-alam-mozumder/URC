@@ -7,17 +7,16 @@ export const AuthContext = createContext();
 export function AuthProvider({ children }) {
   const [token, setToken] = useState(null);
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true); // new loading state
-  //! current UI role/view for switching
+  const [loading, setLoading] = useState(true);
   const [currentViewRole, setCurrentViewRole] = useState(null);
-
   const navigate = useNavigate();
 
   const normalizeUser = (u) => {
     if (!u) return u;
     return {
       ...u,
-      emailVerified: Boolean(u.emailVerified || false),
+      // Normalize both possible property names to emailVerified
+      emailVerified: Boolean(u.emailVerified || u.isEmailVerified || false),
     };
   };
 
@@ -33,25 +32,20 @@ export function AuthProvider({ children }) {
   const setAuthFromToken = (newToken, overrideRole = null) => {
     try {
       const decoded = safeDecode(newToken);
-
       const currentTime = Date.now() / 1000;
       if (decoded.exp && decoded.exp < currentTime) {
-        // Token expired
         clearAuth();
         return;
       }
 
-      // Either use provided overrideRole or decoded role
       const roleToSet = (overrideRole ?? decoded.role) || null;
-
       setToken(newToken);
       setUser(normalizeUser(decoded));
       setCurrentViewRole(roleToSet);
-
       localStorage.setItem("token", newToken);
       localStorage.setItem("currentViewRole", roleToSet);
-
       console.log("Decoded user from token:", decoded);
+      console.log("Normalized user:", normalizeUser(decoded));
     } catch (err) {
       console.error("Invalid token:", err.message);
       clearAuth();
@@ -66,7 +60,6 @@ export function AuthProvider({ children }) {
     localStorage.removeItem("currentViewRole");
   };
 
-  // Update auth: set token/localStorage + update user and role
   const updateAuth = (newToken, newUser = null, overrideRole = null) => {
     setLoading(true);
     if (newToken) {
@@ -92,13 +85,12 @@ export function AuthProvider({ children }) {
     if (storedToken) {
       setAuthFromToken(storedToken, storedRole);
     }
-    setLoading(false); // done loading (even if no token)
+    setLoading(false);
   }, []);
 
   const login = (newToken, newUser = null) => {
     setLoading(true);
     if (newUser) {
-      // If your login API already returns user, this path avoids an extra decode.
       const role = newUser.role || null;
       setToken(newToken);
       setUser(normalizeUser(newUser));
@@ -106,7 +98,6 @@ export function AuthProvider({ children }) {
       localStorage.setItem("token", newToken);
       localStorage.setItem("currentViewRole", role);
     } else {
-      // If you only have a token, decode it
       setAuthFromToken(newToken);
     }
     setLoading(false);
@@ -114,10 +105,9 @@ export function AuthProvider({ children }) {
 
   const logout = () => {
     clearAuth();
-    navigate("/"); // redirect to login page
+    navigate("/");
   };
 
-  // Export currentViewRole and setter so UI can switch role
   return (
     <AuthContext.Provider
       value={{

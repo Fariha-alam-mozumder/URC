@@ -79,18 +79,19 @@ export default function MemberManager({
   };
 
   return (
-    <div className="bg-white p-4 rounded shadow space-y-4">
-      <div className="flex items-center justify-between">
+    <div className="bg-white p-4 rounded shadow">
+      <div className="flex items-center justify-between mb-4">
         <h3 className="text-lg font-semibold">Members</h3>
-        <MemberList
-          title="Add Members"
-          triggerText="Add Members"
-          onAddMany={handleAddMany}
-          existing={members.map((m) => m.user_id)}
-          creatorUserId={creatorUserId}
-          departmentId={departmentId}
-          domainIds={domainIds}
-        />
+        <div className="inline-block">
+          <MemberList
+            triggerText="+ Add Members"
+            onAddMany={handleAddMany}
+            existing={members.map((m) => m.user_id)}
+            creatorUserId={creatorUserId}
+            departmentId={departmentId}
+            domainIds={domainIds}
+          />
+        </div>
       </div>
 
       {members.length === 0 ? (

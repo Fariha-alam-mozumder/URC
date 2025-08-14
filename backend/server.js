@@ -4,7 +4,7 @@ import fileUpload from 'express-fileupload';
 import helmet from "helmet";
 import cors from "cors";
 import {limiter} from "./config/ratelimiter.js";
-
+import './jobs/SendEmailJob.js';
 
 
 const app = express();
@@ -54,9 +54,6 @@ import "./jobs/index.js";
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
-  console.log(`Static files served from: public/`);
-  console.log(`Documents accessible at: /documents/`);
-  console.log(`Images accessible at: /images/`);
 });
 
 //! To serve a default profile picture from your local public/images directory (instead of using an external URL)

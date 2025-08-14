@@ -18,32 +18,36 @@ const TeamDetails = () => {
   const [error, setError] = useState("");
   const [documents, setDocuments] = useState([]);
   const [loadingDocs, setLoadingDocs] = useState(true);
+  const [refreshKey, setRefreshKey] = useState(0);
 
   useEffect(() => {
-    const fetchTeam = async () => {
-      try {
-        setLoading(true);
-        const response = await axios.get(
-          `http://localhost:8000/api/teacher/teams/${Number(id)}`,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
-        );
-        setTeam(response.data.data);
-        setLoading(false);
-      } catch (err) {
-        console.error(err);
-        setError("Failed to load team data");
-        setLoading(false);
-      }
-    };
-
     fetchTeam();
-  }, [id]);
+  }, [id, refreshKey]);
 
-  // Fetch documents (proposals and papers)
+  useEffect(() => {
+    fetchDocuments();
+  }, [id, refreshKey]);
+
+  const fetchTeam = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get(
+        `http://localhost:8000/api/teacher/teams/${Number(id)}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      setTeam(response.data.data);
+      setLoading(false);
+    } catch (err) {
+      console.error(err);
+      setError("Failed to load team data");
+      setLoading(false);
+    }
+  };
+
   const fetchDocuments = async () => {
     if (!id) return;
     
@@ -97,15 +101,21 @@ const TeamDetails = () => {
     }
   };
 
-  useEffect(() => {
-    fetchDocuments();
-  }, [id]);
-
   // Handle successful upload
   const handleUploadSuccess = (type, data) => {
     console.log(`${type} uploaded successfully:`, data);
     // Refresh documents list
-    fetchDocuments();
+    setRefreshKey(prev => prev + 1);
+  };
+
+  // Handle member added
+  const handleMemberAdded = () => {
+    setRefreshKey(prev => prev + 1);
+  };
+
+  // Handle application processed
+  const handleApplicationProcessed = () => {
+    setRefreshKey(prev => prev + 1);
   };
 
   // Handle document download
@@ -113,7 +123,7 @@ const TeamDetails = () => {
     if (doc.href) {
       // Create a temporary link and trigger download
       const link = document.createElement('a');
-      link.href = `http://localhost:8000${doc.href}`;
+      link.href = `http://localhost:8000/${doc.href}`;
       link.download = doc.name;
       document.body.appendChild(link);
       link.click();
@@ -121,7 +131,7 @@ const TeamDetails = () => {
     }
   };
 
-  // Handle document delete (you'll need to implement delete endpoints)
+  // Handle document delete
   const handleDelete = async (doc) => {
     if (!confirm(`Are you sure you want to delete "${doc.name}"?`)) {
       return;
@@ -142,7 +152,7 @@ const TeamDetails = () => {
       }
       
       // Refresh documents list
-      fetchDocuments();
+      setRefreshKey(prev => prev + 1);
     } catch (err) {
       console.error("Failed to delete document:", err);
       alert("Failed to delete document. Please try again.");
@@ -188,23 +198,35 @@ const TeamDetails = () => {
         />
       </div>
 
-      {/* Members & Pending Applications */}
+      {/* Members & Pending Applications - Equal Height */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <MemberList members={team.teammembers} canManage />
-        <PendingApplications applications={[]} />
+        <div className="h-96">
+          <MemberList 
+            members={team.teammembers} 
+            canManage={true}
+            teamId={id}
+            onMemberAdded={handleMemberAdded}
+          />
+        </div>
+        <div className="h-96">
+          <PendingApplications 
+            teamId={id}
+            onApplicationProcessed={handleApplicationProcessed}
+          />
+        </div>
       </div>
 
       {/* Documents & Comments */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <DocumentList
-          canManage
+          canManage={true}
           documents={documents}
           loading={loadingDocs}
           onUploadClick={() => console.log("Open uploader")}
           onDelete={handleDelete}
           onDownload={handleDownload}
         />
-        <Comments />
+        <Comments teamId={id} />
       </div>
     </div>
   );

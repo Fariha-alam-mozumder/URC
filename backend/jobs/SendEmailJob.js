@@ -22,7 +22,9 @@ export const handler = new Worker(
     console.log("The email worker data is", job.data);
     const data = job.data;
     data?.map(async (item) => {
+        console.log(`Sending email to: ${item.toEmail}`);
         await sendEmail(item.toEmail, item.subject, item.body);
+        console.log(`Email sent successfully to: ${item.toEmail}`);
     });
   },
   {
@@ -41,4 +43,15 @@ handler.on("completed", (job) => {
 
 handler.on("failed", (job) => {
   console.log(`The job ${job.id} is failed.`);
+});
+
+// Add to SendEmailJob.js
+handler.on('error', (err) => {
+  console.error('Worker error:', err);
+  logger.error('Worker error:', err);
+});
+
+emailQueue.on('error', (err) => {
+  console.error('Queue error:', err);
+  logger.error('Queue error:', err);
 });

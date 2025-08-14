@@ -75,7 +75,7 @@ class ProposalController {
   static async getTeamProposals(req, res) {
     try {
       const { teamId } = req.params;
-      
+
       const proposals = await db.proposal.findMany({
         where: { team_id: Number(teamId) },
         include: {
@@ -96,6 +96,57 @@ class ProposalController {
       return res.json({ data: proposals });
     } catch (err) {
       console.error("Get team proposals error:", err);
+      return res.status(500).json({ error: "Internal Server Error" });
+    }
+  }
+  static async deleteProposal(req, res) {
+    try {
+      const { proposalId } = req.params;
+      const userId = Number(req.user.id);
+
+      // Get teacher record
+      const teacher = await db.teacher.findFirst({
+        where: { user_id: userId }
+      });
+
+      if (!teacher) {
+        return res.status(403).json({ error: "Only teachers can delete proposals" });
+      }
+
+      // Find proposal and verify ownership
+      const proposal = await db.proposal.findFirst({
+        where: {
+          proposal_id: Number(proposalId),
+          submitted_by: teacher.teacher_id
+        }
+      });
+
+      if (!proposal) {
+        return res.status(404).json({ error: "Proposal not found or unauthorized" });
+      }
+
+      // Delete the proposal
+      await db.proposal.delete({
+        where: { proposal_id: Number(proposalId) }
+      });
+
+      // Optionally delete the physical file
+      if (proposal.pdf_path) {
+        try {
+          const fs = require('fs');
+          const path = require('path');
+          const filePath = path.join(process.cwd(), 'public', proposal.pdf_path);
+          if (fs.existsSync(filePath)) {
+            fs.unlinkSync(filePath);
+          }
+        } catch (fileErr) {
+          console.warn("Could not delete file:", fileErr);
+        }
+      }
+
+      return res.json({ message: "Proposal deleted successfully" });
+    } catch (err) {
+      console.error("Delete proposal error:", err);
       return res.status(500).json({ error: "Internal Server Error" });
     }
   }

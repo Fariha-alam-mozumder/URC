@@ -75,7 +75,7 @@ class PaperController {
   static async getTeamPapers(req, res) {
     try {
       const { teamId } = req.params;
-      
+
       const papers = await db.paper.findMany({
         where: { team_id: Number(teamId) },
         include: {
@@ -96,6 +96,58 @@ class PaperController {
       return res.json({ data: papers });
     } catch (err) {
       console.error("Get team papers error:", err);
+      return res.status(500).json({ error: "Internal Server Error" });
+    }
+  }
+
+  static async deletePaper(req, res) {
+    try {
+      const { paperId } = req.params;
+      const userId = Number(req.user.id);
+
+      // Get teacher record
+      const teacher = await db.teacher.findFirst({
+        where: { user_id: userId }
+      });
+
+      if (!teacher) {
+        return res.status(403).json({ error: "Only teachers can delete papers" });
+      }
+
+      // Find paper and verify ownership
+      const paper = await db.paper.findFirst({
+        where: {
+          paper_id: Number(paperId),
+          submitted_by: teacher.teacher_id
+        }
+      });
+
+      if (!paper) {
+        return res.status(404).json({ error: "Paper not found or unauthorized" });
+      }
+
+      // Delete the paper
+      await db.paper.delete({
+        where: { paper_id: Number(paperId) }
+      });
+
+      // Optionally delete the physical file
+      if (paper.pdf_path) {
+        try {
+          const fs = require('fs');
+          const path = require('path');
+          const filePath = path.join(process.cwd(), 'public', paper.pdf_path);
+          if (fs.existsSync(filePath)) {
+            fs.unlinkSync(filePath);
+          }
+        } catch (fileErr) {
+          console.warn("Could not delete file:", fileErr);
+        }
+      }
+
+      return res.json({ message: "Paper deleted successfully" });
+    } catch (err) {
+      console.error("Delete paper error:", err);
       return res.status(500).json({ error: "Internal Server Error" });
     }
   }

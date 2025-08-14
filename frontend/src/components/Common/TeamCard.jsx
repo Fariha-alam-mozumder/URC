@@ -4,15 +4,12 @@ import { FaUsers, FaEllipsisV } from "react-icons/fa";
 const TeamCard = ({
   id,
   title, // This will always be the display name, not the ID
-  title, // This will always be the display name, not the ID
   created,
   description,
   status,
   members,
   clickable = true,
   createdBy,
-  to, // Optional: override navigation path
-  onCardClick, // Optional: custom click handler
   to, // Optional: override navigation path
   onCardClick, // Optional: custom click handler
 }) => {
