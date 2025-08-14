@@ -35,7 +35,7 @@ const AdminDashboard = () => {
         role="admin"
       >
         <Link
-          to="/AdminDashboard"
+          to="/admin/home"
           onClick={() => setIsSidebarOpen(false)}
           className="flex items-center gap-3 px-4 py-2 hover:bg-gray-100 rounded-md text-gray-700"
         >
@@ -43,7 +43,7 @@ const AdminDashboard = () => {
         </Link>
 
         <Link
-          to="/AdminDashboard/dash"
+          to="/admin/dashboard"
           onClick={() => setIsSidebarOpen(false)}
           className="flex items-center gap-3 px-4 py-2 hover:bg-gray-100 rounded-md text-gray-700"
         >
@@ -51,7 +51,7 @@ const AdminDashboard = () => {
         </Link>
 
         <Link
-          to="/AdminDashboard/all-papers"
+          to="/admin/all-papers"
           onClick={() => setIsSidebarOpen(false)}
           className="flex items-center gap-3 px-4 py-2 hover:bg-gray-100 rounded-md text-gray-600"
         >
@@ -59,7 +59,7 @@ const AdminDashboard = () => {
         </Link>
 
         <Link
-          to="/AdminDashboard/proposals"
+          to="/admin/proposals"
           onClick={() => setIsSidebarOpen(false)}
           className="flex items-center gap-3 px-4 py-2 hover:bg-gray-100 rounded-md text-gray-600"
         >
@@ -67,7 +67,7 @@ const AdminDashboard = () => {
         </Link>
 
         <Link
-          to="/AdminDashboard/waitingassignment"
+          to="/admin/waitingassignment"
           onClick={() => setIsSidebarOpen(false)}
           className="flex items-center gap-3 px-4 py-2 hover:bg-gray-100 rounded-md text-gray-600"
         >
@@ -75,7 +75,7 @@ const AdminDashboard = () => {
         </Link>
 
         <Link
-          to="/AdminDashboard/teams"
+          to="/admin/teams"
           onClick={() => setIsSidebarOpen(false)}
           className="flex items-center gap-3 px-4 py-2 hover:bg-gray-100 rounded-md text-gray-600"
         >
@@ -85,7 +85,7 @@ const AdminDashboard = () => {
 
 
         <Link
-          to="/AdminDashboard/reviewercommittee"
+          to="/admin/reviewercommittee"
           onClick={() => setIsSidebarOpen(false)}
           className="flex items-center gap-3 px-4 py-2 hover:bg-gray-100 rounded-md text-gray-600"
         >

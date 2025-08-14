@@ -18,9 +18,9 @@ const statusColors = {
 const categoryColors = {
   "Healthcare AI": "bg-purple-100 text-purple-800",
   "Quantum Computing": "bg-indigo-100 text-indigo-800",
-  Biotechnology: "bg-pink-100 text-pink-800",
-  Robotics: "bg-red-100 text-red-800",
-  Cybersecurity: "bg-yellow-100 text-yellow-800",
+  "Biotechnology": "bg-pink-100 text-pink-800",
+  "Robotics": "bg-red-100 text-red-800",
+  "Cybersecurity": "bg-yellow-100 text-yellow-800",
   "Data Science": "bg-teal-100 text-teal-800",
   "Virtual Reality": "bg-blue-100 text-blue-800",
 };

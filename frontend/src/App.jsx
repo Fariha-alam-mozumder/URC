@@ -94,8 +94,8 @@ export default function App() {
               </PrivateRoute>
             }
           >
-            <Route index element={<AdminHome />} />
-            <Route path="home" element={<AdminHome />} />
+             <Route index element={<Homepage />} />
+            <Route path="home" element={<Homepage />} />
             <Route path="dashboard" element={<AdminHome />} />
             <Route path="all-papers" element={<AdminPapers />} />
             <Route path="proposals" element={<AdminProposals />} />

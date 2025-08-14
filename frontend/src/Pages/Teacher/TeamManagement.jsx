@@ -5,7 +5,7 @@ import { FaClipboard, FaCheckCircle, FaClock, FaExclamationTriangle } from 'reac
 // import StatCard from '../../components/common/statcard';
 // import PendingApplications from '../../components/teacher/TeamManagement/PendingApplication';
 // import TeamCard from '../../components/teacher/TeamManagement/TeamCard';
-import StatCard from '../../components/Common/statcard';
+import StatCard from '../../components/Common/statCard';
 import PendingApplications from '../../components/Teacher/TeamManagement/PendingApplication';
 import TeamCard from '../../components/Common/TeamCard';
 

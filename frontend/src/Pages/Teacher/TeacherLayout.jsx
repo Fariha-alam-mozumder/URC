@@ -83,6 +83,7 @@ const TeacherLayout = () => {
         >
         <FaHome /> Home
         </Link>
+        
         <Link
           to="/teacher/dashboard"
           onClick={() => setSidebarOpen(false)}

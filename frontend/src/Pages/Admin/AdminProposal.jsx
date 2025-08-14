@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Eye, Download } from "lucide-react";
 import CommonSubmissionTable from "../../components/Common/CommonSubmissionTable";
 import FilterBar from "../../components/Common/FilterBar";
 import CommonButton from "../../components/Common/CommonButton";
+import axios from "axios";
 
 function AdminProposals() {
   const [filters, setFilters] = useState({
@@ -10,60 +11,43 @@ function AdminProposals() {
     status: "",
     track: "",
   });
+  const [submissions, setSubmissions] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  const submissions = [
-    {
-      id: "P001",
-      title: "Machine Learning Applications in Healthcare Diagnostics",
-      authors: "Dr. Sarah Johnson, Prof. Michael Chen",
-      submittedBy: "sarah.johnson@university.edu",
-      date: "2024-01-15",
-      status: "Under Review",
-      reviewer: "Dr. Williams",
-      track: "AI/ML",
-    },
-    {
-      id: "P002",
-      title: "Blockchain Technology for Supply Chain Management",
-      authors: "Prof. David Smith, Dr. Lisa Wang",
-      submittedBy: "david.smith@tech.edu",
-      date: "2024-01-18",
-      status: "Pending",
-      reviewer: "Unassigned",
-      track: "Blockchain",
-    },
-    {
-      id: "P003",
-      title: "Quantum Computing Algorithms for Optimization",
-      authors: "Dr. Robert Brown, Dr. Emily Davis",
-      submittedBy: "robert.brown@quantum.edu",
-      date: "2024-01-20",
-      status: "Accepted",
-      reviewer: "Prof. Anderson",
-      track: "Quantum",
-    },
-    {
-      id: "P004",
-      title: "Cybersecurity Threats in IoT Networks",
-      authors: "Prof. Jennifer Miller, Dr. James Wilson",
-      submittedBy: "jennifer.miller@security.edu",
-      date: "2024-01-22",
-      status: "Rejected",
-      reviewer: "Dr. Thompson",
-      track: "Security",
-    },
-  ];
+  // Fetch proposals from backend
+  const fetchProposals = async () => {
+    setLoading(true);
+    try {
+      const token = localStorage.getItem("token"); // JWT token
+      const res = await axios.get("http://localhost:8000/api/admin/proposals", {
+        headers: { Authorization: `Bearer ${token}` },
+        params: {
+          search: filters.search,
+          status: filters.status,
+          track: filters.track,
+        },
+      });
 
-  const filteredData = submissions.filter((row) => {
-    const q = filters.search.toLowerCase();
-    const matchesSearch =
-      row.id.toLowerCase().includes(q) ||
-      row.title.toLowerCase().includes(q) ||
-      row.authors.toLowerCase().includes(q);
-    const matchesStatus = filters.status ? row.status === filters.status : true;
-    const matchesTrack = filters.track ? row.track === filters.track : true;
-    return matchesSearch && matchesStatus && matchesTrack;
-  });
+      if (res.data.success) {
+        setSubmissions(res.data.data);
+      } else {
+        setSubmissions([]);
+      }
+    } catch (err) {
+      console.error("Error fetching proposals:", err);
+      setSubmissions([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Fetch proposals whenever filters change
+  useEffect(() => {
+    fetchProposals();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filters]);
+
+  const filteredData = submissions; // backend already filters
 
   const columns = [
     {
@@ -184,7 +168,6 @@ function AdminProposals() {
 
   return (
     <div className="flex flex-col h-full min-w-0">
-      {/* Sticky topbar + filter */}
       <div className="sticky top-0 p-4 bg-white z-20 pb-4 mb-4 border-b border-gray-200 min-w-0">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-3 min-w-0 gap-3 sm:gap-0">
           <h1 className="text-xl sm:text-2xl font-bold truncate w-full sm:w-auto">
@@ -199,19 +182,17 @@ function AdminProposals() {
             />
           </div>
         </div>
-
         <div className="min-w-0">
           <FilterBar filters={filterConfig} onFilterChange={handleFilterChange} />
         </div>
       </div>
 
-      {/* Table container with horizontal and vertical scroll */}
       <div className="flex-1 min-w-0 overflow-auto">
         <CommonSubmissionTable
-          title="Proposal Submissions"
+          title={loading ? "Loading..." : "Proposal Submissions"}
           data={filteredData}
           columns={columns}
-          scrollableBodyHeight="calc(100vh - 250px)" // adjust as needed
+          scrollableBodyHeight="calc(100vh - 250px)"
         />
       </div>
     </div>
