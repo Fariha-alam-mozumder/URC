@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { FaTimes, FaBookOpen } from 'react-icons/fa';
 
 const defaultProfiles = {

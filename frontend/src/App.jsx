@@ -5,9 +5,13 @@ import ReviewerDashboard from './Pages/Reviewer/reviewerDashboard';
 import ReviewerHome from './Pages/Reviewer/ReviewerHome';
 import AssignedPapersPage from './Pages/Reviewer/AssignedPapersPage';
 import AssignedProposalsPage from './Pages/Reviewer/AssignedProposalsPage';
-import PaperReviewPage from './Pages/Reviewer/PaperReviewPage';
+
 import AdminDashboard from './Pages/Admin/AdminDashboard';
 import ReviewHistoryPage from './Pages/Reviewer/ReviewHistoryPage';
+
+import PaperReviewPage from "./pages/Reviewer/PaperReviewPage";
+
+
 import TeacherDashboard from "./Pages/Teacher/TeacherDashboard";
 import TeamManagement from "./Pages/Teacher/TeamManagement";
 import CreateTeam from "./Pages/Teacher/CreateTeam";
@@ -20,16 +24,33 @@ import StudentDashboard from "./Pages/Student/StudentDashboard";
 import MyTeams from "./Pages/Student/MyTeams";
 import StudentTeamDetails from "./Pages/Student/StudentTeamDetails";
 import StudentMyPapers from "./Pages/Student/StudentMyPapers";
+import ProfilePage from "./pages/Profile/ProfilePage";
+import PreferencePage from "./pages/PreferencePage/PreferencePage";
+
+ 
+
+
 
 function App() {
   return (
     <Router>
       <Routes>
         <Route path="/" element={<LandingPage />} />
+
+        
+        <Route
+          path="/Profile"
+          element={ <ProfilePage />}
+        />
        
+        <Route
+          path="/PreferencePage"
+          element={ <PreferencePage />}
+        />
+        {/* Reviewer Dashboard Routes */}
         <Route path="/ReviewerDashboard" element={<ReviewerDashboard />}>
           <Route index element={<Homepage />} />
-           <Route path="reviewer/dashboard" element={<ReviewerHome />} />
+          <Route path="reviewer/dashboard" element={<ReviewerHome />} />
           <Route path="reviewer/home" element={<Homepage />} />
           <Route path="assignedpapers" element={<AssignedPapersPage />} />
           <Route path="assigned-proposals" element={<AssignedProposalsPage />} />
@@ -49,6 +70,7 @@ function App() {
           <Route path="mypapers" element={<MyPapers />} />
           <Route path="teacher/history" element={<SubmissionHistory />} />
         </Route>
+
         <Route path="/student" element={<StudentLayout />}>
           {/* Default page for /teacher is dashboard */}
           <Route index element={<Homepage />} />
@@ -62,6 +84,11 @@ function App() {
           <Route path="mypapers" element={<MyPapers />} />
           <Route path="teacher/history" element={<SubmissionHistory />} /> */} 
         </Route>
+
+        <Route path="/profile/:role" element={<ProfilePage />} />
+        <Route path="/preferences/:role" element={<PreferencePage />} />
+
+
 
 
         <Route path="/AdminDashboard" element={<AdminDashboard />} />
