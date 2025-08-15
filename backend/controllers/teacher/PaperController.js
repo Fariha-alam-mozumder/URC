@@ -1,6 +1,6 @@
 // controllers/PaperController.js
 import db from "../../DB/db.config.js";
-import { paperValidator } from "../../validations/paperValidation.js";
+import { paperValidator } from "../../validations/teacher/paperValidation.js";
 import { fileValidator, uploadFile } from "../../utils/helper.js";
 import { errors } from "@vinejs/vine";
 

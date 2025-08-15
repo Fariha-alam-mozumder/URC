@@ -1,5 +1,4 @@
 import { Router } from "express";
-
 import AuthController from "../controllers/AuthController.js";
 import authMiddleware from "../middleware/Authenticate.js";
 import adminOnly from "../middleware/adminOnly.js";
@@ -13,7 +12,9 @@ import PaperController from "../controllers/teacher/PaperController.js";
 import ProposalController from "../controllers/teacher/ProposalController.js";
 import StudentTeamController from "../controllers/student/StudentTeamController.js";
 import TeamApplicationController from "../controllers/teacher/TeamApplicationController.js";
-import TeamCommentController from "../controllers/teacher/TeamCommentController.js"; // Added missing semicolon
+import TeamCommentController from "../controllers/teacher/TeamCommentController.js"; 
+import AssignmentController from './../controllers/admin/AssignmentController.js';
+import AdminProposalController from "../controllers/admin/AdminProposalController.js";
 
 const router = Router();
 
@@ -119,6 +120,6 @@ router.get(
   "/admin/proposals",
   authMiddleware,
   adminOnly,
-  getAllProposals
+  AdminProposalController.getAllProposals
 );
 export default router;

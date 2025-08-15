@@ -973,3 +973,33 @@ Invalid `prisma.review.findMany()` invocation:
 }
 
 Argument `not` must not be null.
+2025-08-15T09:06:10.986Z [right meow!] error: Error calculating review time for reviewer 2: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 2,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-08-15T09:06:41.237Z [right meow!] error: Failed to fetch proposals Cannot set headers after they are sent to the client
+2025-08-15T09:06:41.245Z [right meow!] error: Failed to fetch proposals Cannot set headers after they are sent to the client

@@ -1,30 +1,17 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { FaUsers, FaEllipsisV } from "react-icons/fa";
-<<<<<<< HEAD
 const TeamCard = ({
   id,
   title, // This will always be the display name, not the ID
-=======
-
-const TeamCard = ({
-  id,
-  title,              // Display name of the team
->>>>>>> origin/trisha-feature-BE-fix
   created,
   description,
   status,
   members,
   clickable = true,
   createdBy,
-<<<<<<< HEAD
-  to, // Optional: override navigation path
-  onCardClick, // Optional: custom click handler
-=======
-  to,                 // Optional override path
-  onCardClick,        // Optional custom click handler
-  role = "teacher",   // Default role
->>>>>>> origin/trisha-feature-BE-fix
+  to, 
+  onCardClick, 
 }) => {
   const navigate = useNavigate();
 
@@ -95,17 +82,11 @@ const TeamCard = ({
       <div className="flex items-center justify-between text-sm text-gray-500">
         <span
           className={`px-2 py-1 rounded-full text-xs font-semibold ${
-<<<<<<< HEAD
             status === "ACTIVE"
               ? "bg-green-100 text-green-700"
               : status === "RECRUITING"
               ? "bg-yellow-100 text-yellow-700"
               : "bg-gray-100 text-gray-700"
-=======
-            status === "Active"
-              ? "bg-green-100 text-green-700"
-              : "bg-yellow-100 text-yellow-700"
->>>>>>> origin/trisha-feature-BE-fix
           }`}
         >
           {status || "Status Unknown"}

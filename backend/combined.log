@@ -1056,3 +1056,39 @@ Argument `not` must not be null.
 2025-08-13T23:36:12.760Z [right meow!] info: Request body: 
 2025-08-13T23:36:12.870Z [right meow!] info: Reviewer invitations sent to 1 teachers
 2025-08-13T23:36:12.917Z [right meow!] info: Job completed.
+2025-08-15T09:06:10.923Z [right meow!] info: New reviewer added: Dr. Toasean Elmah Tasean (ID: 2)
+2025-08-15T09:06:10.956Z [right meow!] info: Job completed.
+2025-08-15T09:06:10.986Z [right meow!] error: Error calculating review time for reviewer 2: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 2,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-08-15T09:06:13.986Z [right meow!] info: inviteReviewers called
+2025-08-15T09:06:13.987Z [right meow!] info: Request body: 
+2025-08-15T09:06:13.999Z [right meow!] info: Reviewer invitations sent to 1 teachers
+2025-08-15T09:06:14.011Z [right meow!] info: Job completed.
+2025-08-15T09:06:41.237Z [right meow!] error: Failed to fetch proposals Cannot set headers after they are sent to the client
+2025-08-15T09:06:41.245Z [right meow!] error: Failed to fetch proposals Cannot set headers after they are sent to the client

@@ -1,6 +1,6 @@
 // controllers/ProposalController.js
 import db from "../../DB/db.config.js";
-import { proposalValidator } from "../../validations/proposalValidation.js";
+import { proposalValidator } from "../../validations/teacher/proposalValidation.js";
 import { fileValidator, uploadFile } from "../../utils/helper.js";
 import { errors } from "@vinejs/vine";
 
