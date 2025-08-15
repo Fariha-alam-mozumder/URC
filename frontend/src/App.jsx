@@ -9,7 +9,11 @@ import AssignedProposalsPage from './Pages/Reviewer/AssignedProposalsPage';
 import AdminDashboard from './Pages/Admin/AdminDashboard';
 import ReviewHistoryPage from './Pages/Reviewer/ReviewHistoryPage';
 
+import AdminHome from "./Pages/Admin/AdminHome";
+
+
 import PaperReviewPage from "./pages/Reviewer/PaperReviewPage";
+
 
 
 import TeacherDashboard from "./Pages/Teacher/TeacherDashboard";
@@ -19,6 +23,14 @@ import TeamDetails from "./Pages/Teacher/TeamDetails";
 import MyPapers from "./Pages/Teacher/MyPapers";
 import SubmissionHistory from "./Pages/Teacher/SubmissionHistory";
 import TeacherLayout from "./Pages/Teacher/TeacherLayout";
+
+import AdminPapers from "./Pages/Admin/AdminPapers";
+import AdminProposals from "./Pages/Admin/AdminProposal";
+import WaitingAssignment from "./Pages/Admin/WaitingAssignment";
+import ReviewerCommittee from "./Pages/Admin/ReviewCommittee";
+import TeamsPage from "./Pages/Admin/Teams";
+import AdminTeamDetails from "./Pages/Admin/TeamDetail";
+
 import StudentLayout from "./Pages/Student/StudentLayout";
 import StudentDashboard from "./Pages/Student/StudentDashboard";
 import MyTeams from "./Pages/Student/MyTeams";
@@ -28,6 +40,7 @@ import ProfilePage from "./pages/Profile/ProfilePage";
 import PreferencePage from "./pages/PreferencePage/PreferencePage";
 
  
+
 
 
 
@@ -57,6 +70,19 @@ function App() {
           <Route path="review/:paperId" element={<PaperReviewPage />} />
           <Route path="reviewpage/:PaperId" element={<PaperReviewPage />} />
           <Route path="ReviewHistoryPage" element={<ReviewHistoryPage />} />
+        </Route>
+
+         
+
+         <Route path="/AdminDashboard" element={<AdminDashboard />}>
+          <Route index element={<Homepage />} />
+           <Route path="/AdminDashboard/dash" element={<AdminHome />} />
+          <Route path="all-papers" element={<AdminPapers />} />
+          <Route path="proposals" element={<AdminProposals />} />
+          <Route path="waitingassignment" element={<WaitingAssignment />} />
+          <Route path="reviewercommittee" element={<ReviewerCommittee />} />
+          <Route path="teams" element={<TeamsPage />} />
+          <Route path="teams/:id" element={<AdminTeamDetails />} />
         </Route>
 
          <Route path="/teacher" element={<TeacherLayout />}>
@@ -91,7 +117,7 @@ function App() {
 
 
 
-        <Route path="/AdminDashboard" element={<AdminDashboard />} />
+       
       </Routes>
     </Router>
   );
