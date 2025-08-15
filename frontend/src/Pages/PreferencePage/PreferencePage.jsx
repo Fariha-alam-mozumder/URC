@@ -1,10 +1,11 @@
-import { useNavigate } from "react-router-dom";
-import AdditionalPreferences from "../../components/Profile/AdditionalPreferences";
-import Department from "../../components/Profile/Department";
-import ResearchFields from "../../components/Profile/ResearchFields";
+import { useNavigate, useParams } from "react-router-dom";
+import AdditionalPreferences from "../../components/PreferencePage/AdditionalPreferences";
+import Department from "../../components/PreferencePage/Department";
+import ResearchFields from "../../components/PreferencePage/ResearchFields";
 
-function Profile() {
+function PreferencePage() {
   const navigate = useNavigate();
+  const { role } = useParams();
 
   return (
     <div className="relative min-h-screen flex items-center justify-center">
@@ -25,11 +26,11 @@ function Profile() {
 
         <Department />
         <ResearchFields />
-        <AdditionalPreferences />
+        <AdditionalPreferences role={role} />
 
         <div className="flex justify-between mt-6">
           <button
-            onClick={() => navigate("/previous-page")} 
+            onClick={() => navigate(-1)} 
             className="px-4 py-2 bg-gray-300 rounded-md hover:bg-gray-400"
           >
             Back
@@ -43,4 +44,4 @@ function Profile() {
   );
 }
 
-export default Profile;
+export default PreferencePage;

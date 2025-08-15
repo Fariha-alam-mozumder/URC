@@ -91,7 +91,7 @@ const TeacherLayout = () => {
 
       {/* Main Content */}
       <div className="flex-1">
-        <Topbar onMenuClick={() => setSidebarOpen(!sidebarOpen)}
+        <Topbar role="teacher" onMenuClick={() => setSidebarOpen(!sidebarOpen)}
         onLogout={handleLogoutClick} />
         <main className="">
           <Outlet />
