@@ -1,4 +1,11 @@
+
 // Pages/ReviewerHome.jsx
+
+import { useState } from 'react';
+import { FaChartBar, FaExchangeAlt, FaHome } from 'react-icons/fa';
+import { FaHistory } from 'react-icons/fa';
+import { FaTachometerAlt } from 'react-icons/fa';
+
 import {
   FaClipboard,
   FaCheckCircle,
@@ -11,6 +18,7 @@ import StatCard from '../../components/Common/StatCard';
 
 const ReviewerHome = () => {
   return (
+
     <div className="space-y-6 p-6">
       <h2 className='text-2xl font-bold'>Dashboard</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -18,6 +26,77 @@ const ReviewerHome = () => {
         <StatCard title="Submitted" value={18} icon={<FaCheckCircle />} />
         <StatCard title="Under Review" value={4} icon={<FaClock />} />
         <StatCard title="Pending" value={2} icon={<FaExclamationTriangle />} />
+
+    <div className="flex min-h-screen bg-gray-100">
+      {/* Sidebar */}
+      <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} role="reviewer">
+        <Link
+          to="reviewer/home"
+          onClick={() => setIsSidebarOpen(false)}
+          className="flex items-center gap-3 px-4 py-2 hover:bg-gray-100 rounded-md text-gray-700"
+        >
+          <FaHome /> Home
+        </Link>
+        <Link
+  to="reviewer/dashboard"
+  onClick={() => setIsSidebarOpen(false)}
+  className="flex items-center gap-3 px-4 py-2 hover:bg-gray-100 rounded-md text-gray-700"
+>
+  <FaChartBar /> Dashboard
+</Link>
+
+        <Link
+          to="/ReviewerDashboard/assignedpapers"
+          onClick={() => setIsSidebarOpen(false)}
+          className="flex items-center gap-3 px-4 py-2 hover:bg-gray-100 rounded-md text-gray-700"
+        >
+          <FaFileAlt /> Assigned Papers
+        </Link>
+        <Link
+          to="/ReviewerDashboard/assigned-proposals"
+          onClick={() => setIsSidebarOpen(false)}
+          className="flex items-center gap-3 px-4 py-2 hover:bg-gray-100 rounded-md text-gray-700"
+        >
+          <FaFileAlt /> Assigned Proposals
+        </Link>
+        <Link
+          to="/ReviewerDashboard/ReviewHistoryPage"
+          onClick={() => setIsSidebarOpen(false)}
+          className="flex items-center gap-3 px-4 py-2 hover:bg-gray-100 rounded-md text-gray-700"
+        >
+         <FaHistory /> Review History
+        </Link>
+        
+        {/* Divider */}
+       <div className="border-t border-gray-300 my-3"></div>
+
+        {/* Switch Role */}
+       <Link
+        to="/teacher/teacher/home"
+         onClick={() => setIsSidebarOpen(false)}
+         className="flex items-center gap-3 px-4 py-2 hover:bg-blue-100 rounded-md text-blue-700 font-medium"
+       >
+    <FaExchangeAlt /> Switch to Teacher
+</Link>
+      </Sidebar>
+
+      {/* Main content */}
+      <div className="flex-1 flex flex-col">
+        <Topbar role="reviewer" onMenuClick={() => setIsSidebarOpen(true)}
+         onLogout={handleLogoutClick} />
+        <main className="">
+  <Outlet context={{ toggleSidebar: () => setIsSidebarOpen(true) }} />
+</main>
+{/* Logout Modal */}
+        {isLogoutModalOpen && (
+          <LogoutModal
+            isOpen={isLogoutModalOpen}
+            onClose={handleCloseModal}
+            onConfirm={handleConfirmLogout}
+          />
+        )}
+
+
       </div>
       <AssignedPapersTable reviewPathPrefix="/ReviewerDashboard/reviewpage/"/>
       

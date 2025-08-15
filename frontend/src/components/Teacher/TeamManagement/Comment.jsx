@@ -22,7 +22,7 @@ const Comments = () => {
   };
 
   return (
-    <div className="bg-white p-4 rounded shadow mt-6">
+    <div className="bg-white p-4 rounded shadow">
       <h3 className="text-lg font-semibold mb-4">Comments</h3>
 
       {/* Add Comment */}

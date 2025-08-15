@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { FaTimes, FaBookOpen } from 'react-icons/fa';
 
 const defaultProfiles = {
@@ -26,6 +26,8 @@ const defaultProfiles = {
 
 const Sidebar = ({ role = 'teacher', isOpen, onClose, children, profile }) => {
   const displayProfile = profile || defaultProfiles[role] || defaultProfiles.teacher;
+
+
 
   return (
     <div className={`fixed inset-0 z-50 ${isOpen ? '' : 'pointer-events-none'}`}>
