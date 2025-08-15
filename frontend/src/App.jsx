@@ -6,11 +6,13 @@ import {
 } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext, AuthProvider } from "./context/AuthContext.jsx";
-import { jwtDecode } from "jwt-decode";
 
 import LandingPage from "./pages/landingpage/LandingPage";
+import SignUpForm from "./AuthenticatePages/SignUpForm.jsx";
+import LoginForm from "./AuthenticatePages/LoginForm.jsx";
+import VerifyPending from "./AuthenticatePages/VerifyPendingPage.jsx";
 
-//! Reviewer pages
+// !Reviewer
 import ReviewerLayout from "./Pages/Reviewer/ReviewerLayout.jsx";
 import ReviewerDashboard from "./Pages/Reviewer/ReviewerDashboard.jsx";
 import AssignedPapersPage from "./Pages/Reviewer/AssignedPapersPage";
@@ -34,30 +36,26 @@ import MyTeams from "./Pages/Student/MyTeams";
 import StudentTeamDetails from "./Pages/Student/StudentTeamDetails";
 import StudentMyPapers from "./Pages/Student/StudentMyPapers";
 
-//! Admin page
+//! Admin
 import AdminDashboard from "./Pages/Admin/AdminDashboard";
 import AdminHome from "./Pages/Admin/AdminHome";
+import AdminPapers from "./Pages/Admin/AdminPapers";
+import AdminProposals from "./Pages/Admin/AdminProposal";
+import WaitingAssignment from "./Pages/Admin/WaitingAssignment";
+import ReviewerCommittee from "./Pages/Admin/ReviewCommittee";
+import TeamsPage from "./Pages/Admin/Teams";
+import AdminTeamDetails from "./Pages/Admin/TeamDetail";
 
-//! Auth pages
-import SignUpForm from "./AuthenticatePages/SignUpForm.jsx";
-import LoginForm from "./AuthenticatePages/LoginForm.jsx";
-import VerifyPending from "./AuthenticatePages/VerifyPendingPage.jsx";
-
-//! PrivateRoute component for route protection
+//! Auth and utils
 import PrivateRoute from "./context/PrivateRoute.jsx";
 import Homepage from "./Pages/home/Homepage";
 
-//! Role-based redirection component
 function RoleBasedRedirect() {
   const { loading, user, currentViewRole } = useContext(AuthContext);
 
-  if (loading) {
-    // You can render a spinner or blank screen until auth is loaded
-    return <div>Loading...</div>;
-  }
-
-  console.log("RoleBasedRedirect currentViewRole:", currentViewRole);
+  if (loading) return <div>Loading...</div>;
   if (!user) return <Navigate to="/" />;
+  if (!user.emailVerified) return <Navigate to="/verify" />;
 
   if (!user.emailVerified) {
     return <Navigate to="/verify" />;
@@ -85,16 +83,14 @@ export default function App() {
     <Router>
       <AuthProvider>
         <Routes>
-          {/* Public Routes */}
+          {/* Public */}
           <Route path="/" element={<LandingPage />} />
           <Route path="/signup" element={<SignUpForm />} />
           <Route path="/login" element={<LoginForm />} />
           <Route path="/verify" element={<VerifyPending />} />
-
-          {/* Optional: root /home redirects to role-based home */}
           <Route path="/home" element={<RoleBasedRedirect />} />
 
-          {/* Admin routes */}
+          {/* Admin */}
           <Route
             path="/admin"
             element={
@@ -103,12 +99,18 @@ export default function App() {
               </PrivateRoute>
             }
           >
-            <Route index element={<Navigate to="home" replace />} />
-            <Route path="home" element={<AdminHome />} />
-            <Route path="dashboard" element={<AdminDashboard  />} />
+             <Route index element={<Homepage />} />
+            <Route path="home" element={<Homepage />} />
+            <Route path="dashboard" element={<AdminHome />} />
+            <Route path="all-papers" element={<AdminPapers />} />
+            <Route path="proposals" element={<AdminProposals />} />
+            <Route path="waitingassignment" element={<WaitingAssignment />} />
+            <Route path="reviewercommittee" element={<ReviewerCommittee />} />
+            <Route path="teams" element={<TeamsPage />} />
+            <Route path="teams/:id" element={<AdminTeamDetails />} />
           </Route>
 
-          {/* Reviewer Protected Routes */}
+          {/* Reviewer */}
           <Route
             path="/reviewer"
             element={
@@ -117,20 +119,16 @@ export default function App() {
               </PrivateRoute>
             }
           >
-            <Route index element={<Navigate to="home" replace />} />
+            <Route index element={<Homepage />} />
             <Route path="home" element={<Homepage />} />
             <Route path="dashboard" element={<ReviewerDashboard />} />
             <Route path="assignedpapers" element={<AssignedPapersPage />} />
-            <Route
-              path="assignedproposals"
-              element={<AssignedProposalsPage />}
-            />
+            <Route path="assignedproposals" element={<AssignedProposalsPage />} />
             <Route path="review/:paperId" element={<PaperReviewPage />} />
-            <Route path="reviewpage/:PaperId" element={<PaperReviewPage />} />
             <Route path="reviewhistory" element={<ReviewHistoryPage />} />
           </Route>
 
-          {/* Teacher Protected Routes */}
+          {/* Teacher */}
           <Route
             path="/teacher"
             element={
@@ -139,21 +137,17 @@ export default function App() {
               </PrivateRoute>
             }
           >
-            <Route index element={<Navigate to="home" replace />} />
+            <Route index element={<Homepage />} />
             <Route path="home" element={<Homepage />} />
             <Route path="dashboard" element={<TeacherDashboard />} />
-
-            <Route path="team">
-              <Route index element={<TeamManagement />} />
-              <Route path="create" element={<CreateTeam />} />
-              <Route path=":id" element={<TeamDetails />} />
-            </Route>
-
+            <Route path="team" element={<TeamManagement />} />
+            <Route path="team/create" element={<CreateTeam />} />
+            <Route path="team/:id" element={<TeamDetails />} />
             <Route path="mypapers" element={<MyPapers />} />
             <Route path="history" element={<SubmissionHistory />} />
           </Route>
 
-          {/* Student Protected Routes */}
+          {/* Student */}
           <Route
             path="/student"
             element={
@@ -162,7 +156,7 @@ export default function App() {
               </PrivateRoute>
             }
           >
-            <Route index element={<Navigate to="home" replace />} />
+            <Route index element={<Homepage />} />
             <Route path="home" element={<Homepage />} />
             <Route path="dashboard" element={<StudentDashboard />} />
             <Route path="team" element={<MyTeams />} />
@@ -170,9 +164,7 @@ export default function App() {
             <Route path="mypapers" element={<StudentMyPapers />} />
           </Route>
 
-          
-
-          {/* Catch all unknown routes */}
+          {/* Catch all */}
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </AuthProvider>

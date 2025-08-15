@@ -1,6 +1,9 @@
 // components/Teacher/CreateTeam/MemberManager.jsx
 import React from "react";
+<<<<<<< HEAD
 import { FaEnvelope, FaTags } from "react-icons/fa";
+=======
+>>>>>>> origin/trisha-feature-BE-fix
 import MemberList from "../TeamManagement/MemberList";
 
 // Display label -> enum value used by backend
@@ -17,7 +20,11 @@ export default function MemberManager({
   departmentId,
   domainIds,
 }) {
+<<<<<<< HEAD
   // Add picked users as team members with default role_in_team = RESEARCHER
+=======
+  // Add picked users as team members with default role_in_team = MEMBER
+>>>>>>> origin/trisha-feature-BE-fix
   const handleAddMany = (newOnes) => {
     const existingIds = new Set(members.map((m) => Number(m.user_id)));
     const normalized = newOnes
@@ -27,14 +34,18 @@ export default function MemberManager({
         name: m.name,
         email: m.email,
         role_in_team: "RESEARCHER",
+<<<<<<< HEAD
         domains: m.domains || [],
         matchingDomains: m.matchingDomains || [],
+=======
+>>>>>>> origin/trisha-feature-BE-fix
       }));
     onChange([...members, ...normalized]);
   };
 
   const removeMember = (userId) =>
     onChange(members.filter((m) => Number(m.user_id) !== Number(userId)));
+<<<<<<< HEAD
 
   const setMemberRole = (userId, newRoleValue) => {
     const upper = String(newRoleValue).toUpperCase();
@@ -92,11 +103,44 @@ export default function MemberManager({
             domainIds={domainIds}
           />
         </div>
+=======
+
+  const setMemberRole = (userId, newRoleValue) => {
+    const upper = String(newRoleValue).toUpperCase();
+    let next = members.map((m) =>
+      Number(m.user_id) === Number(userId) ? { ...m, role_in_team: upper } : m
+    );
+
+    if (upper === "LEAD") {
+      next = next.map((m) =>
+        Number(m.user_id) !== Number(userId) && m.role_in_team === "LEAD"
+          ? { ...m, role_in_team: "RESEARCHER" }
+          : m
+      );
+    }
+    onChange(next);
+  };
+
+  return (
+    <div className="bg-white p-4 rounded shadow space-y-4">
+      <div className="flex items-center justify-between">
+        <h3 className="text-lg font-semibold">Members</h3>
+        <MemberList
+          title="Add Members"
+          triggerText="Add Members"
+          onAddMany={handleAddMany}
+          existing={members.map((m) => m.user_id)}
+          creatorUserId={creatorUserId}
+          departmentId={departmentId}
+          domainIds={domainIds}
+        />
+>>>>>>> origin/trisha-feature-BE-fix
       </div>
 
       {members.length === 0 ? (
         <p className="text-sm text-gray-500">No members selected yet.</p>
       ) : (
+<<<<<<< HEAD
         <ul className="divide-y space-y-4">
           {members.map((m) => (
             <li
@@ -146,6 +190,38 @@ export default function MemberManager({
                     Remove
                   </button>
                 </div>
+=======
+        <ul className="divide-y">
+          {members.map((m) => (
+            <li
+              key={m.user_id}
+              className="py-2 flex items-center justify-between gap-3"
+            >
+              <div>
+                <p className="font-medium">{m.name}</p>
+                <p className="text-sm text-gray-500">{m.email}</p>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <select
+                  className="border rounded px-2 py-1 text-sm"
+                  value={m.role_in_team || "RESEARCHER"}
+                  onChange={(e) => setMemberRole(m.user_id, e.target.value)}
+                >
+                  {TEAM_ROLE_OPTIONS.map((opt) => (
+                    <option key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </option>
+                  ))}
+                </select>
+
+                <button
+                  onClick={() => removeMember(m.user_id)}
+                  className="text-sm text-red-600 hover:underline"
+                >
+                  Remove
+                </button>
+>>>>>>> origin/trisha-feature-BE-fix
               </div>
             </li>
           ))}

@@ -1,8 +1,11 @@
-import { Router } from "express";   
+import { Router } from "express";
+
 import AuthController from "../controllers/AuthController.js";
 import authMiddleware from "../middleware/Authenticate.js";
+import adminOnly from "../middleware/adminOnly.js";
 import ProfileController from "../controllers/ProfileController.js";
 import NewsController from "../controllers/NewsController.js";
+import ReviewerController from "../controllers/admin/ReviewerController.js";
 import redisCache from "../DB/redis.config.js";
 import TeamController from "../controllers/teacher/TeamController.js";
 import TeamDetails from "../controllers/teacher/TeamDetails.js";
@@ -19,7 +22,6 @@ router.post("/auth/login", AuthController.login);
 router.get("/auth/verify/:token", AuthController.verifyEmail);
 router.get("/auth/verify-email", AuthController.verifyEmail);
 router.post("/auth/switch-role", authMiddleware, AuthController.switchRole);
-//router.get ("/auth/send-email",AuthController.sendTestEmail);
 
 //! Profile Routes
 router.get("/profile", authMiddleware, ProfileController.index); //private route
@@ -74,5 +76,49 @@ router.get("/student/teams/:id", authMiddleware, StudentTeamController.getTeamBy
 router.get("/student/my-teams/papers", authMiddleware, StudentTeamController.getAllTeamPapers);
 
 // router.get("/teams/:id/proposals", authMiddleware, StudentTeamController.getProposalsByTeamId);
+// Reviewer Routes (Admin functionality)
+router.get("/reviewers", authMiddleware, ReviewerController.index);
+router.get("/reviewers/potential", authMiddleware, ReviewerController.getPotentialReviewers);
+router.post("/reviewers/invite", authMiddleware, ReviewerController.sendInvitations);
+router.post("/reviewers/add", authMiddleware, ReviewerController.addReviewer);
+router.put("/reviewers/:id", authMiddleware, ReviewerController.update);
+router.delete("/reviewers/:id", authMiddleware, ReviewerController.removeReviewer);
+router.get("/reviewers/:id/workload", authMiddleware, ReviewerController.getWorkloadDetails);
 
+//! Assignment Routes (Admin only)
+router.get(
+  "/assignments/waiting",
+  authMiddleware,
+  adminOnly,
+  //redisCache.route(), 
+  AssignmentController.getWaitingAssignments
+);
+// Get papers/proposals waiting for assignment
+
+router.get(
+  "/assignments/reviewers",
+  authMiddleware,
+  AssignmentController.getAvailableReviewers
+); // Get available reviewers
+
+router.post(
+  "/assignments/assign",
+  authMiddleware,
+  adminOnly,
+  AssignmentController.assignReviewers
+); // Assign reviewers to papers/proposals
+
+router.post(
+  "/assignments/auto-match",
+  authMiddleware,
+  AssignmentController.autoMatchReviewers
+); // Auto-match reviewers
+
+// ====================== Admin Proposals Routes ======================
+router.get(
+  "/admin/proposals",
+  authMiddleware,
+  adminOnly,
+  getAllProposals
+);
 export default router;
