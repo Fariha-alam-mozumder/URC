@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
 import { FaClipboard, FaCheckCircle, FaClock, FaExclamationTriangle } from 'react-icons/fa';
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
 // import StatCard from '../../components/common/statcard';
 // import PendingApplications from '../../components/teacher/TeamManagement/PendingApplication';
 // import TeamCard from '../../components/teacher/TeamManagement/TeamCard';
 import StatCard from '../../components/Common/statcard';
 import PendingApplications from '../../components/Teacher/TeamManagement/PendingApplication';
-import TeamCard from '../../components/Teacher/TeamManagement/TeamCard';
+import TeamCard from '../../components/Common/TeamCard';
 
 const TeamManagement = () => {
   const [showAllTeams, setShowAllTeams] = useState(false);
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const statData = [
     { title: 'Total Papers', value: 24, icon: <FaClipboard /> },
@@ -82,11 +82,27 @@ const TeamManagement = () => {
         </button>
       </div>
 
-      {/* Stat Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        {statData.map((stat, index) => (
-          <StatCard key={index} {...stat} />
-        ))}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <StatCard
+    title="Total Papers"
+    value={24}
+    icon={<FaClipboard className="text-green-500 text-xl" />}
+  />
+  <StatCard
+    title="Submitted"
+    value={18}
+    icon={<FaCheckCircle className="text-blue-500 text-xl" />}
+  />
+  <StatCard
+    title="Under Review"
+    value={4}
+    icon={<FaClock className="text-yellow-500 text-xl" />}
+  />
+  <StatCard
+    title="Pending"
+    value={2}
+    icon={<FaExclamationTriangle className="text-purple-500 text-xl" />}
+  />
       </div>
 
       {/* Team Cards */}

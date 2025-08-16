@@ -23,7 +23,7 @@ const DocumentUploader = ({
 
   return (
     <section className="bg-white rounded-lg shadow p-5 space-y-4">
-      <h3 className="font-semibold">Documents & Resources</h3>
+      <h3 className="font-semibold">Documents</h3>
 
       <div className="grid gap-3 md:grid-cols-2">
         <div className="border rounded p-3">
@@ -61,14 +61,14 @@ const DocumentUploader = ({
         </div>
       </div>
 
-      <div>
+      {/* <div>
         <label className="text-sm font-medium">Research materials / notes</label>
         <textarea
           className="mt-1 w-full border rounded px-3 py-2 min-h-[96px]"
           value={notes}
           onChange={(e) => onNotesChange?.(e.target.value)}
         />
-      </div>
+      </div> */}
 
       {/* Modal */}
       <UploadDocModal

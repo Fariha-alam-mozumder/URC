@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react';  // ✅ Added useState
 // import PaperCard from '../../components/teacher/MyPapers/PaperCard';
 // import FilterBar from '../../components/common/FilterBar';
 // import UploadDocModal from '../../components/teacher/CreateTeam/UploadModal';
-import PaperCard from '../../components/Teacher/MyPapers/PaperCard';
+import PaperCard from '../../components/Common/PaperCard';
 import UploadDocModal from '../../components/Teacher/CreateTeam/UploadModal';
 import FilterBar from '../../components/Common/FilterBar';
 
@@ -103,14 +103,21 @@ const MyPapers = () => {
       <div className="space-y-4">
         {filteredPapers.map((paper, index) => (
           <PaperCard
-            key={index}
-            paper={paper}
-            onView={() => alert(`Open details for: ${paper.title}`)}
-            onEdit={() => alert(`Open editor for: ${paper.title}`)}
-            onDownload={() =>
-              alert(`Download: ${paper._filename || paper.title + '.pdf'}`)
-            }
-          />
+  role="teacher"
+  paper={{
+    id: 'ml-2025-01',
+    title: 'Machine Learning Applications in Healthcare Diagnostics',
+    team: 'AI Healthcare Team',
+    date: '2024-07-15',
+    lastEditor: 'Dr. Robert Chen',
+    status: 'Under Review',
+    role: 'Lead Author',
+    // reviewers: ['Dr. Sarah Johnson', 'Prof. Michael Chen'],
+    comments: 1,
+    fileUrl: '/files/healthcare-ml.pdf',
+  }}
+/>
+
         ))}
       </div>
 
