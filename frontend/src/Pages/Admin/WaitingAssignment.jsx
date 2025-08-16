@@ -64,7 +64,7 @@ const WaitingAssignment = () => {
   };
 
   return (
-    <div className="max-w-full">
+    <div className="max-w-full p-6">
       <h2 className="text-2xl font-bold">Waiting Assignment</h2>
 
       {/* Top Stat Cards */}

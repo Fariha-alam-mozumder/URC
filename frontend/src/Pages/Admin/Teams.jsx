@@ -227,8 +227,8 @@ const TeamsPage = () => {
   const displayedTeams = teams.slice(0, showCount);
 
   return (
-    <div className="border rounded-lg min-h-screen bg-gray-50 p-8 flex flex-col items-center">
-      <h1 className="text-3xl font-extrabold mb-10 text-gray-900">
+    <div className="border rounded-lg min-h-screen bg-gray-50 flex flex-col items-center">
+      <h1 className="text-3xl font-extrabold mt-6 mb-10 text-gray-900">
         Research Teams
       </h1>
       <div className="w-full max-w-7xl flex flex-wrap gap-8 mb-8 justify-center">

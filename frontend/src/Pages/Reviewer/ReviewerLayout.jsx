@@ -89,7 +89,7 @@ const ReviewerDashboard = () => {
 
       {/* Main content */}
       <div className="flex-1 flex flex-col">
-        <Topbar onMenuClick={() => setIsSidebarOpen(true)}
+        <Topbar role="reviewer" onMenuClick={() => setIsSidebarOpen(true)}
          onLogout={handleLogoutClick} />
         <main className="">
   <Outlet context={{ toggleSidebar: () => setIsSidebarOpen(true) }} />

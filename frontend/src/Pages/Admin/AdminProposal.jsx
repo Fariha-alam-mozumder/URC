@@ -183,7 +183,7 @@ function AdminProposals() {
   };
 
   return (
-    <div className="flex flex-col h-full min-w-0">
+    <div className="flex p-6 flex-col h-full min-w-0">
       {/* Sticky topbar + filter */}
       <div className="sticky top-0 p-4 bg-white z-20 pb-4 mb-4 border-b border-gray-200 min-w-0">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-3 min-w-0 gap-3 sm:gap-0">
