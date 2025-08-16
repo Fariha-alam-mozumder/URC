@@ -21,7 +21,7 @@ import SubmissionHistory from "./Pages/Teacher/SubmissionHistory";
 import TeacherLayout from "./Pages/Teacher/TeacherLayout";
 import ProfilePage from "./pages/Profile/ProfilePage";
 import PreferencePage from "./pages/PreferencePage/PreferencePage";
-import AdditionalPreferences from "./components/PreferencePage/AdditionalPreferences";
+
  
 
 
