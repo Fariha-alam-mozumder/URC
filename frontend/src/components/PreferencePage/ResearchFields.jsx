@@ -27,7 +27,7 @@ function ResearchFields() {
   };
 
   return (
-    <div className="mb-6">
+    <div className="mb-6 mt-10">
       <p className="font-medium mb-3">Research Fields of Interest(minimum 3 required) *</p>
       
       <input

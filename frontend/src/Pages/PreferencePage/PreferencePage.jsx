@@ -25,8 +25,9 @@ function PreferencePage() {
         </h1>
 
         <Department />
-        <ResearchFields />
         <AdditionalPreferences role={role} />
+        <ResearchFields />
+        
 
         <div className="flex justify-between mt-6">
           <button

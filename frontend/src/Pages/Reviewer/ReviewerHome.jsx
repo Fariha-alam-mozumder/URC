@@ -10,14 +10,14 @@ import {
 import AssignedPapersTable from '../../components/Reviewer/AssignedPapersTable';
 import StatCard from '../../components/Common/StatCard';
 import Sidebar from '../../components/Common/Sidebar';
-import Topbar from '../../components/Common/Topbar';
+
 import LogoutModal from '../../components/Common/LogoutModal';
 
 const ReviewerHome = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
 
-  const handleLogoutClick = () => setIsLogoutModalOpen(true);
+
   const handleCloseModal = () => setIsLogoutModalOpen(false);
   const handleConfirmLogout = () => {
     // add logout logic here
