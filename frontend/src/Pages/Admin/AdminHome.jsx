@@ -20,7 +20,7 @@ const reviewerData = [
 
 const AdminHome = () => {
   return (
-    <div className=" space-y-4">
+    <div className="p-6 space-y-4">
       <h2 className="text-2xl font-bold">Dashboard</h2>
 
       {/* Stat cards */}

@@ -10,6 +10,13 @@ import { profiles } from "../../Data/ProfileData";
 const ProfilePage = () => {
   const { role } = useParams(); // teacher or reviewer
   const profile = profiles[role] ; // fallback
+   if (!profile) {
+    return (
+      <div className="p-6 text-center text-red-600">
+        Profile not found for role: {role || "undefined"}
+      </div>
+    );
+  }
 
   return (
     <div className="p-4 md:p-6 bg-gray-300 min-h-screen flex flex-col gap-6">

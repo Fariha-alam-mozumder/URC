@@ -44,8 +44,7 @@ function AdditionalPreferences({ role }) {
   };
 
   return (
-    <div className="max-w-2xl bg-white rounded-lg mt-10 p-6">
-      <h2 className="text-xl font-bold mb-4">Edit Profile</h2>
+    <div className="max-w-2xl bg-white rounded-lg mt-10 ">
       <form onSubmit={handleSubmit} className="space-y-4">
         
         {/* Name & Email in one row */}
@@ -57,7 +56,7 @@ function AdditionalPreferences({ role }) {
               name="name"
               value={formData.name}
               onChange={handleChange}
-              className="w-full border px-3 py-2 rounded-lg"
+              className="w-full border px-3 py-2 bg-slate-100 rounded-lg"
             />
           </div>
           <div>
@@ -67,43 +66,33 @@ function AdditionalPreferences({ role }) {
               name="email"
               value={formData.email}
               onChange={handleChange}
-              className="w-full border px-3 py-2 rounded-lg"
+              className="w-full border px-3 py-2 bg-slate-100 rounded-lg"
             />
           </div>
         </div>
 
-        {/* Designation */}
-        <div>
-          <label className="block text-gray-700 font-medium">Role</label>
-          <input
-            type="text"
-            name="designation"
-            value={formData.designation}
-            onChange={handleChange}
-            className="w-full border px-3 py-2 rounded-lg"
-          />
-        </div>
+       
 
         {/* University & Department in one row */}
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-gray-700 font-medium">University</label>
+            <label className="block text-gray-700  font-medium">University</label>
             <input
               type="text"
               name="university"
               value={formData.university}
               onChange={handleChange}
-              className="w-full border px-3 py-2 rounded-lg"
+              className="w-full border px-3 py-2 bg-slate-100 rounded-lg"
             />
           </div>
           <div>
-            <label className="block text-gray-700 font-medium">Department</label>
+            <label className="block text-gray-700  font-medium">Department</label>
             <input
               type="text"
               name="department"
               value={formData.department}
               onChange={handleChange}
-              className="w-full border px-3 py-2 rounded-lg"
+              className="w-full border px-3 bg-slate-100 py-2 rounded-lg"
             />
           </div>
         </div>
@@ -118,7 +107,7 @@ function AdditionalPreferences({ role }) {
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
-                className="w-full border px-3 py-2 rounded-lg"
+                className="w-full border px-3 py-2 bg-slate-100 rounded-lg"
               />
               <button
                 type="button"
@@ -138,19 +127,30 @@ function AdditionalPreferences({ role }) {
                 name="confirmPassword"
                 value={formData.confirmPassword}
                 onChange={handleChange}
-                className="w-full border px-3 py-2 rounded-lg"
+                className="w-full border px-3 bg-slate-100 py-2 rounded-lg"
               />
               <button
                 type="button"
                 onClick={() =>
                   setShowConfirmPassword(!showConfirmPassword)
                 }
-                className="absolute right-3 top-2.5 text-gray-500"
+                className="absolute right-3 top-2.5 bg-slate-100 text-gray-500"
               >
                 {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
               </button>
             </div>
           </div>
+        </div>
+         {/* Designation */}
+        <div>
+          <label className="block text-gray-700 font-medium">Role</label>
+          <input
+            type="text"
+            name="designation"
+            value={formData.designation}
+            onChange={handleChange}
+            className="w-full border px-3 py-2 bg-slate-100 rounded-lg"
+          />
         </div>
       </form>
     </div>

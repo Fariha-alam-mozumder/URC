@@ -97,13 +97,13 @@ const AdminDashboard = () => {
 
       {/* Main content area */}
       <div className="flex-1 flex flex-col h-screen min-w-0">
-        <Topbar
+        <Topbar role="admin"
           onMenuClick={() => setIsSidebarOpen(true)}
           onLogout={handleLogoutClick}
         />
 
         {/* Main content with scroll and min-w-0 */}
-        <main className="flex-1 overflow-auto p-6 bg-gray-50 min-w-0">
+        <main className="flex-1 overflow-auto bg-gray-50 min-w-0">
           <Outlet context={{ toggleSidebar: () => setIsSidebarOpen(true) }} />
         </main>
 

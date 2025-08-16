@@ -5,7 +5,7 @@ const Topbar = ({ onMenuClick, onLogout, role  }) => {
   const navigate = useNavigate();
 
   const goToProfile = () => {
-    navigate(`/Profile/${role}`);
+    navigate(`/profile/${role}`);
   };
 
   return (

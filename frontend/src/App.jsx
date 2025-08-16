@@ -1,7 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Homepage from "./pages/home/Homepage";
 import LandingPage from "./pages/landingpage/LandingPage";
-import ReviewerDashboard from './Pages/Reviewer/reviewerDashboard';
 import ReviewerHome from './Pages/Reviewer/ReviewerHome';
 import AssignedPapersPage from './Pages/Reviewer/AssignedPapersPage';
 import AssignedProposalsPage from './Pages/Reviewer/AssignedProposalsPage';
@@ -10,9 +9,8 @@ import AdminDashboard from './Pages/Admin/AdminDashboard';
 import ReviewHistoryPage from './Pages/Reviewer/ReviewHistoryPage';
 
 import AdminHome from "./Pages/Admin/AdminHome";
-
-
 import PaperReviewPage from "./pages/Reviewer/PaperReviewPage";
+import ReviewerLayout from "./Pages/Reviewer/ReviewerLayout"
 
 
 
@@ -50,18 +48,13 @@ function App() {
       <Routes>
         <Route path="/" element={<LandingPage />} />
 
-        
-        <Route
-          path="/Profile"
-          element={ <ProfilePage />}
-        />
        
         <Route
           path="/PreferencePage"
           element={ <PreferencePage />}
         />
         {/* Reviewer Dashboard Routes */}
-        <Route path="/ReviewerDashboard" element={<ReviewerDashboard />}>
+        <Route path="/ReviewerDashboard" element={<ReviewerLayout />}>
           <Route index element={<Homepage />} />
           <Route path="reviewer/dashboard" element={<ReviewerHome />} />
           <Route path="reviewer/home" element={<Homepage />} />
@@ -98,17 +91,14 @@ function App() {
         </Route>
 
         <Route path="/student" element={<StudentLayout />}>
-          {/* Default page for /teacher is dashboard */}
+        
           <Route index element={<Homepage />} />
           <Route path="student/dashboard" element={<StudentDashboard />} />
           <Route path="student/home" element={<Homepage />} />
           <Route path="student/team" element={<MyTeams />} />
           <Route path="team/:id" element={<StudentTeamDetails />} />
           <Route path="student/mypapers" element={<StudentMyPapers />} />
-          {/* <Route path="team/create" element={<CreateTeam />} />
           
-          <Route path="mypapers" element={<MyPapers />} />
-          <Route path="teacher/history" element={<SubmissionHistory />} /> */} 
         </Route>
 
         <Route path="/profile/:role" element={<ProfilePage />} />

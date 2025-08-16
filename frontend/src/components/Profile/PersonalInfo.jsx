@@ -12,7 +12,7 @@ const PersonalInfo = ({ name, university, email, department, role, }) => {
           <input
             type="text"
             defaultValue={name}
-            className="border rounded-lg p-2 w-full"
+            className="border rounded-lg p-2 bg-gray-200 w-full"
           />
         </label>
 
@@ -21,7 +21,7 @@ const PersonalInfo = ({ name, university, email, department, role, }) => {
           <input
             type="email"
             defaultValue={email}
-            className="border rounded-lg p-2 w-full"
+            className="border rounded-lg p-2 bg-gray-200 w-full"
           />
         </label>
 
@@ -30,7 +30,7 @@ const PersonalInfo = ({ name, university, email, department, role, }) => {
           <input
             type="text"
             defaultValue={department}
-            className="border rounded-lg p-2 w-full"
+            className="border rounded-lg p-2 bg-gray-200 w-full"
           />
         </label>
 
@@ -39,21 +39,19 @@ const PersonalInfo = ({ name, university, email, department, role, }) => {
           <input
             type="text"
             defaultValue={university}
-            className="border rounded-lg p-2 w-full"
+            className="border rounded-lg p-2 bg-gray-200 w-full"
           />
         </label>
 
-        <label className="flex flex-col">
+      </div>
+      <label className="flex flex-col">
           <span className="font-semibold">Role</span>
           <input
             type="text"
             defaultValue={role}
-            className="border rounded-lg p-2 w-full"
+            className="border rounded-lg p-2 bg-gray-200 w-4/4"
           />
         </label>
-
-       
-      </div>
     </div>
   );
 };
