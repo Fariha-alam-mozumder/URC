@@ -4,10 +4,10 @@ import bcrypt from "bcryptjs";
 const prisma = new PrismaClient();
 
 async function main() {
-  //  Check if admin user already exists
-  // const existingAdmin = await prisma.user.findFirst({
-  //   where: { role: "ADMIN" },
-  // });
+   
+  const existingAdmin = await prisma.user.findFirst({
+    where: { role: "ADMIN" },
+  });
 
   if (!existingAdmin) {
     const hashedPassword = await bcrypt.hash("admin123", 10);
@@ -48,17 +48,17 @@ async function main() {
 
   console.log(`Inserted ${result.count} departments.`);
 
-  // // Create domains (example domains including common domain)
-  // const domainsData = [
-  //   { domain_name: "Artificial Intelligence" },    // common domain
-  //   { domain_name: "Machine Learning" },
-  //   { domain_name: "Computer Vision" },
-  //   { domain_name: "Data Science" },
-  //   { domain_name: "Robotics" },
-  //   { domain_name: "Embedded Systems" },          // EEE only
-  //   { domain_name: "Power Electronics" },         // EEE only
-  //   { domain_name: "Software Engineering" },      // CSE only
-  // ];
+  // Create domains (example domains including common domain)
+  const domainsData = [
+    { domain_name: "Artificial Intelligence" },    // common domain
+    { domain_name: "Machine Learning" },
+    { domain_name: "Computer Vision" },
+    { domain_name: "Data Science" },
+    { domain_name: "Robotics" },
+    { domain_name: "Embedded Systems" },          // EEE only
+    { domain_name: "Power Electronics" },         // EEE only
+    { domain_name: "Software Engineering" },      // CSE only
+  ];
 
   // Upsert domains to avoid duplicates
   const domains = [];
@@ -120,13 +120,13 @@ async function main() {
 
     
     // user_id 3: STUDENT - 3 domains
-    { user_id: 3, domain_ids: [1, 2, 4] },
+    { user_id: 7, domain_ids: [1, 2, 4] },
 
     // user_id 4: GENERALUSER - zero domains, skip or assign 1 domain optionally
-    { user_id: 7, domain_ids: [] }, // no insert needed
+    { user_id: 2, domain_ids: [] }, // no insert needed
 
     // user_id 5: TEACHER - 4 domains
-    { user_id: 5, domain_ids: [1, 2, 4, 8] },
+    { user_id: 5, domain_ids: [1, 3, 5, 6, 7] },
 
     // user_id 6: TEACHER - 5 domains
     { user_id: 6, domain_ids: [1, 3, 5, 6, 7] },
@@ -144,7 +144,7 @@ async function main() {
     { user_id: 10, domain_ids: [6, 7] },
 
     // user_id 2: TEACHER - 4 domains
-    { user_id: 11, domain_ids: [1, 2, 4, 8] },
+    { user_id: 3, domain_ids: [1, 2, 4, 8] },
 
   ];
 

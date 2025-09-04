@@ -52,6 +52,8 @@ const authMiddleware = (req, res, next) => {
         if (scheme !== "Bearer" || !token) {
             return res.status(401).json({ status: 401, message: "Unauthorized" });
         }
+        console.log("JWT secret:", process.env.JWT_SECRET);
+
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
         // Normalize id types and provide both id & user_id for convenience

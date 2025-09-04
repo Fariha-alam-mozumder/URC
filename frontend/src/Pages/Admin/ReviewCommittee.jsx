@@ -21,7 +21,7 @@ const ReviewerCommittee = () => {
   const [error, setError] = useState("");
 
   const API_BASE_URL =
-    import.meta.env.VITE_API_BASE_URL || "http://localhost:8000/api";
+    import.meta.env.APP_URL || "http://localhost:8000/api";
 
   // Fetch reviewers and potential reviewers on mount
   useEffect(() => {

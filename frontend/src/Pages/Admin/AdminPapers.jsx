@@ -1,8 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Eye, Download } from "lucide-react";
 import CommonSubmissionTable from "../../components/Common/CommonSubmissionTable";
 import FilterBar from "../../components/Common/FilterBar";
 import CommonButton from "../../components/Common/CommonButton";
+import axios from "axios";
+
+const API_BASE_URL = import.meta.env.APP_URL || "http://localhost:8000/api";
 
 function AdminPapers() {
   const [filters, setFilters] = useState({
@@ -11,48 +14,43 @@ function AdminPapers() {
     track: "",
   });
 
-  const submissions = [
-    {
-      id: "P001",
-      title: "Machine Learning Applications in Healthcare Diagnostics",
-      authors: "Dr. Sarah Johnson, Prof. Michael Chen",
-      submittedBy: "sarah.johnson@university.edu",
-      date: "2024-01-15",
-      status: "Under Review",
-      reviewer: "Dr. Williams",
-      track: "AI/ML",
-    },
-    {
-      id: "P002",
-      title: "Blockchain Technology for Supply Chain Management",
-      authors: "Prof. David Smith, Dr. Lisa Wang",
-      submittedBy: "david.smith@tech.edu",
-      date: "2024-01-18",
-      status: "Pending",
-      reviewer: "Unassigned",
-      track: "Blockchain",
-    },
-    {
-      id: "P003",
-      title: "Quantum Computing Algorithms for Optimization",
-      authors: "Dr. Robert Brown, Dr. Emily Davis",
-      submittedBy: "robert.brown@quantum.edu",
-      date: "2024-01-20",
-      status: "Accepted",
-      reviewer: "Prof. Anderson",
-      track: "Quantum",
-    },
-    {
-      id: "P004",
-      title: "Cybersecurity Threats in IoT Networks",
-      authors: "Prof. Jennifer Miller, Dr. James Wilson",
-      submittedBy: "jennifer.miller@security.edu",
-      date: "2024-01-22",
-      status: "Rejected",
-      reviewer: "Dr. Thompson",
-      track: "Security",
-    },
-  ];
+  const [submissions, setSubmissions] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    const fetchPapers = async () => {
+      try {
+        const { data } = await axios.get(`${API_BASE_URL}/admin/papers`, {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        });
+        setSubmissions(data?.papers || []);
+      } catch (err) {
+        console.error("Error fetching papers:", err);
+        setError("Failed to load papers");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPapers();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <p className="text-gray-600">Loading papers...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="p-4 bg-red-50 text-red-600 border border-red-200 rounded">
+        {error}
+      </div>
+    );
+  }
 
   const filteredData = submissions.filter((row) => {
     const q = filters.search.toLowerCase();
@@ -194,14 +192,27 @@ function AdminPapers() {
             <CommonButton
               icon={Download}
               label="Export CSV"
-              onClick={() => alert("Exporting CSV...")}
+              onClick={async () => {
+                const { data } = await axios.get(
+                  `${API_BASE_URL}/papers/${row.id}`,
+                  {
+                    headers: {
+                      Authorization: `Bearer ${localStorage.getItem("token")}`,
+                    },
+                  }
+                );
+                console.log("Paper details:", data);
+              }}
               className="min-w-[120px]"
             />
           </div>
         </div>
 
         <div className="min-w-0">
-          <FilterBar filters={filterConfig} onFilterChange={handleFilterChange} />
+          <FilterBar
+            filters={filterConfig}
+            onFilterChange={handleFilterChange}
+          />
         </div>
       </div>
 

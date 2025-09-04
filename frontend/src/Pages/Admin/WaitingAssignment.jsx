@@ -31,13 +31,13 @@ const WaitingAssignment = () => {
   const fetchWaitingAssignments = async () => {
     setLoading(true);
     try {
-      console.log("🔄 Fetching waiting assignments...");
+      console.log(" Fetching waiting assignments...");
       
       const res = await axios.get("http://localhost:8000/api/assignments/waiting", {
         headers: getAuthHeaders(),
       });
 
-      console.log("📋 Response received:", res.data);
+      console.log(" Response received:", res.data);
 
       // Handle the response structure from your backend
       if (res.data) {
@@ -50,15 +50,15 @@ const WaitingAssignment = () => {
           autoMatchAvailable: responseStats.autoMatchAvailable || 0
         });
         
-        console.log(`✅ Loaded ${waitingItems.length} waiting items`);
+        console.log(` Loaded ${waitingItems.length} waiting items`);
         setError("");
       } else {
         setPapers([]);
-        console.warn("⚠️ No data received from API");
+        console.warn(" No data received from API");
       }
 
     } catch (err) {
-      console.error("❌ Error fetching waiting assignments:", err);
+      console.error(" Error fetching waiting assignments:", err);
       
       // More detailed error handling
       if (err.response) {
@@ -109,21 +109,21 @@ const WaitingAssignment = () => {
         params
       });
 
-      console.log("👥 Reviewers response:", res.data);
+      console.log(" Reviewers response:", res.data);
 
       if (Array.isArray(res.data)) {
         setPotentialReviewers(res.data);
-        console.log(`✅ Loaded ${res.data.length} reviewers`);
+        console.log(` Loaded ${res.data.length} reviewers`);
       } else if (res.data.success && Array.isArray(res.data.data)) {
         setPotentialReviewers(res.data.data);
-        console.log(`✅ Loaded ${res.data.data.length} reviewers`);
+        console.log(` Loaded ${res.data.data.length} reviewers`);
       } else {
         setPotentialReviewers([]);
-        console.warn("⚠️ No reviewers data received");
+        console.warn(" No reviewers data received");
       }
 
     } catch (err) {
-      console.error("❌ Error fetching reviewers:", err);
+      console.error(" Error fetching reviewers:", err);
       setPotentialReviewers([]);
       
       // Don't show reviewer errors as main error, just log them
@@ -140,7 +140,7 @@ const WaitingAssignment = () => {
 
   // Handle assign button click
   const handleAssignClick = async (paper) => {
-    console.log("📝 Opening assignment modal for:", paper);
+    console.log(" Opening assignment modal for:", paper);
     setSelectedPaper(paper);
     
     // Fetch reviewers when modal opens, with paper context
@@ -157,7 +157,7 @@ const WaitingAssignment = () => {
         return;
       }
 
-      console.log("📤 Assigning reviewers:", { paper: selectedPaper.id, reviewers: reviewerIds });
+      console.log(" Assigning reviewers:", { paper: selectedPaper.id, reviewers: reviewerIds });
 
       const payload = {
         assignments: [
@@ -173,7 +173,7 @@ const WaitingAssignment = () => {
         headers: getAuthHeaders(),
       });
 
-      console.log("✅ Assignment response:", res.data);
+      console.log(" Assignment response:", res.data);
 
       // Handle success response
       if (res.data) {
@@ -192,11 +192,11 @@ const WaitingAssignment = () => {
         const message = res.data.message || `Successfully assigned ${reviewerIds.length} reviewers!`;
         alert(message);
         
-        console.log("✅ Assignment completed successfully");
+        console.log(" Assignment completed successfully");
       }
 
     } catch (err) {
-      console.error("❌ Error assigning reviewers:", err);
+      console.error(" Error assigning reviewers:", err);
       
       let errorMessage = "Failed to assign reviewers. Please try again.";
       
@@ -224,7 +224,7 @@ const WaitingAssignment = () => {
         headers: getAuthHeaders(),
       });
 
-      console.log("🤖 Auto-match response:", res.data);
+      console.log(" Auto-match response:", res.data);
 
       if (res.data) {
         // Check if it's just recommendations or actual assignment
@@ -254,7 +254,7 @@ const WaitingAssignment = () => {
       }
 
     } catch (err) {
-      console.error("❌ Error with auto-assignment:", err);
+      console.error(" Error with auto-assignment:", err);
       
       let errorMessage = "Auto-assignment failed. Please try manual assignment.";
       

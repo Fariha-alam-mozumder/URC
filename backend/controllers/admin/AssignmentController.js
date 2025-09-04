@@ -1,353 +1,457 @@
 import prisma from "../../DB/db.config.js";
-import redis from "../../DB/redis.config.js";
-import { Vine, errors } from "@vinejs/vine";
-import { assignReviewerSchema, bulkAssignmentSchema } from "../../validations/admin/assignmentValidation.js";
-import { emailQueue, emailQueueName } from "../../jobs/SendEmailJob.js";
 import logger from "../../config/logger.js";
+import { Vine, errors } from "@vinejs/vine";
+import { getDocumentUrl } from "../../utils/helper.js";
+
+import {
+  assignReviewersSchema,
+  autoMatchSchema,
+} from "../../validations/admin/assignmentValidation.js";
 
 const vine = new Vine();
 
-// Helper to include assignment relations
-const includeAssignmentDetails = () => ({
-  reviewer: {
-    include: {
-      teacher: {
-        include: {
-          user: {
-            select: { name: true, email: true }
-          }
-        }
-      }
-    }
-  },
-  paper: { select: { title: true, paper_id: true } },
-  proposal: { select: { title: true, proposal_id: true } }
-});
-
-// Helper to build email jobs
-const buildEmailJob = (assignment) => {
-  const itemTitle = assignment.paper?.title || assignment.proposal?.title;
-  const itemType = assignment.paper ? 'Paper' : 'Proposal';
-  const itemId = assignment.paper?.paper_id || assignment.proposal?.proposal_id;
-
-  return {
-    toEmail: assignment.reviewer.teacher.user.email,
-    subject: `New ${itemType} Assignment for Review`,
-    body: `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h2 style="color: #333;">New Review Assignment</h2>
-        <p>Dear ${assignment.reviewer.teacher.user.name},</p>
-        <p>You have been assigned to review a new ${itemType.toLowerCase()}:</p>
-        <div style="background: #f5f5f5; padding: 15px; border-radius: 5px; margin: 20px 0;">
-          <strong>Title:</strong> ${itemTitle}<br>
-          <strong>Type:</strong> ${itemType}<br>
-          <strong>ID:</strong> ${itemType === 'Paper' ? 'P' : 'PR'}${itemId.toString().padStart(3, 0)}
-        </div>
-        <p>Please log into your reviewer dashboard to access the ${itemType.toLowerCase()} and submit your review.</p>
-        <p>Thank you for your contribution to the review process.</p>
-        <p>Best regards,<br>Academic Review System</p>
-      </div>
-    `,
-  };
-};
-
 class AssignmentController {
-
-  // Get waiting papers/proposals
-static async getWaitingAssignments(req, res) {
-  try {
-    const cacheKey = "/api/assignments/waiting";
-    let response = null;
-
-    // Try reading from Redis cache, but don't crash if Redis fails
-   try {
-  const cached = await redis.get(cacheKey);
-  if (cached) {
-    const response = JSON.parse(cached);
-    return res.json(response);
-  }
-} catch (err) {
-  console.warn("Redis cache read failed, continuing without cache:", err.message);
-}
-
-
-    // Fetch waiting papers & proposals
-    const [papersWaiting, proposalsWaiting] = await Promise.all([
-      prisma.paper.findMany({
-        where: { status: "PENDING", reviewerassignment: { none: {} } },
-        include: {
-          team: { select: { team_name: true } },
-          teacher: { include: { user: { select: { name: true } } } },
-          domain: { select: { domain_name: true } }
-        },
-        orderBy: { created_at: 'asc' }
-      }),
-      prisma.proposal.findMany({
-        where: { status: "PENDING", reviewerassignment: { none: {} } },
-        include: {
-          team: { select: { team_name: true } },
-          teacher: { include: { user: { select: { name: true } } } },
-          domain: { select: { domain_name: true } }
-        },
-        orderBy: { created_at: 'asc' }
-      })
-    ]);
-
-    // Map to frontend structure
-    const formatItems = (items, prefix) => items.map(i => ({
-      id: prefix + (prefix === 'P' ? i.paper_id : i.proposal_id).toString().padStart(3, '0'),
-      type: prefix === 'P' ? 'paper' : 'proposal',
-      actual_id: prefix === 'P' ? i.paper_id : i.proposal_id,
-      category: i.domain?.domain_name || 'General',
-      title: i.title,
-      authors: i.teacher?.user?.name || 'Unknown Author',
-      submittedDate: i.created_at.toISOString().split('T')[0],
-      abstract: i.abstract || 'No abstract provided',
-      team_name: i.team?.team_name,
-      keywords: [],
-      domain_id: i.domain_id
-    }));
-
-    const waitingItems = [...formatItems(papersWaiting, 'P'), ...formatItems(proposalsWaiting, 'PR')];
-
-    // Count reviewers
-    const availableReviewers = await prisma.reviewer.count({
-      where: { status: 'ACTIVE', teacher: { isReviewer: true, user: { isVerified: true } } }
-    });
-
-    // Count auto-matchable items
-    let autoMatchAvailable = 0;
-    for (const item of waitingItems) {
-      if (!item.domain_id) continue;
-      const matching = await prisma.reviewer.count({
+  // GET /api/assignments/waiting - Get papers/proposals waiting for reviewer assignment
+  static async getWaitingAssignments(req, res) {
+    try {
+      // Get papers without assigned reviewers
+      const papersWaiting = await prisma.paper.findMany({
         where: {
-          status: 'ACTIVE',
-          reviewerpreference: { some: { domain_id: item.domain_id } },
-          teacher: { isReviewer: true, user: { isVerified: true } }
-        }
+          reviewerassignment: {
+            none: {},
+          },
+        },
+        include: {
+          teacher: {
+            select: {
+              teacher_id: true,
+              user: {
+                select: {
+                  name: true,
+                  email: true,
+                },
+              },
+            },
+          },
+          domain: {
+            select: {
+              domain_id: true,
+              domain_name: true,
+            },
+          },
+        },
+        orderBy: { created_at: "desc" },
       });
-      if (matching > 0) autoMatchAvailable++;
+
+      // Get proposals without assigned reviewers
+      const proposalsWaiting = await prisma.proposal.findMany({
+        where: {
+          reviewerassignment: {
+            none: {},
+          },
+        },
+        include: {
+          teacher: {
+            select: {
+              teacher_id: true,
+              user: {
+                select: {
+                  name: true,
+                  email: true,
+                },
+              },
+            },
+          },
+          domain: {
+            select: {
+              domain_id: true,
+              domain_name: true,
+            },
+          },
+        },
+        orderBy: { created_at: "desc" },
+      });
+
+      // Transform papers to match frontend format
+      const transformedPapers = papersWaiting.map((paper) => ({
+        id: `P${String(paper.paper_id).padStart(3, "0")}`,
+        actual_id: paper.paper_id,
+        type: "paper",
+        title: paper.title || "Untitled Paper",
+        abstract: paper.abstract || "No abstract available",
+        author: paper.teacher?.user?.name || "Unknown Author",
+        authorEmail: paper.teacher?.user?.email || "Unknown",
+        status: paper.status || "Pending",
+        submissionDate: new Date(paper.created_at).toLocaleDateString(),
+        domain: paper.domain?.domain_name || "Unknown",
+        domain_id: paper.domain?.domain_id,
+        file_path: getDocumentUrl(paper.file_path),
+        viewUrl: `/admin/papers/${paper.paper_id}`,
+        autoMatchAvailable: true,
+      }));
+
+      // Transform proposals to match frontend format
+      const transformedProposals = proposalsWaiting.map((proposal) => ({
+        id: `PR${String(proposal.proposal_id).padStart(3, "0")}`,
+        actual_id: proposal.proposal_id,
+        type: "proposal",
+        title: proposal.title || "Untitled Proposal",
+        abstract: proposal.abstract || "No abstract available",
+        author: proposal.teacher?.user?.name || "Unknown Author",
+        authorEmail: proposal.teacher?.user?.email || "Unknown",
+        status: proposal.status || "Pending",
+        submissionDate: new Date(proposal.created_at).toLocaleDateString(),
+        domain: proposal.domain?.domain_name || "Unknown",
+        domain_id: proposal.domain?.domain_id,
+        file_path: getDocumentUrl(proposal.file_path),
+        viewUrl: `/admin/proposals/${proposal.proposal_id}`,
+        autoMatchAvailable: true, 
+      }));
+
+      // Combine both papers and proposals
+      const waitingItems = [...transformedPapers, ...transformedProposals];
+
+      // Get stats
+      const availableReviewers = await prisma.reviewer.count({
+        where: {
+          status: "ACTIVE",
+        },
+      });
+
+      const autoMatchAvailable = waitingItems.filter(
+        (item) => item.autoMatchAvailable
+      ).length;
+
+      const stats = {
+        awaitingAssignment: waitingItems.length,
+        availableReviewers: availableReviewers,
+        autoMatchAvailable: autoMatchAvailable,
+      };
+
+      return res.status(200).json({
+        success: true,
+        waitingItems: waitingItems,
+        stats: stats,
+        message: `Found ${waitingItems.length} items awaiting assignment`,
+      });
+    } catch (error) {
+      logger.error("Error fetching waiting assignments:", error);
+      return res.status(500).json({
+        success: false,
+        message: "Server error while fetching waiting assignments",
+        error: error.message,
+      });
     }
-
-    response = { waitingItems, stats: { awaitingAssignment: waitingItems.length, availableReviewers, autoMatchAvailable } };
-
-    // Try setting cache, but don't crash if Redis fails
-    try { await redis.setex(cacheKey, 300, JSON.stringify(response)); } 
-    catch (err) { console.warn("Redis cache write failed:", err.message); }
-
-    return res.json(response);
-
-  } catch (err) {
-    console.error("Get waiting assignments error:", err);
-    return res.status(500).json({ error: "Failed to fetch waiting assignments." });
   }
-}
 
-  // Get available reviewers
- // Get available reviewers
-static async getAvailableReviewers(req, res) {
-  try {
-    const { domain_id, item_type, item_id } = req.query;
+  // GET /api/assignments/reviewers - Get available reviewers
+  static async getAvailableReviewers(req, res) {
+    try {
+      const { domain_id, item_type, item_id } = req.query;
 
-    // Fetch the team_id of the submission if provided
-    let itemTeamId = null;
-    if (item_type && item_id) {
-      const item = item_type === 'paper'
-        ? await prisma.paper.findUnique({ where: { paper_id: parseInt(item_id) }, select: { team_id: true } })
-        : await prisma.proposal.findUnique({ where: { proposal_id: parseInt(item_id) }, select: { team_id: true } });
+      // Base query for active reviewers
+      let whereCondition = {
+        status: "ACTIVE",
+      };
 
-      itemTeamId = item?.team_id || null;
+      // If domain_id is provided, filter by domain expertise
+      if (domain_id) {
+        whereCondition.teacher = {
+          department: {
+            // Assuming reviewers should be from same domain or have expertise
+            // Adjust this logic based on your domain matching requirements
+          },
+        };
+      }
+
+      const reviewers = await prisma.reviewer.findMany({
+        where: whereCondition,
+        include: {
+          teacher: {
+            select: {
+              teacher_id: true,
+              designation: true,
+              user: {
+                select: {
+                  name: true,
+                  email: true,
+                },
+              },
+              department: {
+                select: {
+                  department_name: true,
+                },
+              },
+            },
+          },
+          // Get current assignment count for workload balancing
+          reviewerassignment: {
+            where: {
+              status: {
+                in: ["PENDING", "IN_PROGRESS"],
+              },
+            },
+          },
+        },
+      });
+
+      // Transform for frontend
+      const availableReviewers = reviewers.map((reviewer) => ({
+        id: reviewer.reviewer_id,
+        name: reviewer.teacher?.user?.name || "Unknown Reviewer",
+        email: reviewer.teacher?.user?.email || "Unknown",
+        designation: reviewer.teacher?.designation || "Unknown",
+        department: reviewer.teacher?.department?.department_name || "Unknown",
+        currentWorkload: reviewer.reviewerassignment?.length || 0,
+        status: reviewer.status,
+        expertise: [], // Can add expertise matching logic here
+        matchScore: 0, // Can implement matching algorithm
+      }));
+
+      // Sort by workload (ascending) for balanced assignment
+      availableReviewers.sort((a, b) => a.currentWorkload - b.currentWorkload);
+
+      return res.status(200).json({
+        success: true,
+        data: availableReviewers,
+        total: availableReviewers.length,
+      });
+    } catch (error) {
+      logger.error("Error fetching available reviewers:", error);
+      return res.status(500).json({
+        success: false,
+        message: "Server error while fetching reviewers",
+        error: error.message,
+      });
     }
-
-    const whereClause = {
-      status: 'ACTIVE',
-      teacher: { isReviewer: true, user: { isVerified: true } },
-      // Exclude reviewers from the same team as the submission
-      ...(itemTeamId ? { teacher: { ...{ team_id: { not: itemTeamId } } } } : {})
-    };
-
-    // If domain specified, prioritize matching reviewers
-    let reviewersWithDomain = [];
-    let otherReviewers = [];
-
-    if (domain_id) {
-      const domainId = parseInt(domain_id);
-
-      reviewersWithDomain = await prisma.reviewer.findMany({
-        where: { ...whereClause, reviewerpreference: { some: { domain_id: domainId } } },
-        include: {
-          teacher: { include: { user: { select: { name: true, email: true } }, department: { select: { department_name: true } } } },
-          reviewerpreference: { include: { domain: { select: { domain_name: true } } } },
-          reviewerassignment: { select: { assignment_id: true } }
-        }
-      });
-
-      otherReviewers = await prisma.reviewer.findMany({
-        where: { ...whereClause, NOT: { reviewerpreference: { some: { domain_id: domainId } } } },
-        include: {
-          teacher: { include: { user: { select: { name: true, email: true } }, department: { select: { department_name: true } } } },
-          reviewerpreference: { include: { domain: { select: { domain_name: true } } } },
-          reviewerassignment: { select: { assignment_id: true } }
-        }
-      });
-    } else {
-      reviewersWithDomain = await prisma.reviewer.findMany({
-        where: whereClause,
-        include: {
-          teacher: { include: { user: { select: { name: true, email: true } }, department: { select: { department_name: true } } } },
-          reviewerpreference: { include: { domain: { select: { domain_name: true } } } },
-          reviewerassignment: { select: { assignment_id: true } }
-        }
-      });
-    }
-
-    const allReviewers = [...reviewersWithDomain, ...otherReviewers];
-    const formattedReviewers = allReviewers.map(r => ({
-      id: r.reviewer_id,
-      name: r.teacher?.user?.name || 'Unknown',
-      email: r.teacher?.user?.email || '',
-      department: r.teacher?.department?.department_name || 'Unknown',
-      domain: r.reviewerpreference?.map(p => p.domain.domain_name) || [],
-      currentAssignments: r.reviewerassignment?.length || 0,
-      isExpertMatch: reviewersWithDomain.includes(r)
-    }));
-
-    return res.json(formattedReviewers);
-
-  } catch (error) {
-    console.error("Get available reviewers error:", error);
-    return res.status(500).json({ error: "Something went wrong while fetching available reviewers." });
   }
-}
 
-
-  // Assign reviewers
+  // POST /api/assignments/assign - Assign reviewers to papers/proposals
   static async assignReviewers(req, res) {
     try {
-      const validator = vine.compile(bulkAssignmentSchema);
+      // Validate input
+      const validator = vine.compile(assignReviewersSchema);
       const payload = await validator.validate(req.body);
+
       const { assignments } = payload;
-      const assignedBy = req.user.id;
 
-      const admin = await prisma.admin.findFirst({ where: { user: { user_id: assignedBy } } });
-      if (!admin) return res.status(403).json({ error: "Only admins can assign reviewers." });
+      const results = [];
 
-      const createdAssignments = [];
-      const emailJobs = [];
-
+      // Process each assignment
       for (const assignment of assignments) {
         const { item_id, item_type, reviewer_ids } = assignment;
 
-        // Fetch item including team_id
-        const item = item_type === 'paper'
-          ? await prisma.paper.findUnique({ where: { paper_id: parseInt(item_id) }, select: { team_id: true, title: true } })
-          : await prisma.proposal.findUnique({ where: { proposal_id: parseInt(item_id) }, select: { team_id: true, title: true } });
-
-        if (!item) continue;
-
-        // Prevent admin/teacher from assigning their own team's submissions
-        const adminTeacher = await prisma.teacher.findUnique({ where: { teacher_id: admin.teacher_id } });
-        if (adminTeacher?.team_id && adminTeacher.team_id === item.team_id) {
-          return res.status(403).json({ error: "You cannot assign reviewers for submissions from your own team." });
+        if (
+          !item_id ||
+          !item_type ||
+          !reviewer_ids ||
+          !Array.isArray(reviewer_ids)
+        ) {
+          results.push({
+            item_id,
+            success: false,
+            message: "Invalid assignment data",
+          });
+          continue;
         }
 
-        for (const reviewer_id of reviewer_ids) {
-          const reviewer = await prisma.reviewer.findUnique({
-            where: { reviewer_id: parseInt(reviewer_id) },
-            select: { teacher: { select: { team_id: true } } }
-          });
+        try {
+          // Create reviewer assignments
+          const assignmentPromises = reviewer_ids.map((reviewer_id) =>
+            prisma.reviewerAssignment.create({
+              data: {
+                reviewer_id: parseInt(reviewer_id),
+                paper_id: item_type === "paper" ? parseInt(item_id) : null,
+                proposal_id:
+                  item_type === "proposal" ? parseInt(item_id) : null,
+                assigned_date: new Date(),
+                status: "PENDING",
+                due_date: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000), // 14 days from now
+              },
+            })
+          );
 
-          if (reviewer?.teacher?.team_id && reviewer.teacher.team_id === item.team_id) {
-            logger.warn(`Reviewer ${reviewer_id} cannot be assigned to their own team's ${item_type} ${item_id}`);
-            continue;
+          await Promise.all(assignmentPromises);
+
+          // Update the paper/proposal status to "Under Review"
+          if (item_type === "paper") {
+            await prisma.paper.update({
+              where: { paper_id: parseInt(item_id) },
+              data: { status: "Under Review" },
+            });
+          } else {
+            await prisma.proposal.update({
+              where: { proposal_id: parseInt(item_id) },
+              data: { status: "Under Review" },
+            });
           }
 
-          const assignmentData = {
-            reviewer_id: parseInt(reviewer_id),
-            assigned_by: admin.admin_id,
-            ...(item_type === 'paper' ? { paper_id: parseInt(item_id) } : { proposal_id: parseInt(item_id) })
-          };
-
-          const newAssignment = await prisma.reviewerassignment.create({
-            data: assignmentData,
-            include: includeAssignmentDetails()
+          results.push({
+            item_id,
+            success: true,
+            message: `Successfully assigned ${reviewer_ids.length} reviewers`,
           });
-
-          createdAssignments.push(newAssignment);
-          emailJobs.push(buildEmailJob(newAssignment));
+        } catch (assignmentError) {
+          logger.error(
+            `Error assigning reviewers to ${item_type} ${item_id}:`,
+            assignmentError
+          );
+          results.push({
+            item_id,
+            success: false,
+            message: "Failed to assign reviewers",
+          });
         }
-
-        // Update item status
-        const updateData = { status: 'UNDER_REVIEW' };
-        if (item_type === 'paper') await prisma.paper.update({ where: { paper_id: parseInt(item_id) }, data: updateData });
-        else await prisma.proposal.update({ where: { proposal_id: parseInt(item_id) }, data: updateData });
       }
 
-      if (emailJobs.length > 0) await emailQueue.add(emailQueueName, emailJobs);
+      const successCount = results.filter((r) => r.success).length;
+      const totalCount = results.length;
 
-      try {
-        await redis.del("/api/assignments/waiting");
-        await redis.del("/api/reviewers");
-      } catch (cacheErr) { logger.warn("Redis cache clear failed:", cacheErr); }
-
-      logger.info(`${createdAssignments.length} reviewer assignments created by admin ${assignedBy}`);
-
-      return res.json({
-        status: 200,
-        message: `Successfully assigned ${createdAssignments.length} reviewers.`,
-        assignments_created: createdAssignments.length
+      return res.status(200).json({
+        success: successCount > 0,
+        message: `Successfully processed ${successCount}/${totalCount} assignments`,
+        results: results,
       });
-
     } catch (error) {
-      console.error("Assign reviewers error:", error);
-      if (error instanceof errors.E_VALIDATION_ERROR) {
-        return res.status(400).json({ errors: error.messages });
-      }
-      return res.status(500).json({ error: "Something went wrong while assigning reviewers." });
+      logger.error("Error in assignReviewers:", error);
+      return res.status(500).json({
+        success: false,
+        message: "Server error while assigning reviewers",
+        error: error.message,
+      });
     }
   }
 
-  // Auto-match reviewers
+  // POST /api/assignments/auto-match - Auto-match reviewers based on expertise/workload
   static async autoMatchReviewers(req, res) {
     try {
-      const { item_id, item_type } = req.body;
+      // Validate input
+      const validator = vine.compile(autoMatchSchema);
+      const payload = await validator.validate(req.body);
 
-      const item = item_type === 'paper'
-        ? await prisma.paper.findUnique({ where: { paper_id: parseInt(item_id) }, select: { domain_id: true, team_id: true, title: true } })
-        : await prisma.proposal.findUnique({ where: { proposal_id: parseInt(item_id) }, select: { domain_id: true, team_id: true, title: true } });
+      const { item_id, item_type } = payload;
 
-      if (!item || !item.domain_id) return res.status(400).json({ error: "Item not found or has no domain specified." });
+      // Get the item details
+      let item;
+      if (item_type === "paper") {
+        item = await prisma.paper.findUnique({
+          where: { paper_id: parseInt(item_id) },
+          include: {
+            domain: true,
+            teacher: {
+              include: {
+                user: true,
+              },
+            },
+          },
+        });
+      } else {
+        item = await prisma.proposal.findUnique({
+          where: { proposal_id: parseInt(item_id) },
+          include: {
+            domain: true,
+            teacher: {
+              include: {
+                user: true,
+              },
+            },
+          },
+        });
+      }
 
-      const matchingReviewers = await prisma.reviewer.findMany({
+      if (!item) {
+        return res.status(404).json({
+          success: false,
+          message: "Item not found",
+        });
+      }
+
+      // Get available reviewers (excluding the author if they're a reviewer)
+      const availableReviewers = await prisma.reviewer.findMany({
         where: {
-          status: 'ACTIVE',
-          reviewerpreference: { some: { domain_id: item.domain_id } },
-          teacher: { isReviewer: true, user: { isVerified: true } }
+          status: "ACTIVE",
+          teacher_id: {
+            not: item.teacher_id, // Exclude the author
+          },
         },
-        include: { teacher: { include: { user: { select: { name: true, email: true } } } }, reviewerassignment: { select: { assignment_id: true } } }
+        include: {
+          teacher: {
+            include: {
+              user: true,
+              department: true,
+            },
+          },
+          reviewerassignment: {
+            where: {
+              status: {
+                in: ["PENDING", "IN_PROGRESS"],
+              },
+            },
+          },
+        },
       });
 
-      // Filter out reviewers from the same team
-      const filteredReviewers = matchingReviewers.filter(r => r.teacher.team_id !== item.team_id);
+      // Simple matching algorithm based on workload
+      // In a real system, you'd implement domain expertise matching
+      const reviewersWithScore = availableReviewers.map((reviewer) => {
+        const currentWorkload = reviewer.reviewerassignment?.length || 0;
+        const maxWorkload = 5; // Assume max 5 concurrent reviews
 
-      const sortedReviewers = filteredReviewers.sort((a, b) => a.reviewerassignment.length - b.reviewerassignment.length);
+        // Simple scoring: prefer reviewers with lower workload
+        const workloadScore = Math.max(
+          0,
+          (maxWorkload - currentWorkload) / maxWorkload
+        );
 
-      const recommendations = sortedReviewers.slice(0, 3).map(r => ({
-        id: r.reviewer_id,
-        name: r.teacher.user.name,
-        email: r.teacher.user.email,
-        currentAssignments: r.reviewerassignment.length,
-        matchScore: 100
-      }));
+        // Could add domain expertise matching here
+        const domainScore = 0.5; // Placeholder
 
-      return res.json({ item_title: item.title, recommendations, total_matches: filteredReviewers.length });
+        const totalScore = workloadScore * 0.7 + domainScore * 0.3;
 
+        return {
+          ...reviewer,
+          score: totalScore,
+          workload: currentWorkload,
+        };
+      });
+
+      // Sort by score (descending) and take top 2-3 reviewers
+      const recommendedReviewers = reviewersWithScore
+        .sort((a, b) => b.score - a.score)
+        .slice(0, 2)
+        .map((reviewer) => ({
+          id: reviewer.reviewer_id,
+          name: reviewer.teacher?.user?.name || "Unknown",
+          email: reviewer.teacher?.user?.email || "Unknown",
+          department:
+            reviewer.teacher?.department?.department_name || "Unknown",
+          workload: reviewer.workload,
+          score: reviewer.score,
+        }));
+
+      if (recommendedReviewers.length === 0) {
+        return res.status(200).json({
+          success: false,
+          message: "No suitable reviewers available for auto-assignment",
+        });
+      }
+
+      return res.status(200).json({
+        success: true,
+        message: `Found ${recommendedReviewers.length} recommended reviewers`,
+        recommendations: recommendedReviewers,
+        item_id: item_id,
+        item_type: item_type,
+      });
     } catch (error) {
-      console.error("Auto-match reviewers error:", error);
-      return res.status(500).json({ error: "Something went wrong while finding reviewer matches." });
+      logger.error("Error in auto-match reviewers:", error);
+      return res.status(500).json({
+        success: false,
+        message: "Server error during auto-matching",
+        error: error.message,
+      });
     }
   }
-
 }
 
 export default AssignmentController;

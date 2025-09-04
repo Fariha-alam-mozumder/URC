@@ -1,11 +1,16 @@
 import prisma from "../DB/db.config.js";
 import { Vine, errors } from "@vinejs/vine";
-import { registerSchema, loginSchema, validateRollNumber } from "../validations/authValidation.js";
+import {
+  registerSchema,
+  loginSchema,
+  validateRollNumber,
+} from "../validations/authValidation.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
 import { emailQueue, emailQueueName } from "../jobs/SendEmailJob.js";
 import logger from "../config/logger.js";
+
 
 const vine = new Vine();
 
@@ -35,12 +40,13 @@ class AuthController {
 
       //! Check if email is already pending verification
       const existingPending = Array.from(pendingRegistrations.values()).find(
-        reg => reg.email === payload.email
+        (reg) => reg.email === payload.email
       );
       if (existingPending) {
         return res.status(400).json({
           errors: {
-            email: "Registration already pending for this email. Please check your email or wait before trying again.",
+            email:
+              "Registration already pending for this email. Please check your email or wait before trying again.",
           },
         });
       }
@@ -48,7 +54,10 @@ class AuthController {
       //! Additional roll number validation for students
       if (payload.role === "STUDENT" && payload.roll_number) {
         // Check roll number format
-        const rollNumberError = validateRollNumber(payload.roll_number, payload.department_name);
+        const rollNumberError = validateRollNumber(
+          payload.roll_number,
+          payload.department_name
+        );
         if (rollNumberError) {
           return res.status(400).json({
             errors: {
@@ -60,8 +69,8 @@ class AuthController {
         // Check if roll number already exists in database
         const existingStudent = await prisma.student.findFirst({
           where: {
-            roll_number: payload.roll_number
-          }
+            roll_number: payload.roll_number,
+          },
         });
 
         if (existingStudent) {
@@ -73,9 +82,9 @@ class AuthController {
         }
 
         // Check if roll number is pending verification
-        const existingPendingRoll = Array.from(pendingRegistrations.values()).find(
-          reg => reg.roll_number === payload.roll_number
-        );
+        const existingPendingRoll = Array.from(
+          pendingRegistrations.values()
+        ).find((reg) => reg.roll_number === payload.roll_number);
         if (existingPendingRoll) {
           return res.status(400).json({
             errors: {
@@ -102,7 +111,7 @@ class AuthController {
         roll_number: payload.roll_number,
         designation: payload.designation,
         createdAt: new Date(),
-        expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000) // 24 hours expiry
+        expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours expiry
       };
 
       pendingRegistrations.set(verifyToken, registrationData);
@@ -131,9 +140,10 @@ class AuthController {
 
         return res.json({
           status: 200,
-          message: "Please check your email to verify and complete your registration.",
+          message:
+            "Please check your email to verify and complete your registration.",
           emailSent: true,
-          note: "Your account will be created only after email verification."
+          note: "Your account will be created only after email verification.",
         });
       } catch (emailError) {
         console.error("Email sending failed:", emailError);
@@ -220,7 +230,7 @@ class AuthController {
 
       if (registrationData.role === "STUDENT" && registrationData.roll_number) {
         const existingStudent = await prisma.student.findFirst({
-          where: { roll_number: registrationData.roll_number }
+          where: { roll_number: registrationData.roll_number },
         });
         if (existingStudent) {
           pendingRegistrations.delete(token);
@@ -356,6 +366,7 @@ class AuthController {
         expiresIn: "30d",
       });
 
+      
       return res.status(200).json({
         success: true,
         message: `${findUser.role} Login successful`,
@@ -476,87 +487,6 @@ class AuthController {
   }
 
 
-  static async switchRole(req, res) {
-    try {
-      const userId = req.user.id; // from auth middleware
-      const { newRole } = req.body;
-
-      if (!["TEACHER", "REVIEWER"].includes(newRole)) {
-        return res.status(400).json({ error: "Invalid role to switch." });
-      }
-
-      // Fetch user with related teacher info (if exists)
-      const user = await prisma.user.findUnique({
-        where: { user_id: userId },
-      });
-
-      if (!user) {
-        return res.status(404).json({ error: "User not found." });
-      }
-
-      if (user.role === newRole) {
-        return res.status(400).json({ error: `Already in role ${newRole}.` });
-      }
-
-      // Fetch teacher record for this user
-      const teacherRecord = await prisma.teacher.findFirst({
-        where: { user_id: userId },
-      });
-
-      // Check if switching to REVIEWER is allowed
-      if (newRole === "REVIEWER") {
-        if (!teacherRecord || teacherRecord.isReviewer === false) {
-          return res.status(403).json({
-            error:
-              "User is not authorized to switch to REVIEWER role. Must be a teacher marked as reviewer.",
-          });
-        }
-      }
-
-      // If switching back to TEACHER, no extra check needed
-
-      // Update user role in DB
-      await prisma.user.update({
-        where: { user_id: userId },
-        data: {
-          role: newRole,
-        },
-      });
-
-      // Issue new JWT token with updated role
-      const payloadData = {
-        id: user.user_id,
-        name: user.name,
-        email: user.email,
-        role: newRole,
-        emailVerified: !!user.isVerified,
-        isMainAdmin: !!user.isMainAdmin,
-      };
-
-      const token = jwt.sign(payloadData, process.env.JWT_SECRET, {
-        expiresIn: "30d",
-      });
-
-      return res.status(200).json({
-        success: true,
-        message: `Role switched to ${newRole} successfully.`,
-        token,
-        user: {
-          id: user.user_id,
-          name: user.name,
-          email: user.email,
-          role: newRole,
-          isMainAdmin: user.isMainAdmin,
-          emailVerified: !!user.isVerified,
-        },
-      });
-    } catch (error) {
-      console.error("SwitchRole error:", error);
-      return res.status(500).json({
-        error: "Something went wrong while switching roles.",
-      });
-    }
-  }
 
   /*/* Send test Email
   static async sendTestEmail(req, res) {
@@ -596,7 +526,6 @@ class AuthController {
         .json({ error: "Something went wrong. Please try again." });
     }
   }*/
-
 }
 
 // Clean up expired registrations every hour

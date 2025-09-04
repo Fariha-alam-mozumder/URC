@@ -5,11 +5,7 @@ const redisCache = ExpressRedisCache({
   port: 6379,
   host: "localhost",
   prefix: "master_backend",
-  expire: {
-    200: 60 * 60, // Cache successful responses for 1 hour
-    4: 60,        // Cache 4xx errors for 1 minute  
-    5: 30         // Cache 5xx errors for 30 seconds
-  },
+  expire: 60 * 1, // Cache everything for 5 minutes by default
   // Add these options for better stability
   auth_pass: process.env.REDIS_PASSWORD || null,
   db: 0,

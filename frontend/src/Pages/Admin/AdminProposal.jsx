@@ -19,6 +19,8 @@ function AdminProposals() {
     setLoading(true);
     try {
       const token = localStorage.getItem("token"); // JWT token
+       console.log("Fetching proposals with token:", token ? "Present" : "Missing");
+      
       const res = await axios.get("http://localhost:8000/api/admin/proposals", {
         headers: { Authorization: `Bearer ${token}` },
         params: {
@@ -28,13 +30,22 @@ function AdminProposals() {
         },
       });
 
+      
+      console.log(" Response status:", res.status);
+      console.log(" Response data:", res.data);
+
       if (res.data.success) {
+         console.log("Success! Data received:", res.data.data);
+        console.log(" Number of proposals:", res.data.data?.length || 0);
         setSubmissions(res.data.data);
       } else {
+         console.log(" Success flag is false");
         setSubmissions([]);
       }
     } catch (err) {
       console.error("Error fetching proposals:", err);
+      console.error(" Error response:", err.response?.data);
+      console.error(" Error status:", err.response?.status);
       setSubmissions([]);
     } finally {
       setLoading(false);
@@ -46,6 +57,10 @@ function AdminProposals() {
     fetchProposals();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters]);
+
+    console.log(" Current submissions state:", submissions);
+  console.log(" Loading state:", loading);
+
 
   const filteredData = submissions; // backend already filters
 
@@ -165,6 +180,16 @@ function AdminProposals() {
   const handleFilterChange = (name, value) => {
     setFilters((prev) => ({ ...prev, [name]: value }));
   };
+
+ //  debugging display
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <p className="text-gray-600">Loading proposals...</p>
+      </div>
+    );
+  }
+
 
   return (
     <div className="flex flex-col h-full min-w-0">
