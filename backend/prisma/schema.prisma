@@ -111,9 +111,6 @@ model domain {
   // Relations
   departmentdomain   departmentdomain[]
   userdomain         userdomain[]
-  reviewerpreference reviewerpreference[]
-  paper              paper[]
-  proposal           proposal[]
   team               team[]
 }
 
@@ -175,18 +172,6 @@ model reviewer {
 
   review             review[]
   reviewerassignment reviewerassignment[]
-  reviewerpreference reviewerpreference[]
-}
-
-model reviewerpreference {
-  reviewer_id Int
-  domain_id   Int
-
-  // Relations
-  reviewer reviewer @relation(fields: [reviewer_id], references: [reviewer_id])
-  domain   domain   @relation(fields: [domain_id], references: [domain_id])
-
-  @@id([reviewer_id, domain_id])
 }
 
 model team {
@@ -257,7 +242,6 @@ model paper {
   status       PaperStatus? @default(PENDING)
   team_id      Int?
   submitted_by Int?
-  domain_id    Int?
   pdf_path     String?
   file_size    Int?
   created_at   DateTime     @default(now())
@@ -265,7 +249,6 @@ model paper {
   // Relations
   team    team?    @relation(fields: [team_id], references: [team_id])
   teacher teacher? @relation(fields: [submitted_by], references: [teacher_id])
-  domain  domain?  @relation(fields: [domain_id], references: [domain_id])
 
   review             review[]
   reviewerassignment reviewerassignment[]
@@ -278,7 +261,6 @@ model proposal {
   status       PaperStatus? @default(PENDING)
   team_id      Int?
   submitted_by Int?
-  domain_id    Int?
   pdf_path     String?
   file_size    Int?
   created_at   DateTime     @default(now())
@@ -286,7 +268,6 @@ model proposal {
   // Relations
   team    team?    @relation(fields: [team_id], references: [team_id])
   teacher teacher? @relation(fields: [submitted_by], references: [teacher_id])
-  domain  domain?  @relation(fields: [domain_id], references: [domain_id])
 
   review             review[]
   reviewerassignment reviewerassignment[]
@@ -310,7 +291,7 @@ model review {
 
 model reviewerassignment {
   assignment_id Int  @id @default(autoincrement())
-  reviewer_id   Int?
+  reviewer_id   Int
   proposal_id   Int?
   paper_id      Int?
   assigned_date DateTime @default(now())

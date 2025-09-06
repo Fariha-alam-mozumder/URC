@@ -20,15 +20,16 @@ class AdminPaperController {
                             team_id: true,
                             team_name: true,
                             status: true,
-                            visibility: true
-                        }
-                    },
+                            visibility: true,
+            
                     domain: {
                         select: {
                             domain_id: true,
                             domain_name: true
                         }
-                    },
+                    }
+                }
+            },
                     teacher: {
                         select: { 
                             teacher_id: true,
@@ -91,7 +92,7 @@ class AdminPaperController {
                     }),
                     status: paper.status || 'Pending',
                     reviewer: assignedReviewers || 'Unassigned',
-                    track: paper.domain?.domain_name || 'Unknown',
+                    track: paper.team?.domain?.domain_name || 'Unknown',
                 };
             });
 
@@ -121,13 +122,14 @@ class AdminPaperController {
                             team_id: true,
                             team_name: true,
                             status: true,
-                            visibility: true
-                        }
-                    },
+                            visibility: true,
+                        
                     domain: {
                         select: {
                             domain_id: true,
                             domain_name: true
+                            }
+                    }
                         }
                     },
                     teacher: {
@@ -192,7 +194,7 @@ class AdminPaperController {
                     }),
                     status: proposal.status || 'Pending',
                     reviewer: assignedReviewers || 'Unassigned',
-                    track: proposal.domain?.domain_name || 'Unknown',
+                    track: proposal.team?.domain?.domain_name || 'Unknown',
                 };
             });
 

@@ -1,7 +1,7 @@
 import express from 'express';
 import "dotenv/config";
 import fileUpload from 'express-fileupload';
-import helmet from "helmet";
+//import helmet from "helmet";
 import cors from "cors";
 import {limiter} from "./config/ratelimiter.js";
 import './jobs/SendEmailJob.js';
@@ -10,7 +10,6 @@ import './jobs/SendEmailJob.js';
 
 const app = express();
 const PORT = process.env.PORT || 8000;
-
 
 
 //* Middleware
@@ -25,6 +24,17 @@ app.use(cors({
 })); 
 //app.use(cors()); // Allows or restricts access to your backend from different origins (frontends/apps)
 
+app.use('/uploads', (req, res, next) => {
+  if (req.path.endsWith('.pdf')) {
+    res.removeHeader('X-Frame-Options');
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', 'inline');
+  }
+  next();
+});
+
+// Your static file serving
+app.use('/uploads', express.static('uploads'));
 
 // ! Basic Express middleware
 app.use(express.json()); // api to json
@@ -32,7 +42,7 @@ app.use(express.urlencoded({ extended: false })); // html form response to json
 app.use(fileUpload()); // Giving authority of getting uploaded files by user
 
 //! Security middleware
-app.use(helmet()); // Secures the app by setting safe HTTP headers
+//app.use(helmet()); // Secures the app by setting safe HTTP headers
 
 // ! Rate limiting
 app.use(limiter); // Apply the rate limiting middleware to all requests.
@@ -45,6 +55,25 @@ app.use(express.static("public")); // public directory te ja data ache ta public
 // To serve a default profile picture from your local public/images directory (instead of using an external URL)
 // You're using Express, so serve the /public folder like this
 app.use("/images", express.static("public/images"));
+
+app.use("/documents", (req, res, next) => {
+  res.removeHeader("X-Frame-Options"); // in case Helmet set it
+  res.setHeader(
+    "Content-Security-Policy",
+    "frame-ancestors 'self' http://localhost:5173 http://127.0.0.1:5173"
+  );
+
+  if (req.path.endsWith(".pdf")) {
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader("Content-Disposition", "inline");
+  }
+
+  next();
+});
+
+
+app.use("/documents", express.static("public/documents"));
+
 
 
 // ! Cache middleware (after CORS and basic setup)

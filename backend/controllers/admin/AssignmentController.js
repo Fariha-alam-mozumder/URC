@@ -22,26 +22,30 @@ class AssignmentController {
           },
         },
         include: {
-          teacher: {
-            select: {
-              teacher_id: true,
-              user: {
-                select: {
-                  name: true,
-                  email: true,
+          team: {
+            include: {
+              domain: { 
+                select: { 
+                  domain_id: true, 
+                  domain_name: true 
+                } }, // team’s domain
+              teammember: {
+                include: {
+                  user: { 
+                    select: { 
+                      user_id: true, 
+                      name: true, 
+                      email: true 
+                    } },
                 },
               },
-            },
-          },
-          domain: {
-            select: {
-              domain_id: true,
-              domain_name: true,
             },
           },
         },
         orderBy: { created_at: "desc" },
       });
+
+      
 
       // Get proposals without assigned reviewers
       const proposalsWaiting = await prisma.proposal.findMany({
@@ -51,21 +55,23 @@ class AssignmentController {
           },
         },
         include: {
-          teacher: {
-            select: {
-              teacher_id: true,
-              user: {
-                select: {
-                  name: true,
-                  email: true,
+         team: {
+            include: {
+              domain: { 
+                select: { 
+                  domain_id: true, 
+                  domain_name: true 
+                } }, // team’s domain
+              teammember: {
+                include: {
+                  user: { 
+                    select: { 
+                      user_id: true, 
+                      name: true, 
+                      email: true 
+                    } },
                 },
               },
-            },
-          },
-          domain: {
-            select: {
-              domain_id: true,
-              domain_name: true,
             },
           },
         },
@@ -73,40 +79,80 @@ class AssignmentController {
       });
 
       // Transform papers to match frontend format
-      const transformedPapers = papersWaiting.map((paper) => ({
-        id: `P${String(paper.paper_id).padStart(3, "0")}`,
-        actual_id: paper.paper_id,
-        type: "paper",
-        title: paper.title || "Untitled Paper",
-        abstract: paper.abstract || "No abstract available",
-        author: paper.teacher?.user?.name || "Unknown Author",
-        authorEmail: paper.teacher?.user?.email || "Unknown",
-        status: paper.status || "Pending",
-        submissionDate: new Date(paper.created_at).toLocaleDateString(),
-        domain: paper.domain?.domain_name || "Unknown",
-        domain_id: paper.domain?.domain_id,
-        file_path: getDocumentUrl(paper.file_path),
-        viewUrl: `/admin/papers/${paper.paper_id}`,
-        autoMatchAvailable: true,
-      }));
+      const transformedPapers = papersWaiting.map((paper) => {
+        const members = paper.team?.teammember ?? [];
+
+        // Only team members; remove duplicates by user_id
+        const seen = new Set();
+        const authors = members
+          .filter((m) => {
+            const key = m.user_id;
+            if (seen.has(key)) return false;
+            seen.add(key);
+            return true;
+          })
+
+          .map((m) => ({
+            name: m.user?.name || "Member",
+            email: m.user?.email || null,
+          }));
+
+        return {
+          id: `P${String(paper.paper_id).padStart(3, "0")}`,
+          actual_id: paper.paper_id,
+          type: "paper",
+          title: paper.title || "Untitled Paper",
+          abstract: paper.abstract || "No abstract available",
+          author: authors.map((a) => a.name).join(", "), // legacy string
+          authors, // structured list (names+emails only)
+          authorEmail: null, // optional now
+          status: paper.status || "Pending",
+          submissionDate: new Date(paper.created_at).toLocaleDateString(),
+          domain: paper.team?.domain?.domain_name || "Unknown",
+          domain_id: paper.team?.domain?.domain_id || null,
+          pdf_path: getDocumentUrl(paper.pdf_path),
+          viewUrl: `/admin/papers/${paper.paper_id}`,
+          autoMatchAvailable: true,
+        };
+      });
 
       // Transform proposals to match frontend format
-      const transformedProposals = proposalsWaiting.map((proposal) => ({
-        id: `PR${String(proposal.proposal_id).padStart(3, "0")}`,
-        actual_id: proposal.proposal_id,
-        type: "proposal",
-        title: proposal.title || "Untitled Proposal",
-        abstract: proposal.abstract || "No abstract available",
-        author: proposal.teacher?.user?.name || "Unknown Author",
-        authorEmail: proposal.teacher?.user?.email || "Unknown",
-        status: proposal.status || "Pending",
-        submissionDate: new Date(proposal.created_at).toLocaleDateString(),
-        domain: proposal.domain?.domain_name || "Unknown",
-        domain_id: proposal.domain?.domain_id,
-        file_path: getDocumentUrl(proposal.file_path),
-        viewUrl: `/admin/proposals/${proposal.proposal_id}`,
-        autoMatchAvailable: true, 
-      }));
+            const transformedProposals = proposalsWaiting.map((proposal) => {
+        const members = proposal.team?.teammember ?? [];
+
+        // Only team members; remove duplicates by user_id
+        const seen = new Set();
+        const authors = members
+          .filter((m) => {
+            const key = m.user_id;
+            if (seen.has(key)) return false;
+            seen.add(key);
+            return true;
+          })
+
+          .map((m) => ({
+            name: m.user?.name || "Member",
+            email: m.user?.email || null,
+          }));
+
+    return {
+          id: `P${String(proposal.proposal_id).padStart(3, "0")}`,
+          actual_id: proposal.proposal_id,
+          type: "proposal",
+          title: proposal.title || "Untitled proposal",
+          abstract: proposal.abstract || "No abstract available",
+          author: authors.map((a) => a.name).join(", "), // legacy string
+          authors, // structured list (names+emails only)
+          authorEmail: null, // optional now
+          status: proposal.status || "Pending",
+          submissionDate: new Date(proposal.created_at).toLocaleDateString(),
+          domain: proposal.team?.domain?.domain_name || "Unknown",
+          domain_id: proposal.team?.domain?.domain_id || null,
+          pdf_path: getDocumentUrl(proposal.pdf_path),
+          viewUrl: `/admin/proposals/${proposal.proposal_id}`,
+          autoMatchAvailable: true,
+        };
+      });
 
       // Combine both papers and proposals
       const waitingItems = [...transformedPapers, ...transformedProposals];
@@ -154,12 +200,15 @@ class AssignmentController {
         status: "ACTIVE",
       };
 
-      // If domain_id is provided, filter by domain expertise
+      // If domain_id is provided, filter by domain expertise through teacher->user->userdomain
       if (domain_id) {
         whereCondition.teacher = {
-          department: {
-            // Assuming reviewers should be from same domain or have expertise
-            // Adjust this logic based on your domain matching requirements
+          user: {
+            userdomain: {
+              some: {
+                domain_id: parseInt(domain_id, 10),
+              },
+            },
           },
         };
       }
@@ -175,6 +224,17 @@ class AssignmentController {
                 select: {
                   name: true,
                   email: true,
+                  // Include user's domain preferences for expertise matching
+                  userdomain: {
+                    include: {
+                      domain: {
+                        select: {
+                          domain_id: true,
+                          domain_name: true,
+                        },
+                      },
+                    },
+                  },
                 },
               },
               department: {
@@ -204,12 +264,33 @@ class AssignmentController {
         department: reviewer.teacher?.department?.department_name || "Unknown",
         currentWorkload: reviewer.reviewerassignment?.length || 0,
         status: reviewer.status,
-        expertise: [], // Can add expertise matching logic here
-        matchScore: 0, // Can implement matching algorithm
+        // Include reviewer's domain expertise from userdomain
+        expertise:
+          reviewer.teacher?.user?.userdomain?.map(
+            (ud) => ud.domain.domain_name
+          ) || [],
+        domainIds:
+          reviewer.teacher?.user?.userdomain?.map(
+            (ud) => ud.domain.domain_id
+          ) || [],
+        matchScore: domain_id
+          ? reviewer.teacher?.user?.userdomain?.some(
+              (ud) => ud.domain_id === parseInt(domain_id, 10)
+            )
+            ? 1
+            : 0
+          : 0,
       }));
 
-      // Sort by workload (ascending) for balanced assignment
-      availableReviewers.sort((a, b) => a.currentWorkload - b.currentWorkload);
+      // Sort by match score first, then by workload (ascending) for balanced assignment
+      availableReviewers.sort((a, b) => {
+        // First prioritize domain match
+        if (a.matchScore !== b.matchScore) {
+          return b.matchScore - a.matchScore;
+        }
+        // Then by workload (lower workload first)
+        return a.currentWorkload - b.currentWorkload;
+      });
 
       return res.status(200).json({
         success: true,
@@ -232,7 +313,6 @@ class AssignmentController {
       // Validate input
       const validator = vine.compile(assignReviewersSchema);
       const payload = await validator.validate(req.body);
-
       const { assignments } = payload;
 
       const results = [];
@@ -257,35 +337,38 @@ class AssignmentController {
 
         try {
           // Create reviewer assignments
-          const assignmentPromises = reviewer_ids.map((reviewer_id) =>
-            prisma.reviewerAssignment.create({
-              data: {
-                reviewer_id: parseInt(reviewer_id),
-                paper_id: item_type === "paper" ? parseInt(item_id) : null,
-                proposal_id:
-                  item_type === "proposal" ? parseInt(item_id) : null,
-                assigned_date: new Date(),
-                status: "PENDING",
-                due_date: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000), // 14 days from now
-              },
-            })
-          );
+          await prisma.$transaction(async (tx) => {
+            //  Create all reviewer assignments
+            await Promise.all(
+              reviewer_ids.map((reviewer_id) =>
+                tx.reviewerassignment.create({
+                  data: {
+                    reviewer_id: parseInt(reviewer_id, 10),
+                    paper_id:
+                      item_type === "paper" ? parseInt(item_id, 10) : null,
+                    proposal_id:
+                      item_type === "proposal" ? parseInt(item_id, 10) : null,
+                    assigned_date: new Date(),
+                    due_date: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000), // 14 days
+                    status: "PENDING", // enum in schema
+                  },
+                })
+              )
+            );
 
-          await Promise.all(assignmentPromises);
-
-          // Update the paper/proposal status to "Under Review"
-          if (item_type === "paper") {
-            await prisma.paper.update({
-              where: { paper_id: parseInt(item_id) },
-              data: { status: "Under Review" },
-            });
-          } else {
-            await prisma.proposal.update({
-              where: { proposal_id: parseInt(item_id) },
-              data: { status: "Under Review" },
-            });
-          }
-
+            //  Update parent item's status to UNDER_REVIEW
+            if (item_type === "paper") {
+              await tx.paper.update({
+                where: { paper_id: parseInt(item_id, 10) },
+                data: { status: "UNDER_REVIEW" },
+              });
+            } else {
+              await tx.proposal.update({
+                where: { proposal_id: parseInt(item_id, 10) },
+                data: { status: "UNDER_REVIEW" },
+              });
+            }
+          });
           results.push({
             item_id,
             success: true,
@@ -337,7 +420,11 @@ class AssignmentController {
         item = await prisma.paper.findUnique({
           where: { paper_id: parseInt(item_id) },
           include: {
-            domain: true,
+            team: {
+              include: {
+                domain: true,
+              },
+            },
             teacher: {
               include: {
                 user: true,
@@ -349,7 +436,11 @@ class AssignmentController {
         item = await prisma.proposal.findUnique({
           where: { proposal_id: parseInt(item_id) },
           include: {
-            domain: true,
+            team: {
+              include: {
+                domain: true,
+              },
+            },
             teacher: {
               include: {
                 user: true,
@@ -373,11 +464,35 @@ class AssignmentController {
           teacher_id: {
             not: item.teacher_id, // Exclude the author
           },
+          // Only get reviewers who have expertise in the item's domain through userdomain
+          teacher: {
+            user: {
+              userdomain: {
+                some: {
+                  domain_id: item.team?.domain?.domain_id || 0,
+                },
+              },
+            },
+          },
         },
         include: {
           teacher: {
             include: {
-              user: true,
+              user: {
+                include: {
+                  // Include user's domain preferences for better matching
+                  userdomain: {
+                    include: {
+                      domain: {
+                        select: {
+                          domain_id: true,
+                          domain_name: true,
+                        },
+                      },
+                    },
+                  },
+                },
+              },
               department: true,
             },
           },
@@ -391,27 +506,36 @@ class AssignmentController {
         },
       });
 
-      // Simple matching algorithm based on workload
-      // In a real system, you'd implement domain expertise matching
+      // Enhanced matching algorithm based on domain expertise and workload
       const reviewersWithScore = availableReviewers.map((reviewer) => {
         const currentWorkload = reviewer.reviewerassignment?.length || 0;
         const maxWorkload = 5; // Assume max 5 concurrent reviews
 
-        // Simple scoring: prefer reviewers with lower workload
+        // Workload scoring: prefer reviewers with lower workload
         const workloadScore = Math.max(
           0,
           (maxWorkload - currentWorkload) / maxWorkload
         );
 
-        // Could add domain expertise matching here
-        const domainScore = 0.5; // Placeholder
+        // Domain expertise scoring: check if reviewer has expertise in the item's domain through userdomain
+        const itemDomainId = item.team?.domain?.domain_id;
+        const hasExpertise = reviewer.teacher?.user?.userdomain?.some(
+          (ud) => ud.domain_id === itemDomainId
+        );
+        const domainScore = hasExpertise ? 1.0 : 0.0;
 
-        const totalScore = workloadScore * 0.7 + domainScore * 0.3;
+        // Calculate total score (domain expertise is more important)
+        const totalScore = domainScore * 0.7 + workloadScore * 0.3;
 
         return {
           ...reviewer,
           score: totalScore,
           workload: currentWorkload,
+          hasExpertise: hasExpertise,
+          expertise:
+            reviewer.teacher?.user?.userdomain?.map(
+              (ud) => ud.domain.domain_name
+            ) || [],
         };
       });
 
@@ -427,6 +551,8 @@ class AssignmentController {
             reviewer.teacher?.department?.department_name || "Unknown",
           workload: reviewer.workload,
           score: reviewer.score,
+          hasExpertise: reviewer.hasExpertise,
+          expertise: reviewer.expertise,
         }));
 
       if (recommendedReviewers.length === 0) {

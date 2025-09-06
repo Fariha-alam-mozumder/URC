@@ -1118,3 +1118,1015 @@ Invalid `prisma.review.findMany()` invocation:
 }
 
 Argument `not` must not be null.
+2025-09-04T14:02:05.162Z [right meow!] error: Error calculating review time for reviewer 4: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 4,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-04T14:02:05.195Z [right meow!] error: Error calculating review time for reviewer 1: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 1,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-04T14:02:05.451Z [right meow!] error: Error calculating review time for reviewer 1: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 1,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-04T14:02:05.464Z [right meow!] error: Error calculating review time for reviewer 4: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 4,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-04T19:08:38.621Z [right meow!] error: Error assigning reviewers to paper 2: Cannot read properties of undefined (reading 'create')
+2025-09-04T19:12:35.013Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-04T19:12:35.039Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-04T19:12:35.049Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-04T19:12:36.045Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-04T19:12:36.047Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-04T19:12:36.107Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-04T19:12:37.053Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-04T19:12:37.055Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-04T19:12:37.115Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-04T19:12:38.163Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-04T19:12:38.165Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-04T19:12:38.227Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-04T19:12:41.160Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-04T19:12:41.174Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-04T19:12:41.216Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-05T19:06:17.119Z [right meow!] error: Error fetching waiting assignments: 
+Invalid `prisma.paper.findMany()` invocation:
+
+{
+  where: {
+    reviewerassignment: {
+      none: {}
+    }
+  },
+  include: {
+    teacher: {
+      select: {
+        teacher_id: true,
+        user: {
+          select: {
+            name: true,
+            email: true
+          }
+        }
+      }
+    },
+    domain: {
+    ~~~~~~
+      select: {
+        domain_id: true,
+        domain_name: true
+      }
+    },
+?   team?: true,
+?   review?: true,
+?   reviewerassignment?: true
+  },
+  orderBy: {
+    created_at: "desc"
+  }
+}
+
+Unknown field `domain` for include statement on model `paper`. Available options are marked with ?.
+2025-09-05T19:06:17.168Z [right meow!] error: Error fetching waiting assignments: 
+Invalid `prisma.paper.findMany()` invocation:
+
+{
+  where: {
+    reviewerassignment: {
+      none: {}
+    }
+  },
+  include: {
+    teacher: {
+      select: {
+        teacher_id: true,
+        user: {
+          select: {
+            name: true,
+            email: true
+          }
+        }
+      }
+    },
+    domain: {
+    ~~~~~~
+      select: {
+        domain_id: true,
+        domain_name: true
+      }
+    },
+?   team?: true,
+?   review?: true,
+?   reviewerassignment?: true
+  },
+  orderBy: {
+    created_at: "desc"
+  }
+}
+
+Unknown field `domain` for include statement on model `paper`. Available options are marked with ?.
+2025-09-05T19:06:26.348Z [right meow!] error: Error fetching waiting assignments: 
+Invalid `prisma.paper.findMany()` invocation:
+
+{
+  where: {
+    reviewerassignment: {
+      none: {}
+    }
+  },
+  include: {
+    teacher: {
+      select: {
+        teacher_id: true,
+        user: {
+          select: {
+            name: true,
+            email: true
+          }
+        }
+      }
+    },
+    domain: {
+    ~~~~~~
+      select: {
+        domain_id: true,
+        domain_name: true
+      }
+    },
+?   team?: true,
+?   review?: true,
+?   reviewerassignment?: true
+  },
+  orderBy: {
+    created_at: "desc"
+  }
+}
+
+Unknown field `domain` for include statement on model `paper`. Available options are marked with ?.
+2025-09-05T19:06:42.100Z [right meow!] error: Error fetching all papers for admin: 
+Invalid `prisma.paper.findMany()` invocation:
+
+{
+  include: {
+    team: {
+      select: {
+        team_id: true,
+        team_name: true,
+        status: true,
+        visibility: true
+      }
+    },
+    domain: {
+    ~~~~~~
+      select: {
+        domain_id: true,
+        domain_name: true
+      }
+    },
+    teacher: {
+      select: {
+        teacher_id: true,
+        designation: true,
+        user: {
+          select: {
+            name: true,
+            email: true
+          }
+        },
+        department: {
+          select: {
+            department_name: true
+          }
+        }
+      }
+    },
+    reviewerassignment: {
+      select: {
+        assignment_id: true,
+        reviewer: {
+          select: {
+            reviewer_id: true,
+            status: true,
+            teacher: {
+              select: {
+                user: {
+                  select: {
+                    name: true,
+                    email: true
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+?   review?: true
+  },
+  orderBy: {
+    created_at: "desc"
+  }
+}
+
+Unknown field `domain` for include statement on model `paper`. Available options are marked with ?.
+2025-09-05T19:06:42.151Z [right meow!] error: Error fetching all papers for admin: 
+Invalid `prisma.paper.findMany()` invocation:
+
+{
+  include: {
+    team: {
+      select: {
+        team_id: true,
+        team_name: true,
+        status: true,
+        visibility: true
+      }
+    },
+    domain: {
+    ~~~~~~
+      select: {
+        domain_id: true,
+        domain_name: true
+      }
+    },
+    teacher: {
+      select: {
+        teacher_id: true,
+        designation: true,
+        user: {
+          select: {
+            name: true,
+            email: true
+          }
+        },
+        department: {
+          select: {
+            department_name: true
+          }
+        }
+      }
+    },
+    reviewerassignment: {
+      select: {
+        assignment_id: true,
+        reviewer: {
+          select: {
+            reviewer_id: true,
+            status: true,
+            teacher: {
+              select: {
+                user: {
+                  select: {
+                    name: true,
+                    email: true
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+?   review?: true
+  },
+  orderBy: {
+    created_at: "desc"
+  }
+}
+
+Unknown field `domain` for include statement on model `paper`. Available options are marked with ?.
+2025-09-05T19:06:44.498Z [right meow!] error: Error fetching all proposals for admin: 
+Invalid `prisma.proposal.findMany()` invocation:
+
+{
+  include: {
+    team: {
+      select: {
+        team_id: true,
+        team_name: true,
+        status: true,
+        visibility: true
+      }
+    },
+    domain: {
+    ~~~~~~
+      select: {
+        domain_id: true,
+        domain_name: true
+      }
+    },
+    teacher: {
+      select: {
+        teacher_id: true,
+        designation: true,
+        user: {
+          select: {
+            name: true,
+            email: true
+          }
+        },
+        department: {
+          select: {
+            department_name: true
+          }
+        }
+      }
+    },
+    reviewerassignment: {
+      select: {
+        assignment_id: true,
+        reviewer: {
+          select: {
+            reviewer_id: true,
+            status: true,
+            teacher: {
+              select: {
+                user: {
+                  select: {
+                    name: true,
+                    email: true
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+?   review?: true
+  },
+  orderBy: {
+    created_at: "desc"
+  }
+}
+
+Unknown field `domain` for include statement on model `proposal`. Available options are marked with ?.
+2025-09-05T19:06:44.578Z [right meow!] error: Error fetching all proposals for admin: 
+Invalid `prisma.proposal.findMany()` invocation:
+
+{
+  include: {
+    team: {
+      select: {
+        team_id: true,
+        team_name: true,
+        status: true,
+        visibility: true
+      }
+    },
+    domain: {
+    ~~~~~~
+      select: {
+        domain_id: true,
+        domain_name: true
+      }
+    },
+    teacher: {
+      select: {
+        teacher_id: true,
+        designation: true,
+        user: {
+          select: {
+            name: true,
+            email: true
+          }
+        },
+        department: {
+          select: {
+            department_name: true
+          }
+        }
+      }
+    },
+    reviewerassignment: {
+      select: {
+        assignment_id: true,
+        reviewer: {
+          select: {
+            reviewer_id: true,
+            status: true,
+            teacher: {
+              select: {
+                user: {
+                  select: {
+                    name: true,
+                    email: true
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+?   review?: true
+  },
+  orderBy: {
+    created_at: "desc"
+  }
+}
+
+Unknown field `domain` for include statement on model `proposal`. Available options are marked with ?.
+2025-09-05T19:06:47.299Z [right meow!] error: Error fetching all papers for admin: 
+Invalid `prisma.paper.findMany()` invocation:
+
+{
+  include: {
+    team: {
+      select: {
+        team_id: true,
+        team_name: true,
+        status: true,
+        visibility: true
+      }
+    },
+    domain: {
+    ~~~~~~
+      select: {
+        domain_id: true,
+        domain_name: true
+      }
+    },
+    teacher: {
+      select: {
+        teacher_id: true,
+        designation: true,
+        user: {
+          select: {
+            name: true,
+            email: true
+          }
+        },
+        department: {
+          select: {
+            department_name: true
+          }
+        }
+      }
+    },
+    reviewerassignment: {
+      select: {
+        assignment_id: true,
+        reviewer: {
+          select: {
+            reviewer_id: true,
+            status: true,
+            teacher: {
+              select: {
+                user: {
+                  select: {
+                    name: true,
+                    email: true
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+?   review?: true
+  },
+  orderBy: {
+    created_at: "desc"
+  }
+}
+
+Unknown field `domain` for include statement on model `paper`. Available options are marked with ?.
+2025-09-05T19:06:47.351Z [right meow!] error: Error fetching all papers for admin: 
+Invalid `prisma.paper.findMany()` invocation:
+
+{
+  include: {
+    team: {
+      select: {
+        team_id: true,
+        team_name: true,
+        status: true,
+        visibility: true
+      }
+    },
+    domain: {
+    ~~~~~~
+      select: {
+        domain_id: true,
+        domain_name: true
+      }
+    },
+    teacher: {
+      select: {
+        teacher_id: true,
+        designation: true,
+        user: {
+          select: {
+            name: true,
+            email: true
+          }
+        },
+        department: {
+          select: {
+            department_name: true
+          }
+        }
+      }
+    },
+    reviewerassignment: {
+      select: {
+        assignment_id: true,
+        reviewer: {
+          select: {
+            reviewer_id: true,
+            status: true,
+            teacher: {
+              select: {
+                user: {
+                  select: {
+                    name: true,
+                    email: true
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+?   review?: true
+  },
+  orderBy: {
+    created_at: "desc"
+  }
+}
+
+Unknown field `domain` for include statement on model `paper`. Available options are marked with ?.
+2025-09-05T19:07:26.474Z [right meow!] error: Error fetching all proposals for admin: 
+Invalid `prisma.proposal.findMany()` invocation:
+
+{
+  include: {
+    team: {
+      select: {
+        team_id: true,
+        team_name: true,
+        status: true,
+        visibility: true
+      }
+    },
+    domain: {
+    ~~~~~~
+      select: {
+        domain_id: true,
+        domain_name: true
+      }
+    },
+    teacher: {
+      select: {
+        teacher_id: true,
+        designation: true,
+        user: {
+          select: {
+            name: true,
+            email: true
+          }
+        },
+        department: {
+          select: {
+            department_name: true
+          }
+        }
+      }
+    },
+    reviewerassignment: {
+      select: {
+        assignment_id: true,
+        reviewer: {
+          select: {
+            reviewer_id: true,
+            status: true,
+            teacher: {
+              select: {
+                user: {
+                  select: {
+                    name: true,
+                    email: true
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+?   review?: true
+  },
+  orderBy: {
+    created_at: "desc"
+  }
+}
+
+Unknown field `domain` for include statement on model `proposal`. Available options are marked with ?.
+2025-09-05T19:07:26.575Z [right meow!] error: Error fetching all proposals for admin: 
+Invalid `prisma.proposal.findMany()` invocation:
+
+{
+  include: {
+    team: {
+      select: {
+        team_id: true,
+        team_name: true,
+        status: true,
+        visibility: true
+      }
+    },
+    domain: {
+    ~~~~~~
+      select: {
+        domain_id: true,
+        domain_name: true
+      }
+    },
+    teacher: {
+      select: {
+        teacher_id: true,
+        designation: true,
+        user: {
+          select: {
+            name: true,
+            email: true
+          }
+        },
+        department: {
+          select: {
+            department_name: true
+          }
+        }
+      }
+    },
+    reviewerassignment: {
+      select: {
+        assignment_id: true,
+        reviewer: {
+          select: {
+            reviewer_id: true,
+            status: true,
+            teacher: {
+              select: {
+                user: {
+                  select: {
+                    name: true,
+                    email: true
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+?   review?: true
+  },
+  orderBy: {
+    created_at: "desc"
+  }
+}
+
+Unknown field `domain` for include statement on model `proposal`. Available options are marked with ?.
+2025-09-05T19:07:29.253Z [right meow!] error: Error fetching waiting assignments: 
+Invalid `prisma.paper.findMany()` invocation:
+
+{
+  where: {
+    reviewerassignment: {
+      none: {}
+    }
+  },
+  include: {
+    teacher: {
+      select: {
+        teacher_id: true,
+        user: {
+          select: {
+            name: true,
+            email: true
+          }
+        }
+      }
+    },
+    domain: {
+    ~~~~~~
+      select: {
+        domain_id: true,
+        domain_name: true
+      }
+    },
+?   team?: true,
+?   review?: true,
+?   reviewerassignment?: true
+  },
+  orderBy: {
+    created_at: "desc"
+  }
+}
+
+Unknown field `domain` for include statement on model `paper`. Available options are marked with ?.
+2025-09-05T19:07:29.294Z [right meow!] error: Error fetching waiting assignments: 
+Invalid `prisma.paper.findMany()` invocation:
+
+{
+  where: {
+    reviewerassignment: {
+      none: {}
+    }
+  },
+  include: {
+    teacher: {
+      select: {
+        teacher_id: true,
+        user: {
+          select: {
+            name: true,
+            email: true
+          }
+        }
+      }
+    },
+    domain: {
+    ~~~~~~
+      select: {
+        domain_id: true,
+        domain_name: true
+      }
+    },
+?   team?: true,
+?   review?: true,
+?   reviewerassignment?: true
+  },
+  orderBy: {
+    created_at: "desc"
+  }
+}
+
+Unknown field `domain` for include statement on model `paper`. Available options are marked with ?.
+2025-09-05T19:39:13.881Z [right meow!] error: Error fetching waiting assignments: 
+Invalid `prisma.paper.findMany()` invocation:
+
+{
+  where: {
+    reviewerassignment: {
+      none: {}
+    }
+  },
+  include: {
+    teacher: {
+      select: {
+        teacher_id: true,
+        user: {
+          select: {
+            name: true,
+            email: true
+          }
+        }
+      }
+    },
+    domain: {
+    ~~~~~~
+      select: {
+        domain_id: true,
+        domain_name: true
+      }
+    },
+?   team?: true,
+?   review?: true,
+?   reviewerassignment?: true
+  },
+  orderBy: {
+    created_at: "desc"
+  }
+}
+
+Unknown field `domain` for include statement on model `paper`. Available options are marked with ?.
+2025-09-05T19:39:13.949Z [right meow!] error: Error fetching waiting assignments: 
+Invalid `prisma.paper.findMany()` invocation:
+
+{
+  where: {
+    reviewerassignment: {
+      none: {}
+    }
+  },
+  include: {
+    teacher: {
+      select: {
+        teacher_id: true,
+        user: {
+          select: {
+            name: true,
+            email: true
+          }
+        }
+      }
+    },
+    domain: {
+    ~~~~~~
+      select: {
+        domain_id: true,
+        domain_name: true
+      }
+    },
+?   team?: true,
+?   review?: true,
+?   reviewerassignment?: true
+  },
+  orderBy: {
+    created_at: "desc"
+  }
+}
+
+Unknown field `domain` for include statement on model `paper`. Available options are marked with ?.
+2025-09-05T19:39:22.896Z [right meow!] error: Error fetching waiting assignments: 
+Invalid `prisma.paper.findMany()` invocation:
+
+{
+  where: {
+    reviewerassignment: {
+      none: {}
+    }
+  },
+  include: {
+    teacher: {
+      select: {
+        teacher_id: true,
+        user: {
+          select: {
+            name: true,
+            email: true
+          }
+        }
+      }
+    },
+    domain: {
+    ~~~~~~
+      select: {
+        domain_id: true,
+        domain_name: true
+      }
+    },
+?   team?: true,
+?   review?: true,
+?   reviewerassignment?: true
+  },
+  orderBy: {
+    created_at: "desc"
+  }
+}
+
+Unknown field `domain` for include statement on model `paper`. Available options are marked with ?.
+2025-09-05T19:39:22.977Z [right meow!] error: Error fetching waiting assignments: 
+Invalid `prisma.paper.findMany()` invocation:
+
+{
+  where: {
+    reviewerassignment: {
+      none: {}
+    }
+  },
+  include: {
+    teacher: {
+      select: {
+        teacher_id: true,
+        user: {
+          select: {
+            name: true,
+            email: true
+          }
+        }
+      }
+    },
+    domain: {
+    ~~~~~~
+      select: {
+        domain_id: true,
+        domain_name: true
+      }
+    },
+?   team?: true,
+?   review?: true,
+?   reviewerassignment?: true
+  },
+  orderBy: {
+    created_at: "desc"
+  }
+}
+
+Unknown field `domain` for include statement on model `paper`. Available options are marked with ?.
+2025-09-05T21:43:09.531Z [right meow!] error: Error fetching waiting assignments: submitter is not defined
+2025-09-05T21:43:09.604Z [right meow!] error: Error fetching waiting assignments: submitter is not defined
+2025-09-05T22:21:53.125Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-05T22:21:53.141Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-05T22:21:53.144Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-05T22:21:54.161Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-05T22:21:54.165Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-05T22:21:54.170Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-05T22:21:55.196Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-05T22:21:55.251Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-05T22:21:55.274Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-05T22:21:56.363Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-05T22:21:56.369Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-05T22:21:56.381Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379

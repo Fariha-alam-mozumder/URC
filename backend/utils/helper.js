@@ -65,11 +65,29 @@ export const generateRandomNum = () => {
 
 // Get document URL (for PDFs)
 export const getDocumentUrl = (docPath) => {
+    console.log("getDocumentUrl called with:", docPath);
   if (!docPath) {
+      console.log("No docPath provided, returning null");
     return null;
   }
+    if (/^https?:\/\//i.test(docPath)) return docPath;
+
+
+    //const fullUrl = `${process.env.APP_URL}/${docPath}`;
+//  console.log("Generated PDF URL:", fullUrl);
+  
   // Since Express serves public/ as static files, and docPath is relative to public/
-  return `${process.env.APP_URL}/${docPath}`;
+  //return `${process.env.APP_URL}/${docPath}`;
+const BASE = process.env.APP_URL || 'http://localhost:8000';
+
+  // Strip off leading public/ or documents/
+  const clean = String(docPath)
+    .replace(/^\/?public\/?/, '')
+    .replace(/^\/?documents\/?/, '');
+
+  // Final: http://localhost:8000/documents/<file>
+  return `${BASE}/documents/${encodeURIComponent(clean)}`;
+
 };
 
 export const getImageUrl = (imgName) => {
