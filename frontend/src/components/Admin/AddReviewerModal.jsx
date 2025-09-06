@@ -15,29 +15,24 @@ const AddReviewerModal = ({
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedIds, setSelectedIds] = useState([]);
 
+
+
+
   // Enhanced helper to extract domain names with more property checks
-  const getDomainNames = (r) => {
-    if (!r?.domain) return [];
-    
-    if (Array.isArray(r.domain)) {
-      return r.domain
-        .map((d) => {
-          // Check multiple possible property names for domain
-          if (typeof d === "string") return d;
-          return d?.name || d?.domain_name || d?.domain || d?.title || d?.label || "";
-        })
-        .filter(Boolean);
-    }
-    
-    // Handle case where domain is a single object or string
-    if (typeof r.domain === "string") return [r.domain];
-    if (typeof r.domain === "object") {
-      const domainName = r.domain?.name || r.domain?.domain_name || r.domain?.domain || r.domain?.title || r.domain?.label;
-      return domainName ? [domainName] : [];
-    }
-    
-    return [];
-  };
+// Enhanced helper to extract domain names based on your Prisma schema
+const getDomainNames = (r) => {
+  if (Array.isArray(r?.expertise) && r.expertise.length > 0) {
+    return r.expertise; // ["AI", "Networks"]
+  }
+  // Optional fallback if in future you pass the nested relation:
+  if (Array.isArray(r?.teacher?.user?.userdomain)) {
+    return r.teacher.user.userdomain
+      .map((ud) => ud?.domain?.domain_name)
+      .filter(Boolean);
+  }
+  return [];
+};
+
 
   const getDomainIds = (r) =>
     Array.isArray(r?.domain)
@@ -58,15 +53,18 @@ const AddReviewerModal = ({
 
   // 2) useMemo still runs every render (that's fine)
   const term = searchTerm.trim().toLowerCase();
-  const filteredReviewers = useMemo(() => {
-    return potentialReviewers.filter((r) => {
-      const inName = (r?.name || "").toLowerCase().includes(term);
-      const inEmail = (r?.email || "").toLowerCase().includes(term);
-      const inDept = (r?.department || "").toLowerCase().includes(term);
-      const inDomains = getDomainNames(r).some((dn) => dn.toLowerCase().includes(term));
-      return inName || inEmail || inDept || inDomains;
-    });
-  }, [potentialReviewers, term]);
+const filteredReviewers = useMemo(() => {
+  return potentialReviewers.filter((r) => {
+    const inName = (r?.name || "").toLowerCase().includes(term);
+    const inEmail = (r?.email || "").toLowerCase().includes(term);
+    const inDept = (r?.department || "").toLowerCase().includes(term);
+    const inDomains = getDomainNames(r).some((dn) =>
+      (dn || "").toLowerCase().includes(term)
+    );
+    return inName || inEmail || inDept || inDomains;
+  });
+}, [potentialReviewers, term]);
+
 
   // 3) Only now, after hooks, short-circuit rendering
   if (!show) return null;
@@ -154,7 +152,7 @@ const AddReviewerModal = ({
                         {domainNames.map((domainItem, idx) => (
                           <span
                             key={idx}
-                            className="inline-block bg-blue-600 text-white px-2 py-1 rounded text-xs"
+                            className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
                           >
                             {domainItem}
                           </span>
@@ -175,7 +173,7 @@ const AddReviewerModal = ({
           <CommonButton
             label={buttonLabel}
             onClick={handleSend}
-            className="w-full flex items-center justify-center"
+            className="w-full flex items-center justify-center flex gap-1 text-sm bg-blue-700 text-white px-3 py-1 rounded hover:bg-blue-900"
           />
         </div>
       </div>

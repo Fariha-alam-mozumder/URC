@@ -2130,3 +2130,4 @@ Unknown field `domain` for include statement on model `paper`. Available options
 2025-09-05T22:21:56.363Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
 2025-09-05T22:21:56.369Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
 2025-09-05T22:21:56.381Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-06T15:50:25.772Z [right meow!] error: Worker error: read ECONNRESET
