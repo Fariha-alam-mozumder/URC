@@ -84,9 +84,9 @@ const PaperCard = ({
       </div>
 
       {/* Debug info - remove this after fixing */}
-      <div className="text-xs text-gray-400 bg-yellow-50 p-2 rounded">
+      {/* <div className="text-xs text-gray-400 bg-yellow-50 p-2 rounded">
         PDF URL: {pdfUrl || "No file path"}
-      </div>
+      </div> */}
 
       {/* Actions */}
       <div className="flex justify-end gap-2">
