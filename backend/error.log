@@ -2131,3 +2131,153 @@ Unknown field `domain` for include statement on model `paper`. Available options
 2025-09-05T22:21:56.369Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
 2025-09-05T22:21:56.381Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
 2025-09-06T15:50:25.772Z [right meow!] error: Worker error: read ECONNRESET
+2025-09-11T06:59:25.769Z [right meow!] error: resolveReviewerId error: 
+Invalid `prisma.teacher.findUnique()` invocation:
+
+{
+  where: {
+    user_id: 3,
+?   teacher_id?: Int,
+?   AND?: teacherWhereInput | teacherWhereInput[],
+?   OR?: teacherWhereInput[],
+?   NOT?: teacherWhereInput | teacherWhereInput[],
+?   designation?: StringNullableFilter | String | Null,
+?   department_id?: IntNullableFilter | Int | Null,
+?   isReviewer?: BoolFilter | Boolean,
+?   user?: UserNullableScalarRelationFilter | userWhereInput | Null,
+?   department?: DepartmentNullableScalarRelationFilter | departmentWhereInput | Null,
+?   paper?: PaperListRelationFilter,
+?   proposal?: ProposalListRelationFilter,
+?   reviewer?: ReviewerNullableScalarRelationFilter | reviewerWhereInput | Null
+  },
+  select: {
+    teacher_id: true
+  }
+}
+
+Argument `where` of type teacherWhereUniqueInput needs at least one of `teacher_id` arguments. Available options are marked with ?.
+2025-09-11T06:59:25.813Z [right meow!] error: resolveReviewerId error: 
+Invalid `prisma.teacher.findUnique()` invocation:
+
+{
+  where: {
+    user_id: 3,
+?   teacher_id?: Int,
+?   AND?: teacherWhereInput | teacherWhereInput[],
+?   OR?: teacherWhereInput[],
+?   NOT?: teacherWhereInput | teacherWhereInput[],
+?   designation?: StringNullableFilter | String | Null,
+?   department_id?: IntNullableFilter | Int | Null,
+?   isReviewer?: BoolFilter | Boolean,
+?   user?: UserNullableScalarRelationFilter | userWhereInput | Null,
+?   department?: DepartmentNullableScalarRelationFilter | departmentWhereInput | Null,
+?   paper?: PaperListRelationFilter,
+?   proposal?: ProposalListRelationFilter,
+?   reviewer?: ReviewerNullableScalarRelationFilter | reviewerWhereInput | Null
+  },
+  select: {
+    teacher_id: true
+  }
+}
+
+Argument `where` of type teacherWhereUniqueInput needs at least one of `teacher_id` arguments. Available options are marked with ?.
+2025-09-11T06:59:35.541Z [right meow!] error: resolveReviewerId error: 
+Invalid `prisma.teacher.findUnique()` invocation:
+
+{
+  where: {
+    user_id: 3,
+?   teacher_id?: Int,
+?   AND?: teacherWhereInput | teacherWhereInput[],
+?   OR?: teacherWhereInput[],
+?   NOT?: teacherWhereInput | teacherWhereInput[],
+?   designation?: StringNullableFilter | String | Null,
+?   department_id?: IntNullableFilter | Int | Null,
+?   isReviewer?: BoolFilter | Boolean,
+?   user?: UserNullableScalarRelationFilter | userWhereInput | Null,
+?   department?: DepartmentNullableScalarRelationFilter | departmentWhereInput | Null,
+?   paper?: PaperListRelationFilter,
+?   proposal?: ProposalListRelationFilter,
+?   reviewer?: ReviewerNullableScalarRelationFilter | reviewerWhereInput | Null
+  },
+  select: {
+    teacher_id: true
+  }
+}
+
+Argument `where` of type teacherWhereUniqueInput needs at least one of `teacher_id` arguments. Available options are marked with ?.
+2025-09-11T06:59:35.589Z [right meow!] error: resolveReviewerId error: 
+Invalid `prisma.teacher.findUnique()` invocation:
+
+{
+  where: {
+    user_id: 3,
+?   teacher_id?: Int,
+?   AND?: teacherWhereInput | teacherWhereInput[],
+?   OR?: teacherWhereInput[],
+?   NOT?: teacherWhereInput | teacherWhereInput[],
+?   designation?: StringNullableFilter | String | Null,
+?   department_id?: IntNullableFilter | Int | Null,
+?   isReviewer?: BoolFilter | Boolean,
+?   user?: UserNullableScalarRelationFilter | userWhereInput | Null,
+?   department?: DepartmentNullableScalarRelationFilter | departmentWhereInput | Null,
+?   paper?: PaperListRelationFilter,
+?   proposal?: ProposalListRelationFilter,
+?   reviewer?: ReviewerNullableScalarRelationFilter | reviewerWhereInput | Null
+  },
+  select: {
+    teacher_id: true
+  }
+}
+
+Argument `where` of type teacherWhereUniqueInput needs at least one of `teacher_id` arguments. Available options are marked with ?.
+2025-09-11T07:10:21.967Z [right meow!] error: resolveReviewerId error: 
+Invalid `prisma.teacher.findUnique()` invocation:
+
+{
+  where: {
+    user_id: 3,
+?   teacher_id?: Int,
+?   AND?: teacherWhereInput | teacherWhereInput[],
+?   OR?: teacherWhereInput[],
+?   NOT?: teacherWhereInput | teacherWhereInput[],
+?   designation?: StringNullableFilter | String | Null,
+?   department_id?: IntNullableFilter | Int | Null,
+?   isReviewer?: BoolFilter | Boolean,
+?   user?: UserNullableScalarRelationFilter | userWhereInput | Null,
+?   department?: DepartmentNullableScalarRelationFilter | departmentWhereInput | Null,
+?   paper?: PaperListRelationFilter,
+?   proposal?: ProposalListRelationFilter,
+?   reviewer?: ReviewerNullableScalarRelationFilter | reviewerWhereInput | Null
+  },
+  select: {
+    teacher_id: true
+  }
+}
+
+Argument `where` of type teacherWhereUniqueInput needs at least one of `teacher_id` arguments. Available options are marked with ?.
+2025-09-11T07:10:21.988Z [right meow!] error: resolveReviewerId error: 
+Invalid `prisma.teacher.findUnique()` invocation:
+
+{
+  where: {
+    user_id: 3,
+?   teacher_id?: Int,
+?   AND?: teacherWhereInput | teacherWhereInput[],
+?   OR?: teacherWhereInput[],
+?   NOT?: teacherWhereInput | teacherWhereInput[],
+?   designation?: StringNullableFilter | String | Null,
+?   department_id?: IntNullableFilter | Int | Null,
+?   isReviewer?: BoolFilter | Boolean,
+?   user?: UserNullableScalarRelationFilter | userWhereInput | Null,
+?   department?: DepartmentNullableScalarRelationFilter | departmentWhereInput | Null,
+?   paper?: PaperListRelationFilter,
+?   proposal?: ProposalListRelationFilter,
+?   reviewer?: ReviewerNullableScalarRelationFilter | reviewerWhereInput | Null
+  },
+  select: {
+    teacher_id: true
+  }
+}
+
+Argument `where` of type teacherWhereUniqueInput needs at least one of `teacher_id` arguments. Available options are marked with ?.

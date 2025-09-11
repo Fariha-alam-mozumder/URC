@@ -15,7 +15,7 @@ import TeamApplicationController from "../controllers/teacher/TeamApplicationCon
 import TeamCommentController from "../controllers/teacher/TeamCommentController.js"; 
 import AssignmentController from './../controllers/admin/AssignmentController.js';
 import AdminPaperController from "../controllers/admin/AdminPaperController.js";
-
+import ReviewerAssignedController from "../controllers/reviewer/AssignedController.js";
 
 const router = Router();
 
@@ -131,4 +131,25 @@ router.get(
   adminOnly,
   AdminPaperController.getAllPapers
 );
+
+//!reviewer Routes
+router.get(
+  "/reviewer/assigned-papers",
+  authMiddleware,
+  ReviewerAssignedController.getAssignedPapers
+);
+
+router.get(
+  "/reviewer/assigned-proposals",
+  authMiddleware,
+  ReviewerAssignedController.getAssignedProposals
+);
+
+// Update assignment status (only reviewer who is assigned can update)
+router.patch(
+  "/reviewer/assignments/:id/status",
+  authMiddleware,
+  ReviewerAssignedController.updateAssignmentStatus
+);
+
 export default router;

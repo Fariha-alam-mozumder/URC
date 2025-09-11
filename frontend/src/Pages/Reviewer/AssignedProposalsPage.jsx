@@ -1,24 +1,226 @@
-// pages/AssignedProposalsPage.jsx
-import AssignedItemsPage from '../../components/Reviewer/AssignedItemsPage';
-import { useOutletContext } from 'react-router-dom';
+// src/Pages/Reviewer/AssignedProposalsPage.jsx
+import React, { useEffect, useState } from "react";
+import { Eye, Download } from "lucide-react";
+import CommonSubmissionTable from "../../components/Common/CommonSubmissionTable";
+import FilterBar from "../../components/Common/FilterBar";
+import CommonButton from "../../components/Common/CommonButton";
+import axios from "axios";
 
-const proposals = [
-  { id: 'PR-2025-101', title: 'Green Hydrogen for Urban Transportation Systems', due: 'March 18, 2025' },
-  { id: 'PR-2025-102', title: 'AI-Driven Drug Discovery for Rare Diseases', due: 'March 25, 2025' },
-  { id: 'PR-2025-103', title: 'Cybersecurity Threat Modeling Using Quantum Simulation', due: 'April 1, 2025' }
-];
+const API_BASE_URL = import.meta.env.APP_URL || "http://localhost:8000/api";
 
-const AssignedProposalsPage = () => {
-  const { toggleSidebar } = useOutletContext(); // optional use
+function formatDate(iso) {
+  if (!iso) return "-";
+  try {
+    const d = new Date(iso);
+    return d.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
+  } catch {
+    return iso;
+  }
+}
+
+export default function AssignedProposalsPage() {
+  const [filters, setFilters] = useState({ search: "", status: "" });
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
+  const [totalPages, setTotalPages] = useState(1);
+  const [total, setTotal] = useState(0);
+
+  const getAuthHeaders = () => ({ Authorization: `Bearer ${localStorage.getItem("token")}` });
+
+  const fetchAssignments = async (p = page, l = limit, status = filters.status) => {
+    setLoading(true);
+    setError("");
+    try {
+      const params = new URLSearchParams();
+      params.append("page", p);
+      params.append("limit", l);
+      if (status) params.append("status", status);
+
+      const { data } = await axios.get(`${API_BASE_URL}/reviewer/assigned-proposals?${params.toString()}`, {
+        headers: getAuthHeaders(),
+      });
+
+      const fetched = data?.data || [];
+      setItems(fetched);
+      setTotal(data?.pagination?.total ?? 0);
+      setTotalPages(data?.pagination?.pages ?? 1);
+      setPage(data?.pagination?.page ?? p);
+    } catch (err) {
+      console.error("Error fetching assigned proposals:", err);
+      setError(err?.response?.data?.message || "Failed to load assignments");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchAssignments(1, limit, filters.status);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [limit, filters.status]);
+
+  const handleFilterChange = (name, value) => setFilters((prev) => ({ ...prev, [name]: value }));
+
+  const updateAssignmentStatus = async (assignmentId, status) => {
+    try {
+      if (status === "COMPLETED" && !window.confirm("Mark this assignment as completed?")) return;
+      await axios.patch(`${API_BASE_URL}/reviewer/assignments/${assignmentId}/status`, { status }, { headers: getAuthHeaders() });
+      fetchAssignments(page, limit, filters.status);
+    } catch (err) {
+      console.error("Error updating assignment status:", err);
+      alert(err?.response?.data?.message || "Failed to update status");
+    }
+  };
+
+  const filteredData = items.filter((row) => {
+    const q = filters.search.toLowerCase();
+    const matchesSearch =
+      !q ||
+      (row.id && row.id.toLowerCase().includes(q)) ||
+      (row.title && row.title.toLowerCase().includes(q)) ||
+      (row.authors && row.authors.toLowerCase().includes(q));
+    const matchesStatus = filters.status ? row.assignmentStatus === filters.status : true;
+    return matchesSearch && matchesStatus;
+  });
+
+  const columns = [
+    { key: "assignmentId", label: "Assign ID", className: "font-bold text-blue-600 whitespace-nowrap" },
+    { key: "id", label: "Proposal ID", className: "whitespace-nowrap" },
+    { key: "title", label: "Title", className: "min-w-[400px] whitespace-nowrap" },
+    { key: "authors", label: "Authors", className: "min-w-[300px] whitespace-nowrap" },
+    { key: "track", label: "Track", className: "whitespace-nowrap" },
+    { key: "assignedDate", label: "Assigned", className: "whitespace-nowrap", render: (v) => formatDate(v) },
+    { key: "due", label: "Due", className: "whitespace-nowrap" },
+    {
+      key: "assignmentStatus",
+      label: "Status",
+      render: (value) => {
+        const colors = {
+          PENDING: "bg-gray-200 text-gray-700",
+          IN_PROGRESS: "bg-blue-100 text-blue-700",
+          COMPLETED: "bg-green-100 text-green-700",
+          OVERDUE: "bg-red-100 text-red-700",
+        };
+        return (
+          <span className={`px-2 py-1 rounded-full text-xs sm:text-sm font-medium ${colors[value] || "bg-gray-100 text-gray-700"}`}>
+            {value || "-"}
+          </span>
+        );
+      },
+      className: "whitespace-nowrap",
+    },
+    {
+      key: "actions",
+      label: "Actions",
+      render: (_, row) => (
+        <div className="flex gap-2">
+          <button
+            onClick={() => updateAssignmentStatus(row.assignmentId, "IN_PROGRESS")}
+            className="p-1 rounded border text-sm"
+            disabled={row.assignmentStatus === "IN_PROGRESS" || row.assignmentStatus === "COMPLETED"}
+            title="Start review"
+          >
+            Start
+          </button>
+
+          <button
+            onClick={() => updateAssignmentStatus(row.assignmentId, "COMPLETED")}
+            className="p-1 rounded border text-sm"
+            disabled={row.assignmentStatus === "COMPLETED"}
+            title="Complete review"
+          >
+            Complete
+          </button>
+
+          <a
+            href={row.pdf_path ? row.pdf_path : row.proposalId ? `/public/documents/${row.proposalId}` : "#"}
+            target="_blank"
+            rel="noreferrer"
+            className="p-1 rounded hover:bg-gray-100"
+            title="View proposal"
+          >
+            <Eye size={18} />
+          </a>
+        </div>
+      ),
+      className: "whitespace-nowrap",
+    },
+  ];
+
+  const filterConfig = [
+    { name: "search", type: "input", placeholder: "Search by title, authors, or ID...", value: filters.search },
+    {
+      name: "status",
+      type: "select",
+      value: filters.status,
+      options: [
+        { label: "All Statuses", value: "" },
+        { label: "PENDING", value: "PENDING" },
+        { label: "IN_PROGRESS", value: "IN_PROGRESS" },
+        { label: "COMPLETED", value: "COMPLETED" },
+        { label: "OVERDUE", value: "OVERDUE" },
+      ],
+    },
+  ];
 
   return (
-    <AssignedItemsPage
-      title="Assigned Proposals"
-      description="Review and manage your assigned research proposals"
-      items={proposals}
-      reviewPathPrefix="/ReviewerLayout/review/"
-    />
-  );
-};
+    <div className="flex flex-col h-full min-w-0">
+      <div className="sticky top-0 p-4 bg-white z-20 pb-4 mb-4 border-b border-gray-200 min-w-0">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-3 min-w-0 gap-3 sm:gap-0">
+          <h1 className="text-xl sm:text-2xl font-bold truncate w-full sm:w-auto">Assigned Proposals</h1>
+          <div className="flex flex-wrap shrink-0 gap-2">
+            <CommonButton
+              icon={Download}
+              label="Export CSV"
+              onClick={() => alert("Export CSV — implement server-side export if needed")}
+              className="min-w-[120px]"
+            />
+            <div className="flex items-center gap-2">
+              <label className="text-sm">Per page:</label>
+              <select value={limit} onChange={(e) => setLimit(Number(e.target.value))} className="border rounded px-2 py-1">
+                {[5, 10, 20, 50].map((n) => (
+                  <option key={n} value={n}>
+                    {n}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+        </div>
 
-export default AssignedProposalsPage;
+        <div className="min-w-0">
+          <FilterBar filters={filterConfig} onFilterChange={(n, v) => handleFilterChange(n, v)} />
+        </div>
+      </div>
+
+      <div className="flex-1 min-w-0 overflow-auto">
+        <CommonSubmissionTable title="Assigned Proposals" data={filteredData} columns={columns} scrollableBodyHeight="calc(100vh - 250px)" />
+      </div>
+
+      <div className="flex items-center justify-between p-3 border-t bg-white">
+        <div className="text-sm text-gray-600">
+          Showing page {page} of {totalPages} — {total} assignment{total !== 1 ? "s" : ""}
+        </div>
+        <div className="flex gap-2">
+          <button onClick={() => fetchAssignments(1, limit)} disabled={page === 1} className="px-3 py-1 border rounded">
+            « First
+          </button>
+          <button onClick={() => fetchAssignments(Math.max(1, page - 1), limit)} disabled={page === 1} className="px-3 py-1 border rounded">
+            ‹ Prev
+          </button>
+          <button onClick={() => fetchAssignments(Math.min(totalPages, page + 1), limit)} disabled={page === totalPages} className="px-3 py-1 border rounded">
+            Next ›
+          </button>
+          <button onClick={() => fetchAssignments(totalPages, limit)} disabled={page === totalPages} className="px-3 py-1 border rounded">
+            Last »
+          </button>
+        </div>
+      </div>
+
+      {loading && <div className="absolute inset-0 flex items-center justify-center pointer-events-none">Loading...</div>}
+      {error && <div className="p-3 text-red-600">{error}</div>}
+    </div>
+  );
+}

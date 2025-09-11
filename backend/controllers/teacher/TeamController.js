@@ -11,7 +11,9 @@ import { fileValidator, uploadFile } from "../../utils/helper.js";
 import { teamSchema } from "../../validations/teacher/teamValidation.js";
 
 const vine = new Vine();
+// FIXED: Use the correct enum values from Prisma schema
 const ROLE_ENUM = ["LEAD", "RESEARCHER", "ASSISTANT"];
+
 function toBool(v) {
   if (typeof v === "boolean") return v;
   if (v === "1" || v === 1) return true;
@@ -19,13 +21,13 @@ function toBool(v) {
   if (typeof v === "string") return v.toLowerCase() === "true";
   return false;
 }
+
 function toNum(v) {
   const n = Number(v);
   return Number.isNaN(n) ? undefined : n;
 }
 
 class TeamController {
-  // --------- NEW: creator’s dept + domains ----------
   static async creatorContext(req, res) {
     try {
       const userId = Number(req.user.id);
@@ -106,22 +108,26 @@ class TeamController {
           role_in_team: role,
         };
       });
+
       const validator = vine.compile(teamSchema);
       const payload = await validator.validate(body);
-      // After validation
       console.log("Validated payload:", payload);
+
       let team;
       try {
+        // FIXED: Create team with proper field mapping
         team = await db.team.create({
           data: {
             team_name: payload.team_name,
             team_description: payload.team_description || "",
             domain_id: payload.domain_id ?? null,
-            status: payload.status || "RECRUITING",
-            visibility: payload.visibility || "PUBLIC",
+            // FIXED: Ensure these match Prisma enum values exactly
+            status: payload.status || "RECRUITING", // TeamStatus enum
+            visibility: payload.visibility || "PUBLIC", // TeamVisibility enum
             max_members: payload.max_members ?? null,
             isHiring: payload.isHiring || false,
             created_by_user_id: Number(req.user.id),
+            // created_at is auto-generated
           },
         });
         console.log("Team created:", team);
@@ -131,18 +137,19 @@ class TeamController {
           data: {
             team_id: team.team_id,
             user_id: Number(req.user.id),
-            role_in_team: "LEAD", // or another default role if you prefer
+            role_in_team: "LEAD", // TeamRole enum value
           },
         });
         console.log(`Added creator ${req.user.id} as LEAD`);
 
+        // Add additional members
         if (Array.isArray(payload.members)) {
           for (const member of payload.members) {
             await db.teammember.create({
               data: {
                 team_id: team.team_id,
                 user_id: Number(member.user_id),
-                role_in_team: member.role_in_team, // Now guaranteed valid
+                role_in_team: member.role_in_team, // Already validated above
               },
             });
             console.log(
@@ -152,30 +159,43 @@ class TeamController {
         }
       } catch (dbErr) {
         console.error("DB operation failed:", dbErr);
+        // Log the specific error details
+        if (dbErr.code) {
+          console.error("Prisma error code:", dbErr.code);
+        }
+        if (dbErr.meta) {
+          console.error("Prisma error meta:", dbErr.meta);
+        }
         throw dbErr;
       }
+
+      // Handle file upload (proposal)
       console.log("req.body:", req.body);
       console.log("req.file:", req.file);
       console.log("req.files:", req.files);
 
       const file =
         req.files?.proposal || req.files?.file || req.files?.proposalFile;
-      const teacher = await db.teacher.findFirst({
-        where: { user_id: Number(req.user.id) },
-        select: { teacher_id: true },
-      });
-      if (!teacher) {
-        return res
-          .status(400)
-          .json({ error: "Submitting user is not a teacher" });
-      }
-
+      
       if (file) {
+        // Verify user is a teacher before creating proposal
+        const teacher = await db.teacher.findFirst({
+          where: { user_id: Number(req.user.id) },
+          select: { teacher_id: true },
+        });
+        
+        if (!teacher) {
+          return res
+            .status(400)
+            .json({ error: "Submitting user is not a teacher" });
+        }
+
         try {
           fileValidator(10, file.mimetype)(file);
         } catch (e) {
           return res.status(400).json({ errors: { proposal: e.message } });
         }
+
         const pdf_path = await uploadFile(file, true, "pdf");
         console.log("Proposal data payload:", {
           title: payload.proposal_title,
@@ -190,20 +210,20 @@ class TeamController {
             team_id: team.team_id,
             pdf_path,
             submitted_by: teacher.teacher_id,
-            domain_id: payload.domain_id,
+            domain_id: payload.domain_id, // REMOVED: This field doesn't exist in proposal model
             file_size: file.size,
-            status: "PENDING",
+            status: "PENDING", // PaperStatus enum
+            // created_at is auto-generated
           },
         });
       }
 
-      //try { await redis.del("/api/teams"); } catch (err) { console.error("Redis clear:", err); }
-
-      // *Invalidate data caches
+      // Invalidate caches
       try {
         const creatorId = Number(req.user.id);
         await redis.del(userTeamsKey(creatorId));
-        // also invalidate each added member's "my teams"
+        
+        // Also invalidate each added member's "my teams"
         if (Array.isArray(payload.members)) {
           for (const m of payload.members) {
             if (m?.user_id) await redis.del(userTeamsKey(Number(m.user_id)));
@@ -222,12 +242,25 @@ class TeamController {
     } catch (err) {
       if (err instanceof errors.E_VALIDATION_ERROR)
         return res.status(422).json({ errors: err.messages });
+      
       console.error("Team creation error:", err);
+      
+      // More specific error handling
+      if (err.code === 'P2002') {
+        return res.status(400).json({ error: "Duplicate entry - team name or constraint violation" });
+      }
+      if (err.code === 'P2003') {
+        return res.status(400).json({ error: "Foreign key constraint violation" });
+      }
+      if (err.code === 'P2025') {
+        return res.status(400).json({ error: "Record not found" });
+      }
+      
       return res.status(500).json({ error: "Internal Server Error" });
     }
   }
 
-  // Updated getPotentialTeamMembers method in TeamController.js
+  // ... rest of your methods remain the same
   static async getPotentialTeamMembers({
     departmentId,
     creatorUserId,
@@ -339,7 +372,6 @@ class TeamController {
     return [...students.map(formatUser), ...teachers.map(formatUser)];
   }
 
-  // --------- GET /api/members?creatorUserId=&departmentId=&domainIds=1,2,3 ----------
   static async listMembers(req, res) {
     try {
       const departmentId = req.query.departmentId
@@ -363,7 +395,7 @@ class TeamController {
           .status(400)
           .json({ error: "creatorUserId must be a number" });
 
-      //* Try cache first
+      // Try cache first
       const key = membersKey({ departmentId, creatorUserId, domainIds });
       const cached = await redis.get(key);
       if (cached)
@@ -374,8 +406,8 @@ class TeamController {
         creatorUserId,
         domainIds,
       });
-      //return res.json(members);
-      // *Cache for 30 minutes
+
+      // Cache for 30 minutes
       await redis.setex(key, 60, JSON.stringify(members)); // cache 60s
       return res.json({ data: members, fromCache: false });
     } catch (e) {
