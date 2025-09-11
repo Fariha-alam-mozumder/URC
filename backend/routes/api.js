@@ -60,6 +60,8 @@ router.get("/teacher/teams/:id", authMiddleware, TeamDetails.getTeamById);
 router.get("/teacher/my-teams/papers", authMiddleware, TeamDetails.getAllTeamPapers);
 router.get("/teacher/my-teams/proposals", authMiddleware, TeamDetails.getAllTeamProposals);
 router.get("/teacher/my-teams/comments", authMiddleware, TeamDetails.getAllTeamComments);
+router.get("/submissions", authMiddleware, SubmissionsController.list);
+router.get("/submissions/filters", authMiddleware, SubmissionsController.filters);
 
 // Proposal routes
 router.post("/proposals/upload", authMiddleware, ProposalController.upload);
@@ -94,10 +96,6 @@ router.get("/student/teams/:id", authMiddleware, StudentTeamController.getTeamBy
 router.get("/student/my-teams/papers", authMiddleware, StudentTeamController.getAllTeamPapers);
 router.get("/student/my-teams/proposals", authMiddleware, StudentTeamController.getAllTeamProposals); 
 router.get("/student/my-teams/comments", authMiddleware, StudentTeamController.getAllTeamComments);   
-
-// Common for teacher & student
-router.get("/submissions", authMiddleware, SubmissionsController.list);
-router.get("/submissions/filters", authMiddleware, SubmissionsController.filters);
 
 // router.get("/teams/:id/proposals", authMiddleware, StudentTeamController.getProposalsByTeamId);
 // Reviewer Routes (Admin functionality)
@@ -140,10 +138,10 @@ router.post(
 ); // Auto-match reviewers
 
 // ====================== Admin Proposals Routes ======================
-// router.get(
-//   "/admin/proposals",
-//   authMiddleware,
-//   adminOnly,
-//   AdminProposalController.getAllProposals
-// );
+router.get(
+  "/admin/proposals",
+  authMiddleware,
+  adminOnly,
+  AdminProposalController.getAllProposals
+);
 export default router;
