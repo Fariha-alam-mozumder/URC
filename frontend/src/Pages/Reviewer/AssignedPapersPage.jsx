@@ -20,6 +20,18 @@ function formatDate(iso) {
   }
 }
 
+function formatDateTime(iso) {
+  if (!iso) return { date: "-", time: "-" };
+  try {
+    const d = new Date(iso);
+    const date = d.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
+    const time = d.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" });
+    return { date, time };
+  } catch {
+    return { date: iso, time: "-" };
+  }
+}
+
 export default function AssignedPapersPage() {
   const navigate = useNavigate();
   const [filters, setFilters] = useState({ search: "", status: "" });
@@ -126,7 +138,7 @@ export default function AssignedPapersPage() {
 
   // Navigate to review page
   const handleReview = (paperId) => {
-    navigate(`/ReviewerLayout/review/${paperId}`);
+    navigate(`/reviewer/review/${paperId}`);
   };
 
   // filter client-side search on fetched page (keeps table behaviour similar to AdminPapers)
@@ -136,22 +148,82 @@ export default function AssignedPapersPage() {
       !q ||
       (row.id && row.id.toLowerCase().includes(q)) ||
       (row.title && row.title.toLowerCase().includes(q)) ||
+      (row.team_name && row.team_name.toLowerCase().includes(q)) ||
+      (row.domain_name && row.domain_name.toLowerCase().includes(q)) ||
+      // Updated to search in all team members
+      (row.teamMembers && row.teamMembers.some(member => member.name.toLowerCase().includes(q))) ||
+      // Fallback to authors string for backward compatibility
       (row.authors && row.authors.toLowerCase().includes(q));
     const matchesStatus = filters.status ? row.assignmentStatus === filters.status : true;
     return matchesSearch && matchesStatus;
   });
 
   const columns = [
-    // { key: "assignmentId", label: "Assign ID", className: "font-bold text-blue-600 whitespace-nowrap" },
-    { key: "id", label: "Paper ID", className: "whitespace-nowrap" },
-    { key: "title", label: "Title", className: "min-w-[400px] whitespace-nowrap" },
-    { key: "authors", label: "Authors", className: "min-w-[300px] whitespace-nowrap" },
-    { key: "track", label: "Track", className: "whitespace-nowrap" },
-    { key: "assignedDate", label: "Assigned", className: "whitespace-nowrap", render: (v) => formatDate(v) },
-    { key: "due", label: "Due", className: "whitespace-nowrap" },
+    { 
+      key: "title", 
+      label: "Title", 
+      className: "min-w-[250px]",
+      render: (value, row) => {
+        // Updated to use the structured teamMembers data or fallback to authors string
+        let authorsDisplay = "No authors";
+        
+        if (row.teamMembers && row.teamMembers.length > 0) {
+          authorsDisplay = row.teamMembers.map(member => member.name).join(", ");
+        } else if (row.authors) {
+          authorsDisplay = row.authors;
+        }
+
+        return (
+          <div>
+            <div className="font-medium text-gray-900 leading-tight">{value || "-"}</div>
+            <div className="text-sm italic text-gray-500 mt-1">
+              {authorsDisplay}
+            </div>
+          </div>
+        );
+      }
+    },
+    { 
+      key: "team", 
+      label: "Team", 
+      className: "min-w-[200px] text-center", 
+      render: (_, row) => (
+        <div className="flex flex-col items-center text-center w-full">
+          <div className="font-medium text-gray-900">{row.team_name || "-"}</div>
+          <div className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs italic font-small bg-blue-100 text-blue-800 mt-1">
+            {row.domain_name || "-"}
+          </div>
+        </div>
+      )
+    },
+    { 
+      key: "assignedDate", 
+      label: "Assign Date", 
+      className: "whitespace-nowrap text-center", 
+      render: (v) => (
+        <div className="flex justify-center w-full">
+          <span>{formatDate(v)}</span>
+        </div>
+      )
+    },
+    { 
+      key: "due", 
+      label: "Due Date", 
+      className: "min-w-[120px] text-center", 
+      render: (value) => {
+        const { date, time } = formatDateTime(value);
+        return (
+          <div className="flex flex-col items-center text-center w-full">
+            <div className="text-gray-900">{date}</div>
+            <div className="text-sm text-gray-600 mt-1">{time}</div>
+          </div>
+        );
+      }
+    },
     {
       key: "assignmentStatus",
       label: "Status",
+      className: "min-w-[120px] whitespace-nowrap text-center", 
       render: (value) => {
         const colors = {
           PENDING: "bg-gray-200 text-gray-700",
@@ -159,60 +231,78 @@ export default function AssignedPapersPage() {
           COMPLETED: "bg-green-100 text-green-700",
           OVERDUE: "bg-red-100 text-red-700",
         };
+        
+        const displayText = {
+          PENDING: "Pending",
+          IN_PROGRESS: "In Progress",
+          COMPLETED: "Completed",
+          OVERDUE: "Overdue",
+        };
+
         return (
-          <span className={`px-2 py-1 rounded-full text-xs sm:text-sm font-medium ${colors[value] || "bg-gray-100 text-gray-700"}`}>
-            {value || "-"}
-          </span>
+          <div className="flex justify-center w-full">
+            <span className={`px-2 py-1 rounded-full text-xs sm:text-sm font-medium ${colors[value] || "bg-gray-100 text-gray-700"}`}>
+              {displayText[value] || value || "-"}
+            </span>
+          </div>
         );
       },
-      className: "whitespace-nowrap",
     },
     {
       key: "actions",
       label: "Actions",
       render: (_, row) => (
-        <div className="flex gap-1 flex-wrap">
-          <button
-            onClick={() => {
-              const fullPdfUrl = row.pdf_path?.startsWith("http")
-                ? row.pdf_path
-                : `${API_BASE}${row.pdf_path?.startsWith("/") ? row.pdf_path : "/" + row.pdf_path}`;
-              window.open(fullPdfUrl, "_blank");
-            }}
-            disabled={!row.pdf_path}
-            className={`flex items-center gap-1 text-xs border px-2 py-1 rounded hover:bg-gray-100 ${
-              !row.pdf_path ? "opacity-50 cursor-not-allowed" : ""
-            }`}
-            title="View PDF"
-          >
-            <Eye size={12} /> View
-          </button>
+        <div className="flex flex-col gap-1 min-w-[120px]">
+          {/* First line: View Paper button */}
+          <div className="flex">
+            <button
+              onClick={() => {
+                const fullPdfUrl = row.pdf_path?.startsWith("http")
+                  ? row.pdf_path
+                  : `${API_BASE}${row.pdf_path?.startsWith("/") ? row.pdf_path : "/" + row.pdf_path}`;
+                window.open(fullPdfUrl, "_blank");
+              }}
+              disabled={!row.pdf_path}
+              className={`flex items-center gap-1 text-xs border px-2 py-1 rounded hover:bg-gray-100 ${
+                !row.pdf_path ? "opacity-50 cursor-not-allowed" : ""
+              }`}
+              title="View PDF"
+            >
+              <Eye size={12} /> View Paper
+            </button>
+          </div>
 
-          <button
-            onClick={() => updateAssignmentStatus(row.assignmentId, "IN_PROGRESS")}
-            className="flex items-center gap-1 text-xs border px-2 py-1 rounded hover:bg-blue-100 bg-blue-50 text-blue-700"
-            disabled={row.assignmentStatus === "IN_PROGRESS" || row.assignmentStatus === "COMPLETED"}
-            title="Start review"
-          >
-            Start
-          </button>
+          {/* Second line: Start and Complete buttons */}
+          <div className="flex gap-1">
+            <button
+              onClick={() => updateAssignmentStatus(row.assignmentId, "IN_PROGRESS")}
+              className="flex items-center gap-1 text-xs border px-2 py-1 rounded hover:bg-blue-100 bg-blue-50 text-blue-700"
+              disabled={row.assignmentStatus === "IN_PROGRESS" || row.assignmentStatus === "COMPLETED"}
+              title="Start review"
+            >
+              Start
+            </button>
 
-          <button
-            onClick={() => updateAssignmentStatus(row.assignmentId, "COMPLETED")}
-            className="flex items-center gap-1 text-xs border px-2 py-1 rounded hover:bg-green-100 bg-green-50 text-green-700"
-            disabled={row.assignmentStatus === "COMPLETED"}
-            title="Complete review"
-          >
-            Complete
-          </button>
+            <button
+              onClick={() => updateAssignmentStatus(row.assignmentId, "COMPLETED")}
+              className="flex items-center gap-1 text-xs border px-2 py-1 rounded hover:bg-green-100 bg-green-50 text-green-700"
+              disabled={row.assignmentStatus === "COMPLETED"}
+              title="Complete review"
+            >
+              Complete
+            </button>
+          </div>
 
-          <button
-            onClick={() => handleReview(row.id)}
-            className="flex items-center gap-1 text-xs border px-2 py-1 rounded hover:bg-gray-100 bg-gray-50 text-gray-700"
-            title="Review Paper"
-          >
-            <FileText size={12} /> Review
-          </button>
+          {/* Third line: Review Paper button */}
+          <div className="flex">
+            <button
+              onClick={() => handleReview(row.id)}
+              className="flex items-center gap-1 text-xs border px-2 py-1 rounded hover:bg-gray-100 bg-gray-50 text-gray-700"
+              title="Review Paper"
+            >
+              <FileText size={12} /> Review Paper
+            </button>
+          </div>
         </div>
       ),
       className: "whitespace-nowrap",
@@ -220,17 +310,17 @@ export default function AssignedPapersPage() {
   ];
 
   const filterConfig = [
-    { name: "search", type: "input", placeholder: "Search by title, authors, or ID...", value: filters.search },
+    { name: "search", type: "input", placeholder: "Search by title, team, domain, or author name...", value: filters.search },
     {
       name: "status",
       type: "select",
       value: filters.status,
       options: [
         { label: "All Statuses", value: "" },
-        { label: "PENDING", value: "PENDING" },
-        { label: "IN_PROGRESS", value: "IN_PROGRESS" },
-        { label: "COMPLETED", value: "COMPLETED" },
-        { label: "OVERDUE", value: "OVERDUE" },
+        { label: "Pending", value: "PENDING" },
+        { label: "In Progress", value: "IN_PROGRESS" },
+        { label: "Completed", value: "COMPLETED" },
+        { label: "Overdue", value: "OVERDUE" },
       ],
     },
   ];
@@ -241,12 +331,6 @@ export default function AssignedPapersPage() {
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-3 min-w-0 gap-3 sm:gap-0">
           <h1 className="text-xl sm:text-2xl font-bold truncate w-full sm:w-auto">Assigned Papers</h1>
           <div className="flex flex-wrap shrink-0 gap-2">
-            {/* <CommonButton
-              icon={Download}
-              label="Export CSV"
-              onClick={() => alert("Export CSV — you can implement export by calling backend /export route")}
-              className="min-w-[120px]"
-            /> */}
             <div className="flex items-center gap-2">
               <label className="text-sm">Per page:</label>
               <select value={limit} onChange={(e) => setLimit(Number(e.target.value))} className="border rounded px-2 py-1">
@@ -291,9 +375,6 @@ export default function AssignedPapersPage() {
 
       {loading && <div className="absolute inset-0 flex items-center justify-center pointer-events-none">Loading...</div>}
       {error && <div className="p-3 text-red-600">{error}</div>}
-
-      {/* Enhanced PDF Modal - using the same structure as PaperCard */}
-     
     </div>
   );
 }

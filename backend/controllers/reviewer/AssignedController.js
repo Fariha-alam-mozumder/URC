@@ -92,7 +92,16 @@ class ReviewerAssignedController {
                     department: { select: { department_name: true } },
                   },
                 },
-                team: { include: { domain: { select: { domain_name: true } } } },
+                team: { 
+                  include: { 
+                    domain: { select: { domain_name: true } },
+                    teammember: {
+                      include: {
+                        user: { select: { user_id: true, name: true, email: true } }
+                      }
+                    }
+                  } 
+                },
               },
             },
           },
@@ -105,17 +114,44 @@ class ReviewerAssignedController {
       const data = assignments.map((a) => {
         const p = a.paper;
         const dueDate = a.due_date ? new Date(a.due_date) : null;
+        
+        // Get all team members' info (following the pattern from AssignmentController.js)
+        const members = p?.team?.teammember ?? [];
+
+        // Remove duplicates by user_id and create structured author list
+        const seen = new Set();
+        const authors = members
+          .filter((m) => {
+            const key = m.user_id;
+            if (seen.has(key)) return false;
+            seen.add(key);
+            return true;
+          })
+          .map((m) => ({
+            name: m.user?.name || "Member",
+            email: m.user?.email || null,
+          }));
+
+        // Create display string for backward compatibility
+        const authorsDisplay = authors.length > 0 
+          ? authors.map(a => a.name).join(', ')
+          : (p?.teacher?.user?.name || 'Unknown');
+
         return {
           assignmentId: a.assignment_id,
           // Friendly display id used by frontend
           id: p ? `RP-${String(p.paper_id).padStart(3, "0")}` : null,
           paperId: p?.paper_id ?? null,
           title: p?.title ?? "Untitled",
-          authors: p?.teacher?.user?.name ?? "Unknown",
+          authors: authorsDisplay, // Updated to show all team members
+          author: authorsDisplay, // Alternative field name for compatibility
+          teamMembers: authors, // Structured list with names and emails
           submittedBy: p?.teacher?.user?.email ?? null,
           pdf_path: p?.pdf_path ?? null,
           file_size: p?.file_size ?? null,
           track: p?.team?.domain?.domain_name ?? null,
+          team_name: p?.team?.team_name ?? null,
+          domain_name: p?.team?.domain?.domain_name ?? null,
           assignmentStatus: a.status ?? null,
           assignedDate: a.assigned_date ? a.assigned_date.toISOString() : null,
           due: dueDate ? dueDate.toISOString() : null,
@@ -167,7 +203,16 @@ class ReviewerAssignedController {
                     department: { select: { department_name: true } },
                   },
                 },
-                team: { include: { domain: { select: { domain_name: true } } } },
+                team: { 
+                  include: { 
+                    domain: { select: { domain_name: true } },
+                    teammember: {
+                      include: {
+                        user: { select: { user_id: true, name: true, email: true } }
+                      }
+                    }
+                  } 
+                },
               },
             },
           },
@@ -180,16 +225,43 @@ class ReviewerAssignedController {
       const data = assignments.map((a) => {
         const pr = a.proposal;
         const dueDate = a.due_date ? new Date(a.due_date) : null;
+        
+        // Get all team members' info (following the pattern from AssignmentController.js)
+        const members = pr?.team?.teammember ?? [];
+
+        // Remove duplicates by user_id and create structured author list
+        const seen = new Set();
+        const authors = members
+          .filter((m) => {
+            const key = m.user_id;
+            if (seen.has(key)) return false;
+            seen.add(key);
+            return true;
+          })
+          .map((m) => ({
+            name: m.user?.name || "Member",
+            email: m.user?.email || null,
+          }));
+
+        // Create display string for backward compatibility
+        const authorsDisplay = authors.length > 0 
+          ? authors.map(a => a.name).join(', ')
+          : (pr?.teacher?.user?.name || 'Unknown');
+
         return {
           assignmentId: a.assignment_id,
           id: pr ? `PR-${String(pr.proposal_id).padStart(3, "0")}` : null,
           proposalId: pr?.proposal_id ?? null,
           title: pr?.title ?? "Untitled",
-          authors: pr?.teacher?.user?.name ?? "Unknown",
+          authors: authorsDisplay, // Updated to show all team members
+          author: authorsDisplay, // Alternative field name for compatibility
+          teamMembers: authors, // Structured list with names and emails
           submittedBy: pr?.teacher?.user?.email ?? null,
           pdf_path: pr?.pdf_path ?? null,
           file_size: pr?.file_size ?? null,
           track: pr?.team?.domain?.domain_name ?? null,
+          team_name: pr?.team?.team_name ?? null,
+          domain_name: pr?.team?.domain?.domain_name ?? null,
           assignmentStatus: a.status ?? null,
           assignedDate: a.assigned_date ? a.assigned_date.toISOString() : null,
           due: dueDate ? dueDate.toISOString() : null,

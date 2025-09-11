@@ -17,12 +17,17 @@ export const StatusPill = ({ status, classes = {} }) => (
   </span>
 );
 
-const HeaderCell = ({ label, onSort, sortKey, currentSort }) => (
+const HeaderCell = ({ label, onSort, sortKey, currentSort, isCentered = false }) => (
   <button
     onClick={() => onSort && onSort(sortKey)}
-    className="flex items-center gap-1 font-semibold text-sm text-gray-700 whitespace-nowrap"
+    className={`${
+      isCentered 
+        ? "flex flex-col items-center justify-center w-full" 
+        : "flex items-center gap-1"
+    } font-semibold text-sm text-gray-700 whitespace-nowrap`}
   >
-    {label} {onSort && <FaSort className="opacity-60" />}
+    <span className={isCentered ? "text-center" : ""}>{label}</span>
+    {onSort && <FaSort className="opacity-60" />}
   </button>
 );
 
@@ -52,21 +57,27 @@ const CommonSubmissionTable = ({
         <table className="min-w-[900px] w-full border-collapse">
           <thead className="bg-gray-100 sticky top-0 z-10">
             <tr className="text-xs text-gray-500 border-b">
-              {columns.map((col, idx) => (
-                <th
-                  key={idx}
-                  className={`px-4 py-2 text-left font-semibold whitespace-nowrap ${
-                    col.className || ""
-                  }`}
-                >
-                  <HeaderCell
-                    label={col.label}
-                    sortKey={col.key}
-                    currentSort={sort}
-                    onSort={col.sortable ? onSort : null}
-                  />
-                </th>
-              ))}
+              {columns.map((col, idx) => {
+                const isCentered = col.className?.includes('text-center');
+                return (
+                  <th
+                    key={idx}
+                    className={`px-4 py-2 ${
+                      isCentered ? 'text-center' : 'text-left'
+                    } font-semibold whitespace-nowrap ${
+                      col.className || ""
+                    }`}
+                  >
+                    <HeaderCell
+                      label={col.label}
+                      sortKey={col.key}
+                      currentSort={sort}
+                      onSort={col.sortable ? onSort : null}
+                      isCentered={isCentered}
+                    />
+                  </th>
+                );
+              })}
               {actions && (
                 <th className="px-4 py-2 text-right whitespace-nowrap">
                   Actions
