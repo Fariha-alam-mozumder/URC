@@ -7,7 +7,7 @@ import {
 import { useContext } from "react";
 import { AuthContext, AuthProvider } from "./context/AuthContext.jsx";
 
-import LandingPage from "./pages/landingpage/LandingPage";
+import LandingPage from "./Pages/Landing/LandingPage.jsx";
 import SignUpForm from "./AuthenticatePages/SignUpForm.jsx";
 import LoginForm from "./AuthenticatePages/LoginForm.jsx";
 import VerifyPending from "./AuthenticatePages/VerifyPendingPage.jsx";
@@ -28,13 +28,15 @@ import CreateTeam from "./Pages/Teacher/CreateTeam";
 import TeamDetails from "./Pages/Teacher/TeamDetails";
 import MyPapers from "./Pages/Teacher/MyPapers";
 import SubmissionHistory from "./Pages/Teacher/SubmissionHistory";
+import MyProposals from "./Pages/Teacher/MyProposals.jsx";
 
 //! Student pages
 import StudentLayout from "./Pages/Student/StudentLayout";
 import StudentDashboard from "./Pages/Student/StudentDashboard";
 import MyTeams from "./Pages/Student/MyTeams";
 import StudentTeamDetails from "./Pages/Student/StudentTeamDetails";
-import StudentMyPapers from "./Pages/Student/StudentMyPapers";
+import StudentMyPapers from "./Pages/Student/StudentMyPapers.jsx";
+import StudentMyProposals from "./Pages/Student/StudentMyProposals.jsx";
 
 //! Admin
 import AdminDashboard from "./Pages/Admin/AdminDashboard";
@@ -44,11 +46,14 @@ import AdminProposals from "./Pages/Admin/AdminProposal";
 import WaitingAssignment from "./Pages/Admin/WaitingAssignment";
 import ReviewerCommittee from "./Pages/Admin/ReviewCommittee";
 import TeamsPage from "./Pages/Admin/Teams";
-import AdminTeamDetails from "./Pages/Admin/TeamDetail";
+import AdminTeamDetails from "./Pages/Admin/AdminTeamDetails";
 
 //! Auth and utils
 import PrivateRoute from "./context/PrivateRoute.jsx";
-import Homepage from "./Pages/home/Homepage";
+import Homepage from "./Pages/Home/Homepage.jsx";
+import ProfilePage from "./Pages/Profile/ProfilePage.jsx";
+import PreferencePage from "./Pages/Preference/PreferencePage.jsx";
+
 
 function RoleBasedRedirect() {
   const { loading, user, currentViewRole } = useContext(AuthContext);
@@ -61,7 +66,7 @@ function RoleBasedRedirect() {
     return <Navigate to="/verify" />;
   }
   console.log("User object:", user);
-console.log("user.emailVerified:", user?.emailVerified);
+  console.log("user.emailVerified:", user?.emailVerified);
 
   if (currentViewRole === "ADMIN" || user.isMainAdmin) {
     return <Navigate to="/admin/home" />;
@@ -89,6 +94,24 @@ export default function App() {
           <Route path="/login" element={<LoginForm />} />
           <Route path="/verify" element={<VerifyPending />} />
           <Route path="/home" element={<RoleBasedRedirect />} />
+          
+          {/* Profile and Preferences - No role parameter needed */}
+          <Route 
+            path="/profile" 
+            element={
+              <PrivateRoute allowedRoles={["ADMIN", "TEACHER", "REVIEWER", "STUDENT", "GENERALUSER"]}>
+                <ProfilePage />
+              </PrivateRoute>
+            } 
+          />
+          <Route 
+            path="/preferences" 
+            element={
+              <PrivateRoute allowedRoles={["ADMIN", "TEACHER", "REVIEWER", "STUDENT", "GENERALUSER"]}>
+                <PreferencePage />
+              </PrivateRoute>
+            } 
+          />
 
           {/* Admin */}
           <Route
@@ -99,7 +122,7 @@ export default function App() {
               </PrivateRoute>
             }
           >
-             <Route index element={<Homepage />} />
+            <Route index element={<Homepage />} />
             <Route path="home" element={<Homepage />} />
             <Route path="dashboard" element={<AdminHome />} />
             <Route path="all-papers" element={<AdminPapers />} />
@@ -123,7 +146,10 @@ export default function App() {
             <Route path="home" element={<Homepage />} />
             <Route path="dashboard" element={<ReviewerDashboard />} />
             <Route path="assignedpapers" element={<AssignedPapersPage />} />
-            <Route path="assignedproposals" element={<AssignedProposalsPage />} />
+            <Route
+              path="assignedproposals"
+              element={<AssignedProposalsPage />}
+            />
             <Route path="review/:paperId" element={<PaperReviewPage />} />
             <Route path="reviewhistory" element={<ReviewHistoryPage />} />
           </Route>
@@ -143,6 +169,7 @@ export default function App() {
             <Route path="team" element={<TeamManagement />} />
             <Route path="team/create" element={<CreateTeam />} />
             <Route path="team/:id" element={<TeamDetails />} />
+            <Route path="myproposals" element={<MyProposals />} />
             <Route path="mypapers" element={<MyPapers />} />
             <Route path="history" element={<SubmissionHistory />} />
           </Route>
@@ -162,6 +189,8 @@ export default function App() {
             <Route path="team" element={<MyTeams />} />
             <Route path="team/:id" element={<StudentTeamDetails />} />
             <Route path="mypapers" element={<StudentMyPapers />} />
+            <Route path="mypapers" element={<StudentMyProposals />} />
+            <Route path="myproposals" element={<StudentMyProposals />} />
           </Route>
 
           {/* Catch all */}

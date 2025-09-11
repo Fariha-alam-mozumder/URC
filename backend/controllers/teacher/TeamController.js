@@ -3,7 +3,7 @@ import db from "../../DB/db.config.js";
 import redis from "../../DB/redis.config.js";
 import { Vine, errors } from "@vinejs/vine";
 import { fileValidator, uploadFile } from "../../utils/helper.js";
-import { teamSchema } from "../../validations/teamValidation.js";
+import { teamSchema } from "../../validations/teacher/teamValidation.js";
 
 const vine = new Vine();
 const ROLE_ENUM = ["LEAD", "RESEARCHER", "ASSISTANT"];

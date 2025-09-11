@@ -1,6 +1,6 @@
 // controllers/PaperController.js
 import db from "../../DB/db.config.js";
-import { paperValidator } from "../../validations/paperValidation.js";
+import { paperValidator } from "../../validations/teacher/paperValidation.js";
 import { fileValidator, uploadFile } from "../../utils/helper.js";
 import { errors } from "@vinejs/vine";
 
@@ -51,7 +51,6 @@ class PaperController {
           pdf_path,
           team_id: Number(payload.team_id),
           submitted_by: teacher.teacher_id,
-          domain_id: payload.domain_id || null,
           file_size: file.size,
           status: "PENDING",
         },
@@ -81,16 +80,16 @@ class PaperController {
         include: {
           teacher: {
             include: {
-              user: {
-                select: { name: true, email: true }
-              }
-            }
+              user: { select: { name: true, email: true } },
+            },
           },
-          domain: {
-            select: { domain_name: true }
-          }
+          team: {
+            include: {
+              domain: { select: { domain_name: true } },
+            },
+          },
         },
-        orderBy: { created_at: 'desc' }
+        orderBy: { created_at: "desc" },
       });
 
       return res.json({ data: papers });
@@ -151,6 +150,7 @@ class PaperController {
       return res.status(500).json({ error: "Internal Server Error" });
     }
   }
+  
 }
 
 export default PaperController;

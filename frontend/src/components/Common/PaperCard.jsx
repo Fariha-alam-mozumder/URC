@@ -4,31 +4,27 @@ import { FaEdit, FaDownload, FaEye } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-const PaperCard = ({
-  paper,
-  role = "teacher",
-  basePath,
-  canEdit,
-  onView,
-  onEdit,
-  onDownload,
-}) => {
+const PaperCard = ({ paper, onView, onDownload }) => {
   const navigate = useNavigate();
 
-  const resolvedBasePath =
-    basePath || (role === "student" ? "/student" : "/teacher");
-  const allowEdit = typeof canEdit === "boolean" ? canEdit : role === "teacher";
+  let formattedStatus = paper.status.replace(/_/g, " ");
+  formattedStatus =
+    formattedStatus.charAt(0).toUpperCase() +
+    formattedStatus.slice(1).toLowerCase();
+  // const resolvedBasePath =
+  //   basePath || (role === "student" ? "/student" : "/teacher");
+  // const allowEdit = typeof canEdit === "boolean" ? canEdit : role === "teacher";
 
   const handleView = () => {
     if (onView) return onView(paper);
     navigate(`${resolvedBasePath}/papers/${encodeURIComponent(paper.id)}`);
   };
 
-  const handleEdit = () => {
-    if (!allowEdit) return;
-    if (onEdit) return onEdit(paper);
-    navigate(`${resolvedBasePath}/papers/${encodeURIComponent(paper.id)}/edit`);
-  };
+  // const handleEdit = () => {
+  //   if (!allowEdit) return;
+  //   if (onEdit) return onEdit(paper);
+  //   navigate(`${resolvedBasePath}/papers/${encodeURIComponent(paper.id)}/edit`);
+  // };
 
   const handleDownload = async (e) => {
     e.preventDefault();
@@ -69,34 +65,61 @@ const PaperCard = ({
   return (
     <div className="bg-white rounded-lg shadow-md p-4 space-y-3">
       {/* Top Info */}
-      <div className="flex justify-between items-start">
-        <div>
-          <h3 className="font-bold text-lg mb-1">{paper.title}</h3>
+      <div className="flex justify-between items-start gap-4">
+        <div className="flex-1 min-w-0">
+          {/* Badges row (creates space above the title) */}
+          <div className="flex flex-wrap items-center gap-2 mb-2">
+            {paper.idTag && (
+              <span className="px-2 py-1 rounded-full text-sm bg-indigo-100 text-indigo-800 font-mono border border-indigo-200">
+                {paper.idTag}
+              </span>
+            )}
+            {paper.domainName && (
+              <span className="px-2 py-1 rounded-full text-sm bg-gray-100 text-gray-800 border border-gray-200">
+                {paper.domainName}
+              </span>
+            )}
+          </div>
+
+          {/* Title */}
+          <h3 className="font-bold text-lg leading-snug mb-1">{paper.title}</h3>
+
+          {/* Meta */}
           <p className="text-sm text-gray-500">
             {paper.team} | {paper.date}
           </p>
           <p className="text-xs text-gray-400">
             Uploaded by {paper.lastEditor}
           </p>
+
+          {/* Abstract in a pretty box */}
+          {paper.abstract && (
+            <div className="mt-3 rounded-xl border border-gray-200 bg-gradient-to-br from-gray-50 to-white p-3 shadow-sm">
+              <h4 className="font-semibold mb-1">Abstract</h4>
+              <p className="text-sm leading-relaxed text-gray-700">
+                {paper.abstract}
+              </p>
+            </div>
+          )}
         </div>
-        <div className="text-xs text-right">
+
+        {/* Status pill */}
+        <div className="text-xs text-right shrink-0">
           <span
-            className={`px-2 py-1 rounded-full mr-2 ${
+            className={`px-2 py-1 rounded-full mr-2 text-sm ${
               paper.status === "ACCEPTED"
-                ? "bg-green-100 text-green-700"
+                ? "bg-green-100 text-green-700 border-green-200"
                 : paper.status === "REJECTED"
-                ? "bg-red-100 text-red-700"
+                ? "bg-red-100 text-red-700 border-red-200"
                 : paper.status === "PENDING"
-                ? "bg-yellow-100 text-yellow-700"
-                : paper.status === "UNDER-REVIEW"
-                ? "bg-blue-100 text-blue-700"
-                : "bg-gray-200 text-gray-700"
+                ? "bg-yellow-100 text-yellow-700 border-yellow-200"
+                : paper.status === "UNDER_REVIEW"
+                ? "bg-blue-100 text-blue-700 border-blue-200"
+                : "bg-gray-200 text-gray-700 border-gray-200"
             }`}
           >
-            {paper.status}
+            {formattedStatus || "Unknown Status"}
           </span>
-
-          <span className="text-gray-500">{paper.role}</span>
         </div>
       </div>
 
@@ -115,29 +138,10 @@ const PaperCard = ({
         </div>
       )}
 
-      {/* Actions + comments */}
+      {/* Actions */}
       <div className="flex items-center justify-between">
         <div className="flex gap-3">
-          {/* View */}
-          <button
-            onClick={handleView}
-            className="flex items-center gap-1 text-sm px-3 py-1 border rounded hover:bg-gray-50"
-          >
-            <FaEye /> View Details
-          </button>
-
-          {/* Edit */}
-          {allowEdit && (
-            <button
-              onClick={handleEdit}
-              className="flex items-center gap-1 text-sm px-3 py-1 border rounded hover:bg-gray-50"
-            >
-              <FaEdit /> Edit
-            </button>
-          )}
-
-          {/* Download */}
-          {paper.fileUrl && (
+          {paper.fileUrl ? (
             <button
               onClick={handleDownload}
               className="flex items-center gap-1 text-sm px-3 py-1 border rounded hover:bg-gray-50"
@@ -145,21 +149,12 @@ const PaperCard = ({
             >
               <FaDownload /> Download
             </button>
-          )}
-          
-          {/* Show message if no file */}
-          {!paper.fileUrl && (
+          ) : (
             <span className="flex items-center gap-1 text-sm px-3 py-1 border rounded bg-gray-100 text-gray-500">
               <FaDownload /> No File
             </span>
           )}
         </div>
-
-        {paper.comments !== undefined && (
-          <span className="text-sm text-gray-500">
-            {paper.comments} Comment{paper.comments !== 1 && "s"}
-          </span>
-        )}
       </div>
     </div>
   );

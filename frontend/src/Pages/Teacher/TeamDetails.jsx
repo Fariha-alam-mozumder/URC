@@ -28,71 +28,66 @@ const TeamDetails = () => {
     fetchDocuments();
   }, [id, refreshKey]);
 
+  const refetchTeam = () => setRefreshKey((prev) => prev + 1);
+
   const fetchTeam = async () => {
     try {
       setLoading(true);
       const response = await axios.get(
         `http://localhost:8000/api/teacher/teams/${Number(id)}`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
+        { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
       );
       setTeam(response.data.data);
-      setLoading(false);
     } catch (err) {
       console.error(err);
       setError("Failed to load team data");
+    } finally {
       setLoading(false);
     }
   };
 
   const fetchDocuments = async () => {
     if (!id) return;
-    
     try {
       setLoadingDocs(true);
       const token = localStorage.getItem("token");
       const headers = { Authorization: `Bearer ${token}` };
 
-      // Fetch both proposals and papers concurrently
       const [proposalsRes, papersRes] = await Promise.all([
         axios.get(`http://localhost:8000/api/teams/${id}/proposals`, { headers }),
-        axios.get(`http://localhost:8000/api/teams/${id}/papers`, { headers })
+        axios.get(`http://localhost:8000/api/teams/${id}/papers`, { headers }),
       ]);
 
-      // Combine and format documents
       const allDocs = [
-        ...proposalsRes.data.data.map(p => ({
+        ...proposalsRes.data.data.map((p) => ({
           id: `proposal-${p.proposal_id}`,
           name: p.title,
-          type: 'Proposal',
+          type: "Proposal",
+          createdAtRaw: p.created_at,
           uploadedAt: new Date(p.created_at).toLocaleDateString(),
-          uploadedBy: p.teacher?.user?.name || 'Unknown',
+          uploadedBy: p.teacher?.user?.name || "Unknown",
           sizeBytes: p.file_size,
           href: p.pdf_path,
           status: p.status,
           abstract: p.abstract,
-          domain: p.domain?.domain_name,
+          // domain: p.team?.domain?.domain_name, // if you included team.domain in API
         })),
-        ...papersRes.data.data.map(p => ({
+        ...papersRes.data.data.map((p) => ({
           id: `paper-${p.paper_id}`,
           name: p.title,
-          type: 'Paper',
+          type: "Paper",
+          createdAtRaw: p.created_at,
           uploadedAt: new Date(p.created_at).toLocaleDateString(),
-          uploadedBy: p.teacher?.user?.name || 'Unknown',
+          uploadedBy: p.teacher?.user?.name || "Unknown",
           sizeBytes: p.file_size,
           href: p.pdf_path,
           status: p.status,
           abstract: p.abstract,
-          domain: p.domain?.domain_name,
-        }))
+          // domain: p.team?.domain?.domain_name,
+        })),
       ];
 
-      // Sort by upload date (newest first)
-      allDocs.sort((a, b) => new Date(b.uploadedAt) - new Date(a.uploadedAt));
-      
+      allDocs.sort((a, b) => new Date(b.createdAtRaw) - new Date(a.createdAtRaw));
       setDocuments(allDocs);
     } catch (err) {
       console.error("Failed to fetch documents:", err);
@@ -101,58 +96,35 @@ const TeamDetails = () => {
     }
   };
 
-  // Handle successful upload
-  const handleUploadSuccess = (type, data) => {
-    console.log(`${type} uploaded successfully:`, data);
-    // Refresh documents list
-    setRefreshKey(prev => prev + 1);
-  };
+  const handleUploadSuccess = () => refetchTeam();
 
-  // Handle member added
-  const handleMemberAdded = () => {
-    setRefreshKey(prev => prev + 1);
-  };
+  const handleMemberAdded = () => refetchTeam();
 
-  // Handle application processed
-  const handleApplicationProcessed = () => {
-    setRefreshKey(prev => prev + 1);
-  };
+  const handleApplicationProcessed = () => refetchTeam();
 
-  // Handle document download
   const handleDownload = (doc) => {
-    if (doc.href) {
-      // Create a temporary link and trigger download
-      const link = document.createElement('a');
-      link.href = `http://localhost:8000/${doc.href}`;
-      link.download = doc.name;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    }
+    if (!doc?.href) return;
+    const link = document.createElement("a");
+    link.href = `http://localhost:8000/${doc.href}`;
+    link.download = doc.name || "document.pdf";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
-  // Handle document delete
   const handleDelete = async (doc) => {
-    if (!confirm(`Are you sure you want to delete "${doc.name}"?`)) {
-      return;
-    }
-
+    if (!confirm(`Are you sure you want to delete "${doc.name}"?`)) return;
     try {
       const token = localStorage.getItem("token");
-      const [type, docId] = doc.id.split('-');
-      
-      if (type === 'proposal') {
-        await axios.delete(`http://localhost:8000/api/proposals/${docId}`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
+      const [type, docId] = doc.id.split("-");
+      const headers = { Authorization: `Bearer ${token}` };
+
+      if (type === "proposal") {
+        await axios.delete(`http://localhost:8000/api/proposals/${docId}`, { headers });
       } else {
-        await axios.delete(`http://localhost:8000/api/papers/${docId}`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
+        await axios.delete(`http://localhost:8000/api/papers/${docId}`, { headers });
       }
-      
-      // Refresh documents list
-      setRefreshKey(prev => prev + 1);
+      refetchTeam();
     } catch (err) {
       console.error("Failed to delete document:", err);
       alert("Failed to delete document. Please try again.");
@@ -165,7 +137,6 @@ const TeamDetails = () => {
 
   return (
     <div className="p-6 space-y-6">
-      {/* Title + Back */}
       <div className="flex items-center gap-3">
         <button
           onClick={() => navigate(-1)}
@@ -177,7 +148,6 @@ const TeamDetails = () => {
         <h2 className="text-2xl font-bold">Team Overview</h2>
       </div>
 
-      {/* Overview */}
       <div className="grid grid-cols-1 gap-6">
         <TeamCard
           title={team.title}
@@ -190,39 +160,31 @@ const TeamDetails = () => {
         />
       </div>
 
-      {/* Documents & Resources Uploader */}
+      {/* Teachers can upload */}
       <div className="grid grid-cols-1 gap-6">
-        <PaperUploader 
-          teamId={id}
-          onUploadSuccess={handleUploadSuccess}
-        />
+        <PaperUploader teamId={id} onUploadSuccess={handleUploadSuccess} />
       </div>
 
-      {/* Members & Pending Applications - Equal Height */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="h-96">
-          <MemberList 
-            members={team.teammembers} 
-            canManage={true}
-            teamId={id}
+          <MemberList
+            members={team.teammembers}
+            teamId={team.id}               
+            canManage={true}               
             onMemberAdded={handleMemberAdded}
           />
         </div>
         <div className="h-96">
-          <PendingApplications 
-            teamId={id}
-            onApplicationProcessed={handleApplicationProcessed}
-          />
+          <PendingApplications teamId={id} onApplicationProcessed={handleApplicationProcessed} />
         </div>
       </div>
 
-      {/* Documents & Comments */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <DocumentList
           canManage={true}
           documents={documents}
           loading={loadingDocs}
-          onUploadClick={() => console.log("Open uploader")}
+          onUploadClick={() => {}}
           onDelete={handleDelete}
           onDownload={handleDownload}
         />

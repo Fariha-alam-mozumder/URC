@@ -98,14 +98,14 @@ const DocumentList = ({
       <div className="flex items-center justify-between mb-3">
         <h3 className="font-semibold">Documents & Resources ({documents.length})</h3>
 
-        {canManage && (
+        {/* {canManage && (
           <button
             onClick={onUploadClick}
             className="inline-flex items-center gap-2 px-3 py-1.5 text-sm rounded bg-blue-600 text-white hover:bg-blue-700 transition-colors"
           >
             <FaUpload /> Upload
           </button>
-        )}
+        )} */}
       </div>
 
       <div className="space-y-3 max-h-96 overflow-y-auto">
