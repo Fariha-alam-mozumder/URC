@@ -176,6 +176,7 @@ class AuthController {
   }
 
   //! Email verification handler - Creates user in database upon verification
+  // Updated verifyEmail method with proper transaction handling
   static async verifyEmail(req, res) {
     try {
       const { token } = req.params;
@@ -185,136 +186,151 @@ class AuthController {
 
       if (!registrationData) {
         return res.status(400).send(`
-          <html>
-            <body style="font-family: Arial, sans-serif; text-align: center; padding: 50px;">
-              <h2 style="color: #dc3545;">Invalid or Expired Verification Link</h2>
-              <p>This verification link is invalid or has expired.</p>
-              <p>Please try registering again.</p>
-              <a href="http://localhost:5173/signup" style="color: #007bff;">Go to Registration</a>
-            </body>
-          </html>
-        `);
+        <html>
+          <body style="font-family: Arial, sans-serif; text-align: center; padding: 50px;">
+            <h2 style="color: #dc3545;">Invalid or Expired Verification Link</h2>
+            <p>This verification link is invalid or has expired.</p>
+            <p>Please try registering again.</p>
+            <a href="http://localhost:5173/signup" style="color: #007bff;">Go to Registration</a>
+          </body>
+        </html>
+      `);
       }
 
       // Check if registration has expired (24 hours)
       if (new Date() > registrationData.expiresAt) {
         pendingRegistrations.delete(token);
         return res.status(400).send(`
-          <html>
-            <body style="font-family: Arial, sans-serif; text-align: center; padding: 50px;">
-              <h2 style="color: #dc3545;">Verification Link Expired</h2>
-              <p>This verification link has expired. Please register again.</p>
-              <a href="http://localhost:5173/signup" style="color: #007bff;">Go to Registration</a>
-            </body>
-          </html>
-        `);
-      }
-
-      // Double-check if email or roll number was taken by someone else while pending
-      const findUser = await prisma.user.findUnique({
-        where: { email: registrationData.email },
-      });
-      if (findUser) {
-        pendingRegistrations.delete(token);
-        return res.status(400).send(`
-          <html>
-            <body style="font-family: Arial, sans-serif; text-align: center; padding: 50px;">
-              <h2 style="color: #dc3545;">Email Already Registered</h2>
-              <p>This email address has been registered by someone else while you were verifying.</p>
-              <p>Please try with a different email address.</p>
-              <a href="http://localhost:5173/signup" style="color: #007bff;">Go to Registration</a>
-            </body>
-          </html>
-        `);
-      }
-
-      if (registrationData.role === "STUDENT" && registrationData.roll_number) {
-        const existingStudent = await prisma.student.findFirst({
-          where: { roll_number: registrationData.roll_number },
-        });
-        if (existingStudent) {
-          pendingRegistrations.delete(token);
-          return res.status(400).send(`
-            <html>
-              <body style="font-family: Arial, sans-serif; text-align: center; padding: 50px;">
-                <h2 style="color: #dc3545;">Roll Number Already Taken</h2>
-                <p>This roll number has been registered by someone else while you were verifying.</p>
-                <p>Please contact support if you believe this is an error.</p>
-                <a href="http://localhost:5173/signup" style="color: #007bff;">Go to Registration</a>
-              </body>
-            </html>
-          `);
-        }
-      }
-
-      //! Now create the user in database
-      let departmentId = null;
-      if (registrationData.department_name) {
-        let department = await prisma.department.findUnique({
-          where: { department_name: registrationData.department_name },
-        });
-
-        if (!department) {
-          department = await prisma.department.create({
-            data: { department_name: registrationData.department_name },
-          });
-        }
-
-        departmentId = department.department_id;
-      }
-
-      // Create user record
-      const newUser = await prisma.user.create({
-        data: {
-          name: registrationData.name,
-          email: registrationData.email,
-          password: registrationData.password,
-          role: registrationData.role,
-          isVerified: true, // Mark as verified since they clicked the link
-        },
-      });
-
-      // Create role-specific entry
-      if (registrationData.role === "STUDENT") {
-        await prisma.student.create({
-          data: {
-            roll_number: registrationData.roll_number,
-            department_id: departmentId,
-            user_id: newUser.user_id,
-          },
-        });
-      } else if (registrationData.role === "TEACHER") {
-        await prisma.teacher.create({
-          data: {
-            designation: registrationData.designation,
-            department_id: departmentId,
-            user_id: newUser.user_id,
-          },
-        });
-      } else if (registrationData.role === "GENERALUSER") {
-        await prisma.generaluser.create({
-          data: {
-            user_id: newUser.user_id,
-          },
-        });
-      }
-
-      // Remove from pending registrations
-      pendingRegistrations.delete(token);
-
-      // Redirect to login with success message
-      res.redirect("http://localhost:5173/login?verified=true&registered=true");
-    } catch (err) {
-      console.error("Email verification error:", err);
-      res.status(400).send(`
         <html>
           <body style="font-family: Arial, sans-serif; text-align: center; padding: 50px;">
-            <h2 style="color: #dc3545;">Verification Failed</h2>
-            <p>An error occurred during verification. Please try registering again.</p>
+            <h2 style="color: #dc3545;">Verification Link Expired</h2>
+            <p>This verification link has expired. Please register again.</p>
             <a href="http://localhost:5173/signup" style="color: #007bff;">Go to Registration</a>
           </body>
         </html>
       `);
+      }
+
+      // Use Prisma transaction to ensure data consistency
+      const result = await prisma.$transaction(async (tx) => {
+        // Double-check if email was taken by someone else while pending
+        const findUser = await tx.user.findUnique({
+          where: { email: registrationData.email },
+        });
+        if (findUser) {
+          throw new Error('EMAIL_TAKEN');
+        }
+
+        if (registrationData.role === "STUDENT" && registrationData.roll_number) {
+          const existingStudent = await tx.student.findFirst({
+            where: { roll_number: registrationData.roll_number },
+          });
+          if (existingStudent) {
+            throw new Error('ROLL_NUMBER_TAKEN');
+          }
+        }
+
+        // Get or create department
+        let departmentId = null;
+        if (registrationData.department_name) {
+          let department = await tx.department.findUnique({
+            where: { department_name: registrationData.department_name },
+          });
+
+          if (!department) {
+            department = await tx.department.create({
+              data: { department_name: registrationData.department_name },
+            });
+          }
+
+          departmentId = department.department_id;
+        }
+
+        // Create user record
+        const newUser = await tx.user.create({
+          data: {
+            name: registrationData.name,
+            email: registrationData.email,
+            password: registrationData.password,
+            role: registrationData.role,
+            isVerified: true,
+          },
+        });
+
+        // Create role-specific entry
+        if (registrationData.role === "STUDENT") {
+          await tx.student.create({
+            data: {
+              roll_number: registrationData.roll_number,
+              department_id: departmentId,
+              user_id: newUser.user_id,
+            },
+          });
+        } else if (registrationData.role === "TEACHER") {
+          await tx.teacher.create({
+            data: {
+              designation: registrationData.designation,
+              department_id: departmentId,
+              user_id: newUser.user_id,
+            },
+          });
+        } else if (registrationData.role === "GENERALUSER") {
+          await tx.generaluser.create({
+            data: {
+              user_id: newUser.user_id,
+            },
+          });
+        }
+
+        return newUser;
+      });
+
+      // Remove from pending registrations only after successful creation
+      pendingRegistrations.delete(token);
+
+      // Add a small delay to ensure the redirect works properly
+      setTimeout(() => {
+        res.redirect("http://localhost:5173/login?verified=true&registered=true");
+      }, 100);
+
+    } catch (err) {
+      console.error("Email verification error:", err);
+
+      if (err.message === 'EMAIL_TAKEN') {
+        pendingRegistrations.delete(token);
+        return res.status(400).send(`
+        <html>
+          <body style="font-family: Arial, sans-serif; text-align: center; padding: 50px;">
+            <h2 style="color: #dc3545;">Email Already Registered</h2>
+            <p>This email address has been registered by someone else.</p>
+            <a href="http://localhost:5173/signup" style="color: #007bff;">Go to Registration</a>
+          </body>
+        </html>
+      `);
+      }
+
+      if (err.message === 'ROLL_NUMBER_TAKEN') {
+        pendingRegistrations.delete(token);
+        return res.status(400).send(`
+        <html>
+          <body style="font-family: Arial, sans-serif; text-align: center; padding: 50px;">
+            <h2 style="color: #dc3545;">Roll Number Already Taken</h2>
+            <p>This roll number has been registered by someone else.</p>
+            <a href="http://localhost:5173/signup" style="color: #007bff;">Go to Registration</a>
+          </body>
+        </html>
+      `);
+      }
+
+      res.status(400).send(`
+      <html>
+        <body style="font-family: Arial, sans-serif; text-align: center; padding: 50px;">
+          <h2 style="color: #dc3545;">Verification Failed</h2>
+          <p>An error occurred during verification. Please try registering again.</p>
+          <a href="http://localhost:5173/signup" style="color: #007bff;">Go to Registration</a>
+        </body>
+      </html>
+    `);
     }
   }
 
@@ -366,7 +382,7 @@ class AuthController {
         expiresIn: "30d",
       });
 
-      
+
       return res.status(200).json({
         success: true,
         message: `${findUser.role} Login successful`,
