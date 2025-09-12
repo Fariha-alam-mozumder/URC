@@ -130,7 +130,7 @@ model generaluser {
 
 model student {
   student_id    Int     @id @default(autoincrement())
-  roll_number   String?
+  roll_number   String? 
   department_id Int?
   user_id       Int?
 

@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect } from "react";
+import { createContext, useState, useEffect, useContext } from "react";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 
@@ -15,7 +15,6 @@ export function AuthProvider({ children }) {
     if (!u) return u;
     return {
       ...u,
-      // Normalize both possible property names to emailVerified
       emailVerified: Boolean(u.emailVerified || u.isEmailVerified || false),
     };
   };
@@ -44,8 +43,6 @@ export function AuthProvider({ children }) {
       setCurrentViewRole(roleToSet);
       localStorage.setItem("token", newToken);
       localStorage.setItem("currentViewRole", roleToSet);
-      console.log("Decoded user from token:", decoded);
-      console.log("Normalized user:", normalizeUser(decoded));
     } catch (err) {
       console.error("Invalid token:", err.message);
       clearAuth();
@@ -125,3 +122,6 @@ export function AuthProvider({ children }) {
     </AuthContext.Provider>
   );
 }
+
+// Custom hook to consume context
+export const useAuth = () => useContext(AuthContext);

@@ -60,6 +60,11 @@ router.get("/teacher/teams/:id", authMiddleware, TeamDetails.getTeamById);
 router.get("/teacher/my-teams/papers", authMiddleware, TeamDetails.getAllTeamPapers);
 router.get("/teacher/my-teams/proposals", authMiddleware, TeamDetails.getAllTeamProposals);
 router.get("/teacher/my-teams/comments", authMiddleware, TeamDetails.getAllTeamComments);
+<<<<<<< HEAD
+=======
+router.get("/submissions", authMiddleware, SubmissionsController.list);
+router.get("/submissions/filters", authMiddleware, SubmissionsController.filters);
+>>>>>>> 803bdeeede56d7446d6a9641cee8fb2f1e07e290
 
 // Proposal routes
 router.post("/proposals/upload", authMiddleware, ProposalController.upload);
@@ -94,10 +99,13 @@ router.get("/student/teams/:id", authMiddleware, StudentTeamController.getTeamBy
 router.get("/student/my-teams/papers", authMiddleware, StudentTeamController.getAllTeamPapers);
 router.get("/student/my-teams/proposals", authMiddleware, StudentTeamController.getAllTeamProposals); 
 router.get("/student/my-teams/comments", authMiddleware, StudentTeamController.getAllTeamComments);   
+<<<<<<< HEAD
 
 // Common for teacher & student
 router.get("/submissions", authMiddleware, SubmissionsController.list);
 router.get("/submissions/filters", authMiddleware, SubmissionsController.filters);
+=======
+>>>>>>> 803bdeeede56d7446d6a9641cee8fb2f1e07e290
 
 // router.get("/teams/:id/proposals", authMiddleware, StudentTeamController.getProposalsByTeamId);
 // Reviewer Routes (Admin functionality)
@@ -140,10 +148,19 @@ router.post(
 ); // Auto-match reviewers
 
 // ====================== Admin Proposals Routes ======================
+<<<<<<< HEAD
 // router.get(
 //   "/admin/proposals",
 //   authMiddleware,
 //   adminOnly,
 //   AdminProposalController.getAllProposals
 // );
+=======
+router.get(
+  "/admin/proposals",
+  authMiddleware,
+  adminOnly,
+  AdminProposalController.getAllProposals
+);
+>>>>>>> 803bdeeede56d7446d6a9641cee8fb2f1e07e290
 export default router;
