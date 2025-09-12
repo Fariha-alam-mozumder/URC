@@ -10,13 +10,13 @@ export default function PrivateRoute({ children, allowedRoles }) {
   }
 
   if (!token || !user) {
-    // Not logged in
-    return <Navigate to="/login" replace/>;
+    // Not logged in → go to landing page
+    return <Navigate to="/" replace />;
   }
 
   if (!allowedRoles.includes(currentViewRole)) {
-    // Role mismatch
-    return <Navigate to="/home" replace/>;
+    // Role mismatch → fallback (could be home or a "not authorized" page)
+    return <Navigate to="/home" replace />;
   }
 
   return children;
