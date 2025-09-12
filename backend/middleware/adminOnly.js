@@ -51,7 +51,7 @@ const adminOnly = async (req, res, next) => {
       error: "Internal server error during authorization."
     });
   }
-  next();
+ 
 };
 
 export default adminOnly;

@@ -5,7 +5,7 @@ import adminOnly from "../middleware/adminOnly.js";
 import ProfileController from "../controllers/ProfileController.js";
 import NewsController from "../controllers/NewsController.js";
 import ReviewerController from "../controllers/admin/ReviewerController.js";
-import redisCache from "../DB/redis.config.js";
+//import redisCache from "../DB/redis.config.js";
 import TeamController from "../controllers/teacher/TeamController.js";
 import TeamDetails from "../controllers/teacher/TeamDetails.js";
 import PaperController from "../controllers/teacher/PaperController.js";
@@ -14,8 +14,9 @@ import StudentTeamController from "../controllers/student/StudentTeamController.
 import TeamApplicationController from "../controllers/teacher/TeamApplicationController.js";
 import TeamCommentController from "../controllers/teacher/TeamCommentController.js"; 
 import AssignmentController from './../controllers/admin/AssignmentController.js';
-import AdminProposalController from "../controllers/admin/AdminProposalController.js";
 import SubmissionsController from "../controllers/teacher/SubmissionsController.js";
+import AdminPaperController from "../controllers/admin/AdminPaperController.js";
+import ReviewerAssignedController from "../controllers/reviewer/AssignedController.js";
 
 const router = Router();
 
@@ -41,7 +42,7 @@ router.get('/departments', authMiddleware, ProfileController.getDepartments);
 router.get('/domains', authMiddleware, ProfileController.getDomains);
 
 //! News Routes
-router.get("/news", redisCache.route(), NewsController.index); // redisCache.route({expire:60*30}) o llikha jay  at least 30 min
+router.get("/news",  NewsController.index); // redisCache.route({expire:60*30}) o llikha jay  at least 30 min
 router.post("/news", authMiddleware, NewsController.store);
 router.get("/news/:id", NewsController.show);
 router.put("/news/:id", authMiddleware, NewsController.update);
@@ -49,10 +50,9 @@ router.delete("/news/:id", authMiddleware, NewsController.destroy);
 
 //! Teacher Routes
 //! Team Routes (Protected)
+// Team routes (existing)
 // Create a team
 router.post("/teams", authMiddleware, TeamController.store);
-
-// Team routes (existing)
 router.get("/teacher/my-teams", authMiddleware, TeamDetails.index);
 router.get("/teacher/teams/:id", authMiddleware, TeamDetails.getTeamById);
 
@@ -60,11 +60,8 @@ router.get("/teacher/teams/:id", authMiddleware, TeamDetails.getTeamById);
 router.get("/teacher/my-teams/papers", authMiddleware, TeamDetails.getAllTeamPapers);
 router.get("/teacher/my-teams/proposals", authMiddleware, TeamDetails.getAllTeamProposals);
 router.get("/teacher/my-teams/comments", authMiddleware, TeamDetails.getAllTeamComments);
-<<<<<<< HEAD
-=======
 router.get("/submissions", authMiddleware, SubmissionsController.list);
 router.get("/submissions/filters", authMiddleware, SubmissionsController.filters);
->>>>>>> 803bdeeede56d7446d6a9641cee8fb2f1e07e290
 
 // Proposal routes
 router.post("/proposals/upload", authMiddleware, ProposalController.upload);
@@ -99,23 +96,16 @@ router.get("/student/teams/:id", authMiddleware, StudentTeamController.getTeamBy
 router.get("/student/my-teams/papers", authMiddleware, StudentTeamController.getAllTeamPapers);
 router.get("/student/my-teams/proposals", authMiddleware, StudentTeamController.getAllTeamProposals); 
 router.get("/student/my-teams/comments", authMiddleware, StudentTeamController.getAllTeamComments);   
-<<<<<<< HEAD
-
-// Common for teacher & student
-router.get("/submissions", authMiddleware, SubmissionsController.list);
-router.get("/submissions/filters", authMiddleware, SubmissionsController.filters);
-=======
->>>>>>> 803bdeeede56d7446d6a9641cee8fb2f1e07e290
 
 // router.get("/teams/:id/proposals", authMiddleware, StudentTeamController.getProposalsByTeamId);
 // Reviewer Routes (Admin functionality)
 router.get("/reviewers", authMiddleware, ReviewerController.index);
 router.get("/reviewers/potential", authMiddleware, ReviewerController.getPotentialReviewers);
 router.post("/reviewers/invite", authMiddleware, ReviewerController.sendInvitations);
-router.post("/reviewers/add", authMiddleware, ReviewerController.addReviewer);
 router.put("/reviewers/:id", authMiddleware, ReviewerController.update);
 router.delete("/reviewers/:id", authMiddleware, ReviewerController.removeReviewer);
 router.get("/reviewers/:id/workload", authMiddleware, ReviewerController.getWorkloadDetails);
+
 
 
 //! Assignment Routes (Admin only)
@@ -148,19 +138,39 @@ router.post(
 ); // Auto-match reviewers
 
 // ====================== Admin Proposals Routes ======================
-<<<<<<< HEAD
-// router.get(
-//   "/admin/proposals",
-//   authMiddleware,
-//   adminOnly,
-//   AdminProposalController.getAllProposals
-// );
-=======
+
 router.get(
   "/admin/proposals",
   authMiddleware,
   adminOnly,
-  AdminProposalController.getAllProposals
+  AdminPaperController.getAllProposals
 );
->>>>>>> 803bdeeede56d7446d6a9641cee8fb2f1e07e290
+
+router.get(
+  "/admin/papers",
+  authMiddleware,
+  adminOnly,
+  AdminPaperController.getAllPapers
+);
+
+//!reviewer Routes
+router.get(
+  "/reviewer/assigned-papers",
+  authMiddleware,
+  ReviewerAssignedController.getAssignedPapers
+);
+
+router.get(
+  "/reviewer/assigned-proposals",
+  authMiddleware,
+  ReviewerAssignedController.getAssignedProposals
+);
+
+// Update assignment status (only reviewer who is assigned can update)
+router.patch(
+  "/reviewer/assignments/:id/status",
+  authMiddleware,
+  ReviewerAssignedController.updateAssignmentStatus
+);
+
 export default router;

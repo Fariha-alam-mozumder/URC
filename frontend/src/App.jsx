@@ -203,6 +203,19 @@ export default function App() {
             <Route path="home" element={<Homepage />} />
           </Route>
 
+          {/* General User */}
+          <Route
+            path="/generaluser"
+            element={
+              <PrivateRoute allowedRoles={["GENERALUSER"]}>
+                <Homepage />
+              </PrivateRoute>
+            }
+          >
+            <Route index element={<Homepage />} />
+            <Route path="home" element={<Homepage />} />
+          </Route>
+
           {/* Catch all */}
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>

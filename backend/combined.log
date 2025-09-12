@@ -1431,3 +1431,3205 @@ Argument `not` must not be null.
 2025-09-11T08:03:18.385Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
 2025-09-11T08:03:18.414Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
 2025-09-11T08:03:18.432Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-08-15T09:06:10.923Z [right meow!] info: New reviewer added: Dr. Toasean Elmah Tasean (ID: 2)
+2025-08-15T09:06:10.956Z [right meow!] info: Job completed.
+2025-08-15T09:06:10.986Z [right meow!] error: Error calculating review time for reviewer 2: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 2,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-08-15T09:06:13.986Z [right meow!] info: inviteReviewers called
+2025-08-15T09:06:13.987Z [right meow!] info: Request body: 
+2025-08-15T09:06:13.999Z [right meow!] info: Reviewer invitations sent to 1 teachers
+2025-08-15T09:06:14.011Z [right meow!] info: Job completed.
+2025-08-15T09:06:41.237Z [right meow!] error: Failed to fetch proposals Cannot set headers after they are sent to the client
+2025-08-15T09:06:41.245Z [right meow!] error: Failed to fetch proposals Cannot set headers after they are sent to the client
+2025-09-01T19:49:41.150Z [right meow!] info: Job completed.
+2025-09-01T19:59:31.960Z [right meow!] info: Job completed.
+2025-09-01T20:02:22.457Z [right meow!] info: Job completed.
+2025-09-01T20:03:46.366Z [right meow!] info: Job completed.
+2025-09-01T20:05:17.359Z [right meow!] info: Job completed.
+2025-09-01T20:08:01.272Z [right meow!] info: Job completed.
+2025-09-01T20:09:27.006Z [right meow!] info: Job completed.
+2025-09-01T20:14:01.347Z [right meow!] info: Job completed.
+2025-09-01T20:16:09.075Z [right meow!] info: Job completed.
+2025-09-01T20:19:26.733Z [right meow!] info: Job completed.
+2025-09-02T07:29:20.375Z [right meow!] error: Error fetching all papers for admin: Cannot set headers after they are sent to the client
+2025-09-02T07:31:00.657Z [right meow!] error: Error fetching all papers for admin: Cannot set headers after they are sent to the client
+2025-09-02T07:31:00.716Z [right meow!] error: Error fetching all papers for admin: Cannot set headers after they are sent to the client
+2025-09-02T07:31:00.739Z [right meow!] error: Error fetching all papers for admin: Cannot set headers after they are sent to the client
+2025-09-02T07:41:18.408Z [right meow!] error: Error fetching all papers for admin: Cannot set headers after they are sent to the client
+2025-09-02T07:41:18.521Z [right meow!] error: Error fetching all papers for admin: Cannot set headers after they are sent to the client
+2025-09-02T07:50:09.943Z [right meow!] error: Error fetching all proposals for admin: Cannot set headers after they are sent to the client
+2025-09-02T07:50:09.995Z [right meow!] error: Error fetching all proposals for admin: Cannot set headers after they are sent to the client
+2025-09-02T07:50:15.475Z [right meow!] error: Error fetching all proposals for admin: Cannot set headers after they are sent to the client
+2025-09-02T07:50:15.552Z [right meow!] error: Error fetching all proposals for admin: Cannot set headers after they are sent to the client
+2025-09-02T07:50:22.599Z [right meow!] error: Error fetching all papers for admin: Cannot set headers after they are sent to the client
+2025-09-02T07:50:22.648Z [right meow!] error: Error fetching all papers for admin: Cannot set headers after they are sent to the client
+2025-09-02T07:51:37.162Z [right meow!] error: Error fetching all proposals for admin: Cannot set headers after they are sent to the client
+2025-09-02T07:51:37.167Z [right meow!] error: Error fetching all proposals for admin: Cannot set headers after they are sent to the client
+2025-09-02T07:52:06.440Z [right meow!] error: Error fetching all papers for admin: Cannot set headers after they are sent to the client
+2025-09-02T07:52:06.443Z [right meow!] error: Error fetching all papers for admin: Cannot set headers after they are sent to the client
+2025-09-02T07:52:10.290Z [right meow!] error: Error fetching all proposals for admin: Cannot set headers after they are sent to the client
+2025-09-02T07:52:10.327Z [right meow!] error: Error fetching all proposals for admin: Cannot set headers after they are sent to the client
+2025-09-02T07:57:36.724Z [right meow!] error: Error fetching all proposals for admin: Cannot set headers after they are sent to the client
+2025-09-02T07:57:37.126Z [right meow!] error: Error fetching all proposals for admin: Cannot set headers after they are sent to the client
+2025-09-02T07:59:51.881Z [right meow!] error: Error fetching all papers for admin: Cannot set headers after they are sent to the client
+2025-09-02T07:59:51.915Z [right meow!] error: Error fetching all papers for admin: Cannot set headers after they are sent to the client
+2025-09-02T07:59:51.943Z [right meow!] error: Error fetching all papers for admin: Cannot set headers after they are sent to the client
+2025-09-02T08:04:40.425Z [right meow!] error: Error fetching all papers for admin: Cannot set headers after they are sent to the client
+2025-09-02T08:04:40.532Z [right meow!] error: Error fetching all papers for admin: Cannot set headers after they are sent to the client
+2025-09-02T08:05:14.125Z [right meow!] error: Error fetching all proposals for admin: Cannot set headers after they are sent to the client
+2025-09-02T08:05:14.392Z [right meow!] error: Error fetching all proposals for admin: Cannot set headers after they are sent to the client
+2025-09-02T08:06:42.266Z [right meow!] error: Error fetching all papers for admin: Cannot set headers after they are sent to the client
+2025-09-02T08:06:42.368Z [right meow!] error: Error fetching all papers for admin: Cannot set headers after they are sent to the client
+2025-09-02T08:06:45.340Z [right meow!] error: Error fetching all proposals for admin: Cannot set headers after they are sent to the client
+2025-09-02T08:06:45.503Z [right meow!] error: Error fetching all proposals for admin: Cannot set headers after they are sent to the client
+2025-09-02T08:35:32.269Z [right meow!] info: New reviewer added: Dr Erina (ID: 4)
+2025-09-02T08:35:32.450Z [right meow!] info: Job completed.
+2025-09-02T08:35:32.685Z [right meow!] error: Error calculating review time for reviewer 4: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 4,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-02T08:35:46.898Z [right meow!] error: Error calculating review time for reviewer 4: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 4,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-02T08:35:47.189Z [right meow!] error: Error calculating review time for reviewer 4: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 4,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-02T13:02:46.021Z [right meow!] info: New reviewer added: Dr. Rokon Uddin (ID: 1)
+2025-09-02T13:02:46.233Z [right meow!] info: Job completed.
+2025-09-04T14:02:05.162Z [right meow!] error: Error calculating review time for reviewer 4: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 4,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-04T14:02:05.195Z [right meow!] error: Error calculating review time for reviewer 1: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 1,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-04T14:02:05.451Z [right meow!] error: Error calculating review time for reviewer 1: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 1,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-04T14:02:05.464Z [right meow!] error: Error calculating review time for reviewer 4: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 4,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-04T19:08:38.621Z [right meow!] error: Error assigning reviewers to paper 2: Cannot read properties of undefined (reading 'create')
+2025-09-04T19:12:35.013Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-04T19:12:35.039Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-04T19:12:35.049Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-04T19:12:36.045Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-04T19:12:36.047Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-04T19:12:36.107Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-04T19:12:37.053Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-04T19:12:37.055Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-04T19:12:37.115Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-04T19:12:38.163Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-04T19:12:38.165Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-04T19:12:38.227Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-04T19:12:41.160Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-04T19:12:41.174Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-04T19:12:41.216Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-05T19:06:17.119Z [right meow!] error: Error fetching waiting assignments: 
+Invalid `prisma.paper.findMany()` invocation:
+
+{
+  where: {
+    reviewerassignment: {
+      none: {}
+    }
+  },
+  include: {
+    teacher: {
+      select: {
+        teacher_id: true,
+        user: {
+          select: {
+            name: true,
+            email: true
+          }
+        }
+      }
+    },
+    domain: {
+    ~~~~~~
+      select: {
+        domain_id: true,
+        domain_name: true
+      }
+    },
+?   team?: true,
+?   review?: true,
+?   reviewerassignment?: true
+  },
+  orderBy: {
+    created_at: "desc"
+  }
+}
+
+Unknown field `domain` for include statement on model `paper`. Available options are marked with ?.
+2025-09-05T19:06:17.168Z [right meow!] error: Error fetching waiting assignments: 
+Invalid `prisma.paper.findMany()` invocation:
+
+{
+  where: {
+    reviewerassignment: {
+      none: {}
+    }
+  },
+  include: {
+    teacher: {
+      select: {
+        teacher_id: true,
+        user: {
+          select: {
+            name: true,
+            email: true
+          }
+        }
+      }
+    },
+    domain: {
+    ~~~~~~
+      select: {
+        domain_id: true,
+        domain_name: true
+      }
+    },
+?   team?: true,
+?   review?: true,
+?   reviewerassignment?: true
+  },
+  orderBy: {
+    created_at: "desc"
+  }
+}
+
+Unknown field `domain` for include statement on model `paper`. Available options are marked with ?.
+2025-09-05T19:06:26.348Z [right meow!] error: Error fetching waiting assignments: 
+Invalid `prisma.paper.findMany()` invocation:
+
+{
+  where: {
+    reviewerassignment: {
+      none: {}
+    }
+  },
+  include: {
+    teacher: {
+      select: {
+        teacher_id: true,
+        user: {
+          select: {
+            name: true,
+            email: true
+          }
+        }
+      }
+    },
+    domain: {
+    ~~~~~~
+      select: {
+        domain_id: true,
+        domain_name: true
+      }
+    },
+?   team?: true,
+?   review?: true,
+?   reviewerassignment?: true
+  },
+  orderBy: {
+    created_at: "desc"
+  }
+}
+
+Unknown field `domain` for include statement on model `paper`. Available options are marked with ?.
+2025-09-05T19:06:42.100Z [right meow!] error: Error fetching all papers for admin: 
+Invalid `prisma.paper.findMany()` invocation:
+
+{
+  include: {
+    team: {
+      select: {
+        team_id: true,
+        team_name: true,
+        status: true,
+        visibility: true
+      }
+    },
+    domain: {
+    ~~~~~~
+      select: {
+        domain_id: true,
+        domain_name: true
+      }
+    },
+    teacher: {
+      select: {
+        teacher_id: true,
+        designation: true,
+        user: {
+          select: {
+            name: true,
+            email: true
+          }
+        },
+        department: {
+          select: {
+            department_name: true
+          }
+        }
+      }
+    },
+    reviewerassignment: {
+      select: {
+        assignment_id: true,
+        reviewer: {
+          select: {
+            reviewer_id: true,
+            status: true,
+            teacher: {
+              select: {
+                user: {
+                  select: {
+                    name: true,
+                    email: true
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+?   review?: true
+  },
+  orderBy: {
+    created_at: "desc"
+  }
+}
+
+Unknown field `domain` for include statement on model `paper`. Available options are marked with ?.
+2025-09-05T19:06:42.151Z [right meow!] error: Error fetching all papers for admin: 
+Invalid `prisma.paper.findMany()` invocation:
+
+{
+  include: {
+    team: {
+      select: {
+        team_id: true,
+        team_name: true,
+        status: true,
+        visibility: true
+      }
+    },
+    domain: {
+    ~~~~~~
+      select: {
+        domain_id: true,
+        domain_name: true
+      }
+    },
+    teacher: {
+      select: {
+        teacher_id: true,
+        designation: true,
+        user: {
+          select: {
+            name: true,
+            email: true
+          }
+        },
+        department: {
+          select: {
+            department_name: true
+          }
+        }
+      }
+    },
+    reviewerassignment: {
+      select: {
+        assignment_id: true,
+        reviewer: {
+          select: {
+            reviewer_id: true,
+            status: true,
+            teacher: {
+              select: {
+                user: {
+                  select: {
+                    name: true,
+                    email: true
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+?   review?: true
+  },
+  orderBy: {
+    created_at: "desc"
+  }
+}
+
+Unknown field `domain` for include statement on model `paper`. Available options are marked with ?.
+2025-09-05T19:06:44.498Z [right meow!] error: Error fetching all proposals for admin: 
+Invalid `prisma.proposal.findMany()` invocation:
+
+{
+  include: {
+    team: {
+      select: {
+        team_id: true,
+        team_name: true,
+        status: true,
+        visibility: true
+      }
+    },
+    domain: {
+    ~~~~~~
+      select: {
+        domain_id: true,
+        domain_name: true
+      }
+    },
+    teacher: {
+      select: {
+        teacher_id: true,
+        designation: true,
+        user: {
+          select: {
+            name: true,
+            email: true
+          }
+        },
+        department: {
+          select: {
+            department_name: true
+          }
+        }
+      }
+    },
+    reviewerassignment: {
+      select: {
+        assignment_id: true,
+        reviewer: {
+          select: {
+            reviewer_id: true,
+            status: true,
+            teacher: {
+              select: {
+                user: {
+                  select: {
+                    name: true,
+                    email: true
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+?   review?: true
+  },
+  orderBy: {
+    created_at: "desc"
+  }
+}
+
+Unknown field `domain` for include statement on model `proposal`. Available options are marked with ?.
+2025-09-05T19:06:44.578Z [right meow!] error: Error fetching all proposals for admin: 
+Invalid `prisma.proposal.findMany()` invocation:
+
+{
+  include: {
+    team: {
+      select: {
+        team_id: true,
+        team_name: true,
+        status: true,
+        visibility: true
+      }
+    },
+    domain: {
+    ~~~~~~
+      select: {
+        domain_id: true,
+        domain_name: true
+      }
+    },
+    teacher: {
+      select: {
+        teacher_id: true,
+        designation: true,
+        user: {
+          select: {
+            name: true,
+            email: true
+          }
+        },
+        department: {
+          select: {
+            department_name: true
+          }
+        }
+      }
+    },
+    reviewerassignment: {
+      select: {
+        assignment_id: true,
+        reviewer: {
+          select: {
+            reviewer_id: true,
+            status: true,
+            teacher: {
+              select: {
+                user: {
+                  select: {
+                    name: true,
+                    email: true
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+?   review?: true
+  },
+  orderBy: {
+    created_at: "desc"
+  }
+}
+
+Unknown field `domain` for include statement on model `proposal`. Available options are marked with ?.
+2025-09-05T19:06:47.299Z [right meow!] error: Error fetching all papers for admin: 
+Invalid `prisma.paper.findMany()` invocation:
+
+{
+  include: {
+    team: {
+      select: {
+        team_id: true,
+        team_name: true,
+        status: true,
+        visibility: true
+      }
+    },
+    domain: {
+    ~~~~~~
+      select: {
+        domain_id: true,
+        domain_name: true
+      }
+    },
+    teacher: {
+      select: {
+        teacher_id: true,
+        designation: true,
+        user: {
+          select: {
+            name: true,
+            email: true
+          }
+        },
+        department: {
+          select: {
+            department_name: true
+          }
+        }
+      }
+    },
+    reviewerassignment: {
+      select: {
+        assignment_id: true,
+        reviewer: {
+          select: {
+            reviewer_id: true,
+            status: true,
+            teacher: {
+              select: {
+                user: {
+                  select: {
+                    name: true,
+                    email: true
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+?   review?: true
+  },
+  orderBy: {
+    created_at: "desc"
+  }
+}
+
+Unknown field `domain` for include statement on model `paper`. Available options are marked with ?.
+2025-09-05T19:06:47.351Z [right meow!] error: Error fetching all papers for admin: 
+Invalid `prisma.paper.findMany()` invocation:
+
+{
+  include: {
+    team: {
+      select: {
+        team_id: true,
+        team_name: true,
+        status: true,
+        visibility: true
+      }
+    },
+    domain: {
+    ~~~~~~
+      select: {
+        domain_id: true,
+        domain_name: true
+      }
+    },
+    teacher: {
+      select: {
+        teacher_id: true,
+        designation: true,
+        user: {
+          select: {
+            name: true,
+            email: true
+          }
+        },
+        department: {
+          select: {
+            department_name: true
+          }
+        }
+      }
+    },
+    reviewerassignment: {
+      select: {
+        assignment_id: true,
+        reviewer: {
+          select: {
+            reviewer_id: true,
+            status: true,
+            teacher: {
+              select: {
+                user: {
+                  select: {
+                    name: true,
+                    email: true
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+?   review?: true
+  },
+  orderBy: {
+    created_at: "desc"
+  }
+}
+
+Unknown field `domain` for include statement on model `paper`. Available options are marked with ?.
+2025-09-05T19:07:26.474Z [right meow!] error: Error fetching all proposals for admin: 
+Invalid `prisma.proposal.findMany()` invocation:
+
+{
+  include: {
+    team: {
+      select: {
+        team_id: true,
+        team_name: true,
+        status: true,
+        visibility: true
+      }
+    },
+    domain: {
+    ~~~~~~
+      select: {
+        domain_id: true,
+        domain_name: true
+      }
+    },
+    teacher: {
+      select: {
+        teacher_id: true,
+        designation: true,
+        user: {
+          select: {
+            name: true,
+            email: true
+          }
+        },
+        department: {
+          select: {
+            department_name: true
+          }
+        }
+      }
+    },
+    reviewerassignment: {
+      select: {
+        assignment_id: true,
+        reviewer: {
+          select: {
+            reviewer_id: true,
+            status: true,
+            teacher: {
+              select: {
+                user: {
+                  select: {
+                    name: true,
+                    email: true
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+?   review?: true
+  },
+  orderBy: {
+    created_at: "desc"
+  }
+}
+
+Unknown field `domain` for include statement on model `proposal`. Available options are marked with ?.
+2025-09-05T19:07:26.575Z [right meow!] error: Error fetching all proposals for admin: 
+Invalid `prisma.proposal.findMany()` invocation:
+
+{
+  include: {
+    team: {
+      select: {
+        team_id: true,
+        team_name: true,
+        status: true,
+        visibility: true
+      }
+    },
+    domain: {
+    ~~~~~~
+      select: {
+        domain_id: true,
+        domain_name: true
+      }
+    },
+    teacher: {
+      select: {
+        teacher_id: true,
+        designation: true,
+        user: {
+          select: {
+            name: true,
+            email: true
+          }
+        },
+        department: {
+          select: {
+            department_name: true
+          }
+        }
+      }
+    },
+    reviewerassignment: {
+      select: {
+        assignment_id: true,
+        reviewer: {
+          select: {
+            reviewer_id: true,
+            status: true,
+            teacher: {
+              select: {
+                user: {
+                  select: {
+                    name: true,
+                    email: true
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+?   review?: true
+  },
+  orderBy: {
+    created_at: "desc"
+  }
+}
+
+Unknown field `domain` for include statement on model `proposal`. Available options are marked with ?.
+2025-09-05T19:07:29.253Z [right meow!] error: Error fetching waiting assignments: 
+Invalid `prisma.paper.findMany()` invocation:
+
+{
+  where: {
+    reviewerassignment: {
+      none: {}
+    }
+  },
+  include: {
+    teacher: {
+      select: {
+        teacher_id: true,
+        user: {
+          select: {
+            name: true,
+            email: true
+          }
+        }
+      }
+    },
+    domain: {
+    ~~~~~~
+      select: {
+        domain_id: true,
+        domain_name: true
+      }
+    },
+?   team?: true,
+?   review?: true,
+?   reviewerassignment?: true
+  },
+  orderBy: {
+    created_at: "desc"
+  }
+}
+
+Unknown field `domain` for include statement on model `paper`. Available options are marked with ?.
+2025-09-05T19:07:29.294Z [right meow!] error: Error fetching waiting assignments: 
+Invalid `prisma.paper.findMany()` invocation:
+
+{
+  where: {
+    reviewerassignment: {
+      none: {}
+    }
+  },
+  include: {
+    teacher: {
+      select: {
+        teacher_id: true,
+        user: {
+          select: {
+            name: true,
+            email: true
+          }
+        }
+      }
+    },
+    domain: {
+    ~~~~~~
+      select: {
+        domain_id: true,
+        domain_name: true
+      }
+    },
+?   team?: true,
+?   review?: true,
+?   reviewerassignment?: true
+  },
+  orderBy: {
+    created_at: "desc"
+  }
+}
+
+Unknown field `domain` for include statement on model `paper`. Available options are marked with ?.
+2025-09-05T19:39:13.881Z [right meow!] error: Error fetching waiting assignments: 
+Invalid `prisma.paper.findMany()` invocation:
+
+{
+  where: {
+    reviewerassignment: {
+      none: {}
+    }
+  },
+  include: {
+    teacher: {
+      select: {
+        teacher_id: true,
+        user: {
+          select: {
+            name: true,
+            email: true
+          }
+        }
+      }
+    },
+    domain: {
+    ~~~~~~
+      select: {
+        domain_id: true,
+        domain_name: true
+      }
+    },
+?   team?: true,
+?   review?: true,
+?   reviewerassignment?: true
+  },
+  orderBy: {
+    created_at: "desc"
+  }
+}
+
+Unknown field `domain` for include statement on model `paper`. Available options are marked with ?.
+2025-09-05T19:39:13.949Z [right meow!] error: Error fetching waiting assignments: 
+Invalid `prisma.paper.findMany()` invocation:
+
+{
+  where: {
+    reviewerassignment: {
+      none: {}
+    }
+  },
+  include: {
+    teacher: {
+      select: {
+        teacher_id: true,
+        user: {
+          select: {
+            name: true,
+            email: true
+          }
+        }
+      }
+    },
+    domain: {
+    ~~~~~~
+      select: {
+        domain_id: true,
+        domain_name: true
+      }
+    },
+?   team?: true,
+?   review?: true,
+?   reviewerassignment?: true
+  },
+  orderBy: {
+    created_at: "desc"
+  }
+}
+
+Unknown field `domain` for include statement on model `paper`. Available options are marked with ?.
+2025-09-05T19:39:22.896Z [right meow!] error: Error fetching waiting assignments: 
+Invalid `prisma.paper.findMany()` invocation:
+
+{
+  where: {
+    reviewerassignment: {
+      none: {}
+    }
+  },
+  include: {
+    teacher: {
+      select: {
+        teacher_id: true,
+        user: {
+          select: {
+            name: true,
+            email: true
+          }
+        }
+      }
+    },
+    domain: {
+    ~~~~~~
+      select: {
+        domain_id: true,
+        domain_name: true
+      }
+    },
+?   team?: true,
+?   review?: true,
+?   reviewerassignment?: true
+  },
+  orderBy: {
+    created_at: "desc"
+  }
+}
+
+Unknown field `domain` for include statement on model `paper`. Available options are marked with ?.
+2025-09-05T19:39:22.977Z [right meow!] error: Error fetching waiting assignments: 
+Invalid `prisma.paper.findMany()` invocation:
+
+{
+  where: {
+    reviewerassignment: {
+      none: {}
+    }
+  },
+  include: {
+    teacher: {
+      select: {
+        teacher_id: true,
+        user: {
+          select: {
+            name: true,
+            email: true
+          }
+        }
+      }
+    },
+    domain: {
+    ~~~~~~
+      select: {
+        domain_id: true,
+        domain_name: true
+      }
+    },
+?   team?: true,
+?   review?: true,
+?   reviewerassignment?: true
+  },
+  orderBy: {
+    created_at: "desc"
+  }
+}
+
+Unknown field `domain` for include statement on model `paper`. Available options are marked with ?.
+2025-09-05T21:43:09.531Z [right meow!] error: Error fetching waiting assignments: submitter is not defined
+2025-09-05T21:43:09.604Z [right meow!] error: Error fetching waiting assignments: submitter is not defined
+2025-09-05T22:21:53.125Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-05T22:21:53.141Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-05T22:21:53.144Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-05T22:21:54.161Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-05T22:21:54.165Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-05T22:21:54.170Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-05T22:21:55.196Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-05T22:21:55.251Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-05T22:21:55.274Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-05T22:21:56.363Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-05T22:21:56.369Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-05T22:21:56.381Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-06T15:50:25.772Z [right meow!] error: Worker error: read ECONNRESET
+2025-09-11T06:59:25.769Z [right meow!] error: resolveReviewerId error: 
+Invalid `prisma.teacher.findUnique()` invocation:
+
+{
+  where: {
+    user_id: 3,
+?   teacher_id?: Int,
+?   AND?: teacherWhereInput | teacherWhereInput[],
+?   OR?: teacherWhereInput[],
+?   NOT?: teacherWhereInput | teacherWhereInput[],
+?   designation?: StringNullableFilter | String | Null,
+?   department_id?: IntNullableFilter | Int | Null,
+?   isReviewer?: BoolFilter | Boolean,
+?   user?: UserNullableScalarRelationFilter | userWhereInput | Null,
+?   department?: DepartmentNullableScalarRelationFilter | departmentWhereInput | Null,
+?   paper?: PaperListRelationFilter,
+?   proposal?: ProposalListRelationFilter,
+?   reviewer?: ReviewerNullableScalarRelationFilter | reviewerWhereInput | Null
+  },
+  select: {
+    teacher_id: true
+  }
+}
+
+Argument `where` of type teacherWhereUniqueInput needs at least one of `teacher_id` arguments. Available options are marked with ?.
+2025-09-11T06:59:25.813Z [right meow!] error: resolveReviewerId error: 
+Invalid `prisma.teacher.findUnique()` invocation:
+
+{
+  where: {
+    user_id: 3,
+?   teacher_id?: Int,
+?   AND?: teacherWhereInput | teacherWhereInput[],
+?   OR?: teacherWhereInput[],
+?   NOT?: teacherWhereInput | teacherWhereInput[],
+?   designation?: StringNullableFilter | String | Null,
+?   department_id?: IntNullableFilter | Int | Null,
+?   isReviewer?: BoolFilter | Boolean,
+?   user?: UserNullableScalarRelationFilter | userWhereInput | Null,
+?   department?: DepartmentNullableScalarRelationFilter | departmentWhereInput | Null,
+?   paper?: PaperListRelationFilter,
+?   proposal?: ProposalListRelationFilter,
+?   reviewer?: ReviewerNullableScalarRelationFilter | reviewerWhereInput | Null
+  },
+  select: {
+    teacher_id: true
+  }
+}
+
+Argument `where` of type teacherWhereUniqueInput needs at least one of `teacher_id` arguments. Available options are marked with ?.
+2025-09-11T06:59:35.541Z [right meow!] error: resolveReviewerId error: 
+Invalid `prisma.teacher.findUnique()` invocation:
+
+{
+  where: {
+    user_id: 3,
+?   teacher_id?: Int,
+?   AND?: teacherWhereInput | teacherWhereInput[],
+?   OR?: teacherWhereInput[],
+?   NOT?: teacherWhereInput | teacherWhereInput[],
+?   designation?: StringNullableFilter | String | Null,
+?   department_id?: IntNullableFilter | Int | Null,
+?   isReviewer?: BoolFilter | Boolean,
+?   user?: UserNullableScalarRelationFilter | userWhereInput | Null,
+?   department?: DepartmentNullableScalarRelationFilter | departmentWhereInput | Null,
+?   paper?: PaperListRelationFilter,
+?   proposal?: ProposalListRelationFilter,
+?   reviewer?: ReviewerNullableScalarRelationFilter | reviewerWhereInput | Null
+  },
+  select: {
+    teacher_id: true
+  }
+}
+
+Argument `where` of type teacherWhereUniqueInput needs at least one of `teacher_id` arguments. Available options are marked with ?.
+2025-09-11T06:59:35.589Z [right meow!] error: resolveReviewerId error: 
+Invalid `prisma.teacher.findUnique()` invocation:
+
+{
+  where: {
+    user_id: 3,
+?   teacher_id?: Int,
+?   AND?: teacherWhereInput | teacherWhereInput[],
+?   OR?: teacherWhereInput[],
+?   NOT?: teacherWhereInput | teacherWhereInput[],
+?   designation?: StringNullableFilter | String | Null,
+?   department_id?: IntNullableFilter | Int | Null,
+?   isReviewer?: BoolFilter | Boolean,
+?   user?: UserNullableScalarRelationFilter | userWhereInput | Null,
+?   department?: DepartmentNullableScalarRelationFilter | departmentWhereInput | Null,
+?   paper?: PaperListRelationFilter,
+?   proposal?: ProposalListRelationFilter,
+?   reviewer?: ReviewerNullableScalarRelationFilter | reviewerWhereInput | Null
+  },
+  select: {
+    teacher_id: true
+  }
+}
+
+Argument `where` of type teacherWhereUniqueInput needs at least one of `teacher_id` arguments. Available options are marked with ?.
+2025-09-11T07:10:21.967Z [right meow!] error: resolveReviewerId error: 
+Invalid `prisma.teacher.findUnique()` invocation:
+
+{
+  where: {
+    user_id: 3,
+?   teacher_id?: Int,
+?   AND?: teacherWhereInput | teacherWhereInput[],
+?   OR?: teacherWhereInput[],
+?   NOT?: teacherWhereInput | teacherWhereInput[],
+?   designation?: StringNullableFilter | String | Null,
+?   department_id?: IntNullableFilter | Int | Null,
+?   isReviewer?: BoolFilter | Boolean,
+?   user?: UserNullableScalarRelationFilter | userWhereInput | Null,
+?   department?: DepartmentNullableScalarRelationFilter | departmentWhereInput | Null,
+?   paper?: PaperListRelationFilter,
+?   proposal?: ProposalListRelationFilter,
+?   reviewer?: ReviewerNullableScalarRelationFilter | reviewerWhereInput | Null
+  },
+  select: {
+    teacher_id: true
+  }
+}
+
+Argument `where` of type teacherWhereUniqueInput needs at least one of `teacher_id` arguments. Available options are marked with ?.
+2025-09-11T07:10:21.988Z [right meow!] error: resolveReviewerId error: 
+Invalid `prisma.teacher.findUnique()` invocation:
+
+{
+  where: {
+    user_id: 3,
+?   teacher_id?: Int,
+?   AND?: teacherWhereInput | teacherWhereInput[],
+?   OR?: teacherWhereInput[],
+?   NOT?: teacherWhereInput | teacherWhereInput[],
+?   designation?: StringNullableFilter | String | Null,
+?   department_id?: IntNullableFilter | Int | Null,
+?   isReviewer?: BoolFilter | Boolean,
+?   user?: UserNullableScalarRelationFilter | userWhereInput | Null,
+?   department?: DepartmentNullableScalarRelationFilter | departmentWhereInput | Null,
+?   paper?: PaperListRelationFilter,
+?   proposal?: ProposalListRelationFilter,
+?   reviewer?: ReviewerNullableScalarRelationFilter | reviewerWhereInput | Null
+  },
+  select: {
+    teacher_id: true
+  }
+}
+
+Argument `where` of type teacherWhereUniqueInput needs at least one of `teacher_id` arguments. Available options are marked with ?.
+2025-09-12T19:38:16.384Z [right meow!] error: Reviewers fetch error: 
+Invalid `prisma.reviewer.findMany()` invocation:
+
+{
+  include: {
+    teacher: {
+      include: {
+        user: {
+          select: {
+            name: true,
+            email: true
+          }
+        },
+        department: {
+          select: {
+            department_name: true
+          }
+        }
+      }
+    },
+    reviewerpreference: {
+    ~~~~~~~~~~~~~~~~~~
+      include: {
+        domain: {
+          select: {
+            domain_name: true
+          }
+        }
+      }
+    },
+    _count: {
+      select: {
+        review: true,
+        reviewerassignment: true
+      }
+    },
+?   review?: true,
+?   reviewerassignment?: true
+  }
+}
+
+Unknown field `reviewerpreference` for include statement on model `reviewer`. Available options are marked with ?.
+2025-09-12T19:38:16.396Z [right meow!] error: Reviewers fetch error: 
+Invalid `prisma.reviewer.findMany()` invocation:
+
+{
+  include: {
+    teacher: {
+      include: {
+        user: {
+          select: {
+            name: true,
+            email: true
+          }
+        },
+        department: {
+          select: {
+            department_name: true
+          }
+        }
+      }
+    },
+    reviewerpreference: {
+    ~~~~~~~~~~~~~~~~~~
+      include: {
+        domain: {
+          select: {
+            domain_name: true
+          }
+        }
+      }
+    },
+    _count: {
+      select: {
+        review: true,
+        reviewerassignment: true
+      }
+    },
+?   review?: true,
+?   reviewerassignment?: true
+  }
+}
+
+Unknown field `reviewerpreference` for include statement on model `reviewer`. Available options are marked with ?.
+2025-09-12T19:38:30.510Z [right meow!] info: inviteReviewers called
+2025-09-12T19:38:30.511Z [right meow!] info: Request body: 
+2025-09-12T19:38:30.576Z [right meow!] info: Reviewer invitations sent to 1 teachers
+2025-09-12T19:38:32.037Z [right meow!] info: Email job completed successfully
+2025-09-12T19:38:32.565Z [right meow!] error: Reviewers fetch error: 
+Invalid `prisma.reviewer.findMany()` invocation:
+
+{
+  include: {
+    teacher: {
+      include: {
+        user: {
+          select: {
+            name: true,
+            email: true
+          }
+        },
+        department: {
+          select: {
+            department_name: true
+          }
+        }
+      }
+    },
+    reviewerpreference: {
+    ~~~~~~~~~~~~~~~~~~
+      include: {
+        domain: {
+          select: {
+            domain_name: true
+          }
+        }
+      }
+    },
+    _count: {
+      select: {
+        review: true,
+        reviewerassignment: true
+      }
+    },
+?   review?: true,
+?   reviewerassignment?: true
+  }
+}
+
+Unknown field `reviewerpreference` for include statement on model `reviewer`. Available options are marked with ?.
+2025-09-12T19:46:09.599Z [right meow!] info: inviteReviewers called
+2025-09-12T19:46:09.602Z [right meow!] info: Request body: 
+2025-09-12T19:46:09.723Z [right meow!] info: Reviewer invitations sent to 1 teachers
+2025-09-12T19:46:11.139Z [right meow!] info: Email job completed successfully
+2025-09-12T20:02:25.735Z [right meow!] info: New reviewer added: Mohammad Rokan Uddin Faruqi (ID: 3)
+2025-09-12T20:02:25.796Z [right meow!] error: Error calculating review time for reviewer 3: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 3,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T20:02:27.066Z [right meow!] info: Email job completed successfully
+2025-09-12T20:02:32.415Z [right meow!] info: Reviewer 3 status updated to SUSPENDED
+2025-09-12T20:02:32.451Z [right meow!] error: Error calculating review time for reviewer 3: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 3,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T20:02:33.630Z [right meow!] info: Email job completed successfully
+2025-09-12T20:02:36.047Z [right meow!] info: Reviewer 3 status updated to PENDING
+2025-09-12T20:02:36.068Z [right meow!] error: Error calculating review time for reviewer 3: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 3,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T20:02:37.257Z [right meow!] info: Email job completed successfully
+2025-09-12T20:02:49.805Z [right meow!] info: New reviewer added: Dipannita Das (ID: 4)
+2025-09-12T20:02:49.826Z [right meow!] error: Error calculating review time for reviewer 4: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 4,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T20:02:49.829Z [right meow!] error: Error calculating review time for reviewer 3: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 3,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T20:02:51.020Z [right meow!] info: Email job completed successfully
+2025-09-12T20:04:55.637Z [right meow!] error: Error fetching available reviewers: 
+Invalid `prisma.reviewer.findMany()` invocation:
+
+
+The column `reviewerassignment.assigned_date` does not exist in the current database.
+2025-09-12T20:05:04.399Z [right meow!] error: Error in auto-match reviewers: 
+Invalid `prisma.reviewer.findMany()` invocation:
+
+
+The column `reviewerassignment.assigned_date` does not exist in the current database.
+2025-09-12T20:05:07.659Z [right meow!] error: Error fetching available reviewers: 
+Invalid `prisma.reviewer.findMany()` invocation:
+
+
+The column `reviewerassignment.assigned_date` does not exist in the current database.
+2025-09-12T20:05:11.762Z [right meow!] error: Error fetching available reviewers: 
+Invalid `prisma.reviewer.findMany()` invocation:
+
+
+The column `reviewerassignment.assigned_date` does not exist in the current database.
+2025-09-12T20:06:37.888Z [right meow!] error: Error fetching available reviewers: 
+Invalid `prisma.reviewer.findMany()` invocation:
+
+
+The column `reviewerassignment.assigned_date` does not exist in the current database.
+2025-09-12T20:25:24.178Z [right meow!] error: Error fetching available reviewers: 
+Invalid `prisma.reviewer.findMany()` invocation:
+
+
+The column `reviewerassignment.assigned_date` does not exist in the current database.
+2025-09-12T20:25:33.910Z [right meow!] error: Error fetching available reviewers: 
+Invalid `prisma.reviewer.findMany()` invocation:
+
+
+The column `reviewerassignment.assigned_date` does not exist in the current database.
+2025-09-12T20:31:25.262Z [right meow!] error: Error fetching available reviewers: 
+Invalid `prisma.reviewer.findMany()` invocation:
+
+
+The column `reviewerassignment.assigned_date` does not exist in the current database.
+2025-09-12T21:26:24.094Z [right meow!] error: Error calculating review time for reviewer 2: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 2,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T21:26:24.130Z [right meow!] error: Error calculating review time for reviewer 1: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 1,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T21:26:24.161Z [right meow!] error: Error calculating review time for reviewer 1: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 1,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T21:26:24.165Z [right meow!] error: Error calculating review time for reviewer 2: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 2,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T21:26:35.753Z [right meow!] info: inviteReviewers called
+2025-09-12T21:26:35.753Z [right meow!] info: Request body: 
+2025-09-12T21:26:35.774Z [right meow!] info: Reviewer invitations sent to 1 teachers
+2025-09-12T21:26:37.155Z [right meow!] info: Email job completed successfully
+2025-09-12T21:26:37.608Z [right meow!] error: Error calculating review time for reviewer 1: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 1,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T21:26:37.610Z [right meow!] error: Error calculating review time for reviewer 2: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 2,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T21:26:43.275Z [right meow!] error: Error calculating review time for reviewer 1: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 1,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T21:26:43.281Z [right meow!] error: Error calculating review time for reviewer 2: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 2,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T21:26:43.310Z [right meow!] error: Error calculating review time for reviewer 2: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 2,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T21:26:43.318Z [right meow!] error: Error calculating review time for reviewer 1: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 1,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T21:41:28.064Z [right meow!] error: Error calculating review time for reviewer 1: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 1,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T21:41:28.089Z [right meow!] error: Error calculating review time for reviewer 2: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 2,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T21:41:28.115Z [right meow!] error: Error calculating review time for reviewer 2: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 2,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T21:41:28.165Z [right meow!] error: Error calculating review time for reviewer 1: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 1,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T21:41:33.597Z [right meow!] error: Add reviewer error: 
+Invalid `prisma.reviewer.create()` invocation:
+
+
+Unique constraint failed on the fields: (`reviewer_id`)
+2025-09-12T21:41:39.302Z [right meow!] error: Add reviewer error: 
+Invalid `prisma.reviewer.create()` invocation:
+
+
+Unique constraint failed on the fields: (`reviewer_id`)
+2025-09-12T21:41:51.726Z [right meow!] error: Error calculating review time for reviewer 2: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 2,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T21:41:51.732Z [right meow!] error: Error calculating review time for reviewer 1: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 1,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T21:42:42.068Z [right meow!] error: Add reviewer error: 
+Invalid `prisma.reviewer.create()` invocation:
+
+
+Unique constraint failed on the fields: (`reviewer_id`)
+2025-09-12T21:49:46.239Z [right meow!] error: Add reviewer error: 
+Invalid `prisma.reviewer.create()` invocation:
+
+
+Unique constraint failed on the fields: (`reviewer_id`)
+2025-09-12T21:50:07.728Z [right meow!] info: inviteReviewers called
+2025-09-12T21:50:07.729Z [right meow!] info: Request body: 
+2025-09-12T21:50:07.747Z [right meow!] error: Reviewer invitations error: 
+Invalid `prisma.reviewer.create()` invocation:
+
+
+Unique constraint failed on the fields: (`reviewer_id`)
+2025-09-12T21:50:44.001Z [right meow!] error: Error calculating review time for reviewer 1: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 1,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T21:50:44.039Z [right meow!] error: Error calculating review time for reviewer 2: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 2,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T21:50:44.067Z [right meow!] error: Error calculating review time for reviewer 2: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 2,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T21:50:44.126Z [right meow!] error: Error calculating review time for reviewer 1: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 1,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T21:51:52.741Z [right meow!] error: Error calculating review time for reviewer 1: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 1,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T21:51:52.744Z [right meow!] error: Error calculating review time for reviewer 2: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 2,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T21:51:52.767Z [right meow!] error: Error calculating review time for reviewer 1: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 1,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T21:51:52.769Z [right meow!] error: Error calculating review time for reviewer 2: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 2,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T21:52:09.268Z [right meow!] error: Error calculating review time for reviewer 1: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 1,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T21:52:09.271Z [right meow!] error: Error calculating review time for reviewer 2: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 2,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T21:52:09.296Z [right meow!] error: Error calculating review time for reviewer 2: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 2,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T21:52:09.299Z [right meow!] error: Error calculating review time for reviewer 1: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 1,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T22:00:22.011Z [right meow!] error: Error calculating review time for reviewer 1: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 1,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T22:00:22.034Z [right meow!] error: Error calculating review time for reviewer 2: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 2,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T22:07:43.723Z [right meow!] error: Error calculating review time for reviewer 1: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 1,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T22:07:43.781Z [right meow!] error: Error calculating review time for reviewer 2: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 2,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T22:07:43.949Z [right meow!] error: Error calculating review time for reviewer 1: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 1,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T22:07:43.953Z [right meow!] error: Error calculating review time for reviewer 2: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 2,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T22:07:51.180Z [right meow!] info: Email job completed successfully
+2025-09-12T22:07:52.169Z [right meow!] error: Error calculating review time for reviewer 2: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 2,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T22:07:52.171Z [right meow!] error: Error calculating review time for reviewer 1: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 1,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T22:07:52.173Z [right meow!] error: Error calculating review time for reviewer 3: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 3,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T22:08:15.410Z [right meow!] info: Reviewer removed: Dr. Humayratul Ekra (ID: 3)
+2025-09-12T22:08:16.634Z [right meow!] info: Email job completed successfully
+2025-09-12T22:08:16.859Z [right meow!] error: Error calculating review time for reviewer 1: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 1,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T22:08:16.861Z [right meow!] error: Error calculating review time for reviewer 2: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 2,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T22:08:21.418Z [right meow!] error: Error calculating review time for reviewer 2: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 2,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T22:08:21.423Z [right meow!] error: Error calculating review time for reviewer 1: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 1,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T22:08:21.458Z [right meow!] error: Error calculating review time for reviewer 1: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 1,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T22:08:21.461Z [right meow!] error: Error calculating review time for reviewer 2: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 2,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T22:08:31.733Z [right meow!] error: Error calculating review time for reviewer 1: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 1,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T22:08:31.735Z [right meow!] error: Error calculating review time for reviewer 4: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 4,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T22:08:31.737Z [right meow!] error: Error calculating review time for reviewer 2: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 2,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T22:08:31.776Z [right meow!] info: Email job completed successfully
+2025-09-12T22:08:36.674Z [right meow!] info: Reviewer removed: Dr. Elmah (ID: 4)
+2025-09-12T22:08:37.887Z [right meow!] info: Email job completed successfully
+2025-09-12T22:08:38.050Z [right meow!] error: Error calculating review time for reviewer 2: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 2,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T22:08:38.051Z [right meow!] error: Error calculating review time for reviewer 1: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 1,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T22:09:02.622Z [right meow!] info: Email job completed successfully
+2025-09-12T22:09:03.071Z [right meow!] error: Error calculating review time for reviewer 1: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 1,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T22:09:03.074Z [right meow!] error: Error calculating review time for reviewer 2: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 2,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T22:09:03.076Z [right meow!] error: Error calculating review time for reviewer 5: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 5,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T22:09:24.635Z [right meow!] info: Reviewer 1 status updated to ACTIVE
+2025-09-12T22:09:24.652Z [right meow!] error: Error calculating review time for reviewer 2: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 2,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T22:09:24.653Z [right meow!] error: Error calculating review time for reviewer 1: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 1,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T22:09:24.654Z [right meow!] error: Error calculating review time for reviewer 5: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 5,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T22:09:25.823Z [right meow!] info: Email job completed successfully

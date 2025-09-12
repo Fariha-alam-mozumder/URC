@@ -1,12 +1,19 @@
 // controllers/TeamController.js
 import db from "../../DB/db.config.js";
-import redis from "../../DB/redis.config.js";
+import redis from "../../DB/redis.client.js";
+import {
+  teamDetailsKey,
+  userTeamsKey,
+  membersKey,
+} from "../../utils/cacheKeys.js";
 import { Vine, errors } from "@vinejs/vine";
 import { fileValidator, uploadFile } from "../../utils/helper.js";
 import { teamSchema } from "../../validations/teacher/teamValidation.js";
 
 const vine = new Vine();
+// FIXED: Use the correct enum values from Prisma schema
 const ROLE_ENUM = ["LEAD", "RESEARCHER", "ASSISTANT"];
+
 function toBool(v) {
   if (typeof v === "boolean") return v;
   if (v === "1" || v === 1) return true;
@@ -14,13 +21,13 @@ function toBool(v) {
   if (typeof v === "string") return v.toLowerCase() === "true";
   return false;
 }
+
 function toNum(v) {
   const n = Number(v);
   return Number.isNaN(n) ? undefined : n;
 }
 
 class TeamController {
-  // --------- NEW: creator’s dept + domains ----------
   static async creatorContext(req, res) {
     try {
       const userId = Number(req.user.id);
@@ -42,7 +49,9 @@ class TeamController {
       if ((!userDomains || userDomains.length === 0) && department_id) {
         const deptDomains = await db.departmentdomain.findMany({
           where: { department_id },
-          include: { domain: { select: { domain_id: true, domain_name: true } } },
+          include: {
+            domain: { select: { domain_id: true, domain_name: true } },
+          },
         });
         userDomains = deptDomains.map((dd) => ({ domain: dd.domain }));
       }
@@ -68,45 +77,57 @@ class TeamController {
       }
 
       if (body.domain_id !== undefined) body.domain_id = toNum(body.domain_id);
-      if (body.max_members !== undefined) body.max_members = toNum(body.max_members);
+      if (body.max_members !== undefined)
+        body.max_members = toNum(body.max_members);
       if (body.isHiring !== undefined) body.isHiring = toBool(body.isHiring);
-      if (typeof body.status === "string") body.status = body.status.toUpperCase();
-      if (typeof body.visibility === "string") body.visibility = body.visibility.toUpperCase();
+      if (typeof body.status === "string")
+        body.status = body.status.toUpperCase();
+      if (typeof body.visibility === "string")
+        body.visibility = body.visibility.toUpperCase();
       if (!Array.isArray(body.members)) body.members = [];
 
       // Normalize & validate role_in_team
-      body.members = body.members.map(m => {
-        let role = typeof m.role_in_team === "string" ? m.role_in_team.toUpperCase() : "RESEARCHER";
+      body.members = body.members.map((m) => {
+        let role =
+          typeof m.role_in_team === "string"
+            ? m.role_in_team.toUpperCase()
+            : "RESEARCHER";
         if (!ROLE_ENUM.includes(role)) {
           throw new errors.E_VALIDATION_ERROR([
             {
               field: "members.role_in_team",
               rule: "enum",
-              message: `The selected role_in_team "${role}" is invalid. Allowed: ${ROLE_ENUM.join(", ")}`
-            }
+              message: `The selected role_in_team "${role}" is invalid. Allowed: ${ROLE_ENUM.join(
+                ", "
+              )}`,
+            },
           ]);
         }
         return {
           ...m,
-          role_in_team: role
+          role_in_team: role,
         };
       });
+
       const validator = vine.compile(teamSchema);
       const payload = await validator.validate(body);
-      // After validation
       console.log("Validated payload:", payload);
+
       let team;
       try {
+        // FIXED: Create team with proper field mapping
         team = await db.team.create({
           data: {
             team_name: payload.team_name,
             team_description: payload.team_description || "",
             domain_id: payload.domain_id ?? null,
-            status: payload.status || "RECRUITING",
-            visibility: payload.visibility || "PUBLIC",
+            // FIXED: Ensure these match Prisma enum values exactly
+            status: payload.status || "RECRUITING", // TeamStatus enum
+            visibility: payload.visibility || "PUBLIC", // TeamVisibility enum
             max_members: payload.max_members ?? null,
             isHiring: payload.isHiring || false,
             created_by_user_id: Number(req.user.id),
+            // created_at is auto-generated
           },
         });
         console.log("Team created:", team);
@@ -116,48 +137,65 @@ class TeamController {
           data: {
             team_id: team.team_id,
             user_id: Number(req.user.id),
-            role_in_team: "LEAD", // or another default role if you prefer
+            role_in_team: "LEAD", // TeamRole enum value
           },
         });
         console.log(`Added creator ${req.user.id} as LEAD`);
 
+        // Add additional members
         if (Array.isArray(payload.members)) {
           for (const member of payload.members) {
             await db.teammember.create({
               data: {
                 team_id: team.team_id,
                 user_id: Number(member.user_id),
-                role_in_team: member.role_in_team, // Now guaranteed valid
+                role_in_team: member.role_in_team, // Already validated above
               },
             });
-            console.log(`Added member ${member.user_id} with role ${member.role_in_team}`);
+            console.log(
+              `Added member ${member.user_id} with role ${member.role_in_team}`
+            );
           }
         }
-      }
-      catch (dbErr) {
+      } catch (dbErr) {
         console.error("DB operation failed:", dbErr);
+        // Log the specific error details
+        if (dbErr.code) {
+          console.error("Prisma error code:", dbErr.code);
+        }
+        if (dbErr.meta) {
+          console.error("Prisma error meta:", dbErr.meta);
+        }
         throw dbErr;
       }
+
+      // Handle file upload (proposal)
       console.log("req.body:", req.body);
       console.log("req.file:", req.file);
       console.log("req.files:", req.files);
 
-
-      const file = req.files?.proposal || req.files?.file || req.files?.proposalFile;
-      const teacher = await db.teacher.findFirst({
-        where: { user_id: Number(req.user.id) },
-        select: { teacher_id: true }
-      });
-      if (!teacher) {
-        return res.status(400).json({ error: "Submitting user is not a teacher" });
-      }
+      const file =
+        req.files?.proposal || req.files?.file || req.files?.proposalFile;
 
       if (file) {
+        // Verify user is a teacher before creating proposal
+        const teacher = await db.teacher.findFirst({
+          where: { user_id: Number(req.user.id) },
+          select: { teacher_id: true },
+        });
+
+        if (!teacher) {
+          return res
+            .status(400)
+            .json({ error: "Submitting user is not a teacher" });
+        }
+
         try {
           fileValidator(10, file.mimetype)(file);
         } catch (e) {
           return res.status(400).json({ errors: { proposal: e.message } });
         }
+
         const pdf_path = await uploadFile(file, true, "pdf");
         console.log("Proposal data payload:", {
           title: payload.proposal_title,
@@ -169,38 +207,81 @@ class TeamController {
           data: {
             title: payload.proposal_title || `${team.team_name} - Proposal`,
             abstract: payload.proposal_abstract,
-            team_id: team.team_id,
             pdf_path,
-            submitted_by: teacher.teacher_id,
-            domain_id: payload.domain_id,
             file_size: file.size,
-            status: "PENDING",
+            status: "PENDING", // PaperStatus enum
+            // Relations
+            team: {
+              connect: { team_id: team.team_id }, // connect to existing team
+            },
+            teacher: {
+              connect: { teacher_id: teacher.teacher_id }, // connect to existing teacher
+            },
+            // created_at is auto-generated
           },
         });
+
       }
 
-      try { await redis.del("/api/teams"); } catch (err) { console.error("Redis clear:", err); }
+      // Invalidate caches
+      try {
+        const creatorId = Number(req.user.id);
+        await redis.del(userTeamsKey(creatorId));
 
-      return res.status(201).json({ status: 201, message: "Team created successfully", data: team });
+        // Also invalidate each added member's "my teams"
+        if (Array.isArray(payload.members)) {
+          for (const m of payload.members) {
+            if (m?.user_id) await redis.del(userTeamsKey(Number(m.user_id)));
+          }
+        }
+        await redis.del(teamDetailsKey(team.team_id));
+      } catch (err) {
+        console.error("Redis invalidate error:", err);
+      }
+
+      return res.status(201).json({
+        status: 201,
+        message: "Team created successfully",
+        data: team,
+      });
     } catch (err) {
-      if (err instanceof errors.E_VALIDATION_ERROR) return res.status(422).json({ errors: err.messages });
+      if (err instanceof errors.E_VALIDATION_ERROR)
+        return res.status(422).json({ errors: err.messages });
+
       console.error("Team creation error:", err);
+
+      // More specific error handling
+      if (err.code === 'P2002') {
+        return res.status(400).json({ error: "Duplicate entry - team name or constraint violation" });
+      }
+      if (err.code === 'P2003') {
+        return res.status(400).json({ error: "Foreign key constraint violation" });
+      }
+      if (err.code === 'P2025') {
+        return res.status(400).json({ error: "Record not found" });
+      }
+
       return res.status(500).json({ error: "Internal Server Error" });
     }
   }
 
-
-  // Updated getPotentialTeamMembers method in TeamController.js
-  static async getPotentialTeamMembers({ departmentId, creatorUserId, domainIds }) {
+  // ... rest of your methods remain the same
+  static async getPotentialTeamMembers({
+    departmentId,
+    creatorUserId,
+    domainIds,
+  }) {
     // 1) Dept
     let deptId = departmentId ?? null;
     if (!deptId) {
-      if (!creatorUserId) throw new Error("departmentId or creatorUserId required");
+      if (!creatorUserId)
+        throw new Error("departmentId or creatorUserId required");
       const creatorTeacher = await db.teacher.findFirst({
         where: { user_id: creatorUserId },
         select: { department_id: true },
       });
-      if (!creatorTeacher?.department_id) throw new Error("Teacher or department not found for this user.");
+      if (!creatorTeacher?.department_id)
+        throw new Error("Teacher or department not found for this user.");
       deptId = creatorTeacher.department_id;
     }
 
@@ -235,13 +316,13 @@ class TeamController {
                 domain: {
                   select: {
                     domain_id: true,
-                    domain_name: true
-                  }
-                }
-              }
-            }
-          }
-        }
+                    domain_name: true,
+                  },
+                },
+              },
+            },
+          },
+        },
       },
     });
 
@@ -263,13 +344,13 @@ class TeamController {
                 domain: {
                   select: {
                     domain_id: true,
-                    domain_name: true
-                  }
-                }
-              }
-            }
-          }
-        }
+                    domain_name: true,
+                  },
+                },
+              },
+            },
+          },
+        },
       },
     });
 
@@ -277,10 +358,10 @@ class TeamController {
     const getMatchingDomains = (userDomains) => {
       if (!domIds || domIds.length === 0) return [];
 
-      const userDomainIds = userDomains.map(ud => ud.domain.domain_id);
+      const userDomainIds = userDomains.map((ud) => ud.domain.domain_id);
       return userDomains
-        .filter(ud => domIds.includes(ud.domain.domain_id))
-        .map(ud => ud.domain.domain_name);
+        .filter((ud) => domIds.includes(ud.domain.domain_id))
+        .map((ud) => ud.domain.domain_name);
     };
 
     // Format the response with domain information
@@ -289,21 +370,21 @@ class TeamController {
       name: userRecord.user.name,
       email: userRecord.user.email,
       role: userRecord.user.role,
-      domains: userRecord.user.userdomain.map(ud => ud.domain.domain_name),
-      matchingDomains: getMatchingDomains(userRecord.user.userdomain)
+      domains: userRecord.user.userdomain.map((ud) => ud.domain.domain_name),
+      matchingDomains: getMatchingDomains(userRecord.user.userdomain),
     });
 
-    return [
-      ...students.map(formatUser),
-      ...teachers.map(formatUser),
-    ];
+    return [...students.map(formatUser), ...teachers.map(formatUser)];
   }
 
-  // --------- GET /api/members?creatorUserId=&departmentId=&domainIds=1,2,3 ----------
   static async listMembers(req, res) {
     try {
-      const departmentId = req.query.departmentId ? Number(req.query.departmentId) : null;
-      const creatorUserId = req.query.creatorUserId ? Number(req.query.creatorUserId) : null;
+      const departmentId = req.query.departmentId
+        ? Number(req.query.departmentId)
+        : null;
+      const creatorUserId = req.query.creatorUserId
+        ? Number(req.query.creatorUserId)
+        : null;
       const domainIdsParam = req.query.domainIds;
       const domainIds = domainIdsParam
         ? String(domainIdsParam)
@@ -312,13 +393,31 @@ class TeamController {
           .filter((n) => !Number.isNaN(n))
         : [];
 
-      if (Number.isNaN(departmentId)) return res.status(400).json({ error: "departmentId must be a number" });
-      if (Number.isNaN(creatorUserId)) return res.status(400).json({ error: "creatorUserId must be a number" });
+      if (Number.isNaN(departmentId))
+        return res.status(400).json({ error: "departmentId must be a number" });
+      if (Number.isNaN(creatorUserId))
+        return res
+          .status(400)
+          .json({ error: "creatorUserId must be a number" });
 
-      const members = await TeamController.getPotentialTeamMembers({ departmentId, creatorUserId, domainIds });
-      return res.json(members);
+      // Try cache first
+      const key = membersKey({ departmentId, creatorUserId, domainIds });
+      const cached = await redis.get(key);
+      if (cached)
+        return res.json({ data: JSON.parse(cached), fromCache: true });
+
+      const members = await TeamController.getPotentialTeamMembers({
+        departmentId,
+        creatorUserId,
+        domainIds,
+      });
+
+      // Cache for 30 minutes
+      await redis.setex(key, 60, JSON.stringify(members)); // cache 60s
+      return res.json({ data: members, fromCache: false });
     } catch (e) {
-      const message = typeof e?.message === "string" ? e.message : "Failed to load members";
+      const message =
+        typeof e?.message === "string" ? e.message : "Failed to load members";
       const status = /required|not found|must be/i.test(message) ? 400 : 500;
       return res.status(status).json({ error: message });
     }

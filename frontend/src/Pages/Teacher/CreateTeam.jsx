@@ -179,13 +179,16 @@ const CreateTeam = () => {
         domainOptions={domainOptions} // [{domain_id, domain_name}]
       />
 
-      <MemberManager
-        members={members}
-        onChange={setMembers}
-        creatorUserId={user?.id}
-        departmentId={creatorDeptId}
-        domainIds={creatorDomainIds} // filter candidates by these domains
-      />
+      {creatorDeptId && (
+  <MemberManager
+    members={members}
+    onChange={setMembers}
+    creatorUserId={user?.user_id ?? user?.id}
+    departmentId={creatorDeptId}
+    domainIds={creatorDomainIds}
+  />
+)}
+
 
       <DocumentUploader
         proposalFile={proposalFile}

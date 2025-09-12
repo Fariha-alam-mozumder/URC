@@ -34,26 +34,6 @@ const DocumentList = ({
 }) => {
   const [expandedDoc, setExpandedDoc] = useState(null);
 
-  const handleDownload = (doc) => {
-    if (onDownload) {
-      return onDownload(doc);
-    }
-    
-    // Default download behavior
-    if (doc.href) {
-      const link = document.createElement('a');
-      link.href = `http://localhost:8000/${doc.href}`;
-      link.download = doc.name || 'document.pdf';
-      link.target = '_blank'; // Open in new tab as backup
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    } else {
-      console.warn('No download link available for:', doc.name);
-      alert('Download link not available for this document.');
-    }
-  };
-
   const handleView = (doc) => {
     if (doc.href) {
       window.open(`http://localhost:8000/${doc.href}`, '_blank');
@@ -137,11 +117,11 @@ const DocumentList = ({
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap mb-1">
                         <h4 className="font-medium text-sm truncate">{doc.name}</h4>
-                        <span className="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded">
+                        <span className="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded-full">
                           {doc.type}
                         </span>
                         {doc.status && (
-                          <span className={`text-xs px-2 py-1 rounded ${getStatusColor(doc.status)}`}>
+                          <span className={`text-xs px-2 py-1 rounded-full ${getStatusColor(doc.status)}`}>
                             {doc.status.replace('_', ' ').toUpperCase()}
                           </span>
                         )}
@@ -171,15 +151,6 @@ const DocumentList = ({
                       aria-label="View Document"
                     >
                       <FaEye className="text-sm" />
-                    </button>
-                    
-                    <button
-                      onClick={() => handleDownload(doc)}
-                      className="p-2 rounded hover:bg-gray-100 text-gray-600 hover:text-green-600 transition-colors"
-                      title="Download"
-                      aria-label="Download"
-                    >
-                      <FaDownload className="text-sm" />
                     </button>
 
                     {canManage && onDelete && (

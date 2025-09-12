@@ -1,18 +1,59 @@
-import React from "react";
+import React, { useState } from "react";
+import { Eye, Bot, PlusCircle } from "lucide-react";
+import PdfViewerModal from "../Common/PdfViewerModal";
 
-const PaperCard = ({ id, category, title, authors, submittedDate, abstract, keywords, onAssign }) => {
+const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:8000";
+
+const PaperCard = ({
+  id,
+  title,
+  abstract,
+  author,
+  authors = [],
+  submissionDate,
+  domain,
+  pdf_path,
+  onAssign,
+  onAutoMatch,
+}) => {
+  const [openPdf, setOpenPdf] = useState(false);
+
+  const pdfUrl = pdf_path?.startsWith("http")
+    ? pdf_path
+    : `${API_BASE}${pdf_path?.startsWith("/") ? pdf_path : "/" + pdf_path}`;
+
+  const handleViewPdf = () => {
+    if (pdf_path) setOpenPdf(true);
+  };
+
   return (
     <div className="bg-white p-6 rounded shadow-sm border space-y-4">
-      {/* Top row */}
+      {/* Info */}
       <div className="flex items-center space-x-2 text-sm">
-        <span className="bg-gray-100 px-2 py-1 rounded">{id}</span>
-        <span className="bg-gray-100 px-2 py-1 rounded">{category}</span>
+        <span className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+          {id}
+        </span>
+        <span className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-300 text-gray-800">
+          {domain}
+        </span>
       </div>
 
-      {/* Title */}
       <h3 className="text-lg font-semibold">{title}</h3>
-      <p className="text-sm text-gray-500">{authors}</p>
-      <p className="text-xs text-gray-400">Submitted: {submittedDate}</p>
+
+      {authors.length > 0 ? (
+        <p className="text-sm text-gray-500">
+          {authors.map((a, i) => (
+            <span key={i}>
+              {a.name}
+              {i < authors.length - 1 ? ", " : ""}
+            </span>
+          ))}
+        </p>
+      ) : (
+        <p className="text-sm text-gray-500">{author}</p>
+      )}
+
+      <p className="text-xs text-gray-400">Submitted: {submissionDate}</p>
 
       {/* Abstract */}
       <div>
@@ -20,30 +61,43 @@ const PaperCard = ({ id, category, title, authors, submittedDate, abstract, keyw
         <p className="bg-gray-50 p-3 text-sm text-gray-600 rounded">{abstract}</p>
       </div>
 
-      {/* Keywords */}
-      <div>
-        <h4 className="text-sm font-medium">Keywords</h4>
-        <div className="flex flex-wrap gap-2 mt-1">
-          {keywords.map((kw, i) => (
-            <span key={i} className="bg-gray-100 px-2 py-1 rounded text-xs">
-              {kw}
-            </span>
-          ))}
-        </div>
-      </div>
-
       {/* Actions */}
       <div className="flex justify-end gap-2">
-        <button className="flex items-center gap-1 text-sm border px-3 py-1 rounded">
-          👁 View
+        <button
+          onClick={handleViewPdf}
+          disabled={!pdf_path}
+          className={`flex items-center gap-1 text-sm border px-3 py-1 rounded hover:bg-gray-100 ${
+            !pdf_path ? "opacity-50 cursor-not-allowed" : ""
+          }`}
+        >
+          <Eye size={16} /> View
         </button>
+
+        {onAutoMatch && (
+          <button
+            onClick={onAutoMatch}
+            className="flex items-center gap-1 text-sm border px-3 py-1 rounded text-indigo-600 hover:bg-indigo-50"
+          >
+            <Bot size={16} /> Auto Match
+          </button>
+        )}
+
         <button
           onClick={onAssign}
-          className="flex items-center gap-1 text-sm bg-black text-white px-3 py-1 rounded"
+          className="flex items-center gap-1 text-sm bg-blue-700 text-white px-3 py-1 rounded hover:bg-blue-900"
         >
-          ➕ Assign
+          <PlusCircle size={16} /> Assign
         </button>
       </div>
+
+      {/* Reusable PDF Modal */}
+      <PdfViewerModal
+        open={openPdf}
+        onClose={() => setOpenPdf(false)}
+        title={title}
+        pdfUrl={pdfUrl}
+        rawPath={pdf_path}
+      />
     </div>
   );
 };

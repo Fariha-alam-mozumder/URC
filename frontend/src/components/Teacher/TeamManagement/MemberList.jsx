@@ -32,18 +32,32 @@ const MemberList = ({
         params,
         headers: token ? { Authorization: `Bearer ${token}` } : {},
       })
-      .then((res) => setAllMembers(Array.isArray(res.data) ? res.data : []))
+      .then((res) => {
+        const payload = Array.isArray(res.data?.data)
+          ? res.data.data
+          : res.data;
+        setAllMembers(Array.isArray(payload) ? payload : []);
+      })
       .catch((err) => {
-        console.error("Error fetching students/teachers:", err.response?.data || err.message);
+        console.error(
+          "Error fetching students/teachers:",
+          err.response?.data || err.message
+        );
         setAllMembers([]);
       });
   }, [departmentId, creatorUserId, JSON.stringify(domainIds)]);
 
   const toggleSelect = (userId) =>
-    setSelected((prev) => (prev.includes(userId) ? prev.filter((id) => id !== userId) : [...prev, userId]));
+    setSelected((prev) =>
+      prev.includes(userId)
+        ? prev.filter((id) => id !== userId)
+        : [...prev, userId]
+    );
 
   const handleAddMembers = () => {
-    const selectedMembers = allMembers.filter((m) => selected.includes(m.user_id));
+    const selectedMembers = allMembers.filter((m) =>
+      selected.includes(m.user_id)
+    );
     if (pickerMode) onAddMany(selectedMembers);
     else setMembers((prev) => [...prev, ...selectedMembers]);
     setSelected([]);
@@ -55,20 +69,23 @@ const MemberList = ({
   // Component to display domain tags
   const DomainTags = ({ domains, matchingDomains, isCompact = false }) => {
     if (!domains || domains.length === 0) return null;
-    
+
     return (
-      <div className={`flex flex-wrap gap-1 ${isCompact ? 'mt-1' : 'mt-2'}`}>
+      <div className={`flex flex-wrap gap-1 ${isCompact ? "mt-1" : "mt-2"}`}>
         {domains.map((domain, index) => {
-          const isMatching = matchingDomains && matchingDomains.includes(domain);
+          const isMatching =
+            matchingDomains && matchingDomains.includes(domain);
           return (
             <span
               key={index}
               className={`px-2 py-1 rounded-full text-xs font-medium ${
                 isMatching
-                  ? 'bg-green-100 text-green-800 border border-green-200'
-                  : 'bg-gray-100 text-gray-600 border border-gray-200'
+                  ? "bg-green-100 text-green-800 border border-green-200"
+                  : "bg-gray-100 text-gray-600 border border-gray-200"
               }`}
-              title={isMatching ? 'Matching domain with creator' : 'User domain'}
+              title={
+                isMatching ? "Matching domain with creator" : "User domain"
+              }
             >
               {domain}
             </span>
@@ -82,8 +99,8 @@ const MemberList = ({
   if (pickerMode) {
     return (
       <>
-        <button 
-          onClick={() => setShowModal(true)} 
+        <button
+          onClick={() => setShowModal(true)}
           className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors text-sm font-medium"
         >
           {triggerText}
@@ -97,7 +114,8 @@ const MemberList = ({
                 {allMembers.length > 0 ? (
                   allMembers.map((member) => {
                     const disabled = existing.includes(member.user_id);
-                    const checked = selected.includes(member.user_id) || disabled;
+                    const checked =
+                      selected.includes(member.user_id) || disabled;
                     return (
                       <label
                         key={member.user_id}
@@ -124,26 +142,30 @@ const MemberList = ({
                               </span>
                             )}
                           </div>
-                          
+
                           <div className="flex items-center gap-1 text-sm text-gray-600 mt-1">
                             <FaEnvelope className="text-xs" />
                             <span>{member.email}</span>
                           </div>
 
-                          <DomainTags 
-                            domains={member.domains} 
+                          <DomainTags
+                            domains={member.domains}
                             matchingDomains={member.matchingDomains}
                             isCompact={true}
                           />
 
-                          {member.matchingDomains && member.matchingDomains.length > 0 && (
-                            <div className="text-xs text-green-600 mt-1 flex items-center gap-1">
-                              <FaTags className="text-xs" />
-                              <span>
-                                {member.matchingDomains.length} matching domain{member.matchingDomains.length > 1 ? 's' : ''} with creator
-                              </span>
-                            </div>
-                          )}
+                          {member.matchingDomains &&
+                            member.matchingDomains.length > 0 && (
+                              <div className="text-xs text-green-600 mt-1 flex items-center gap-1">
+                                <FaTags className="text-xs" />
+                                <span>
+                                  {member.matchingDomains.length} matching
+                                  domain
+                                  {member.matchingDomains.length > 1 ? "s" : ""}{" "}
+                                  with creator
+                                </span>
+                              </div>
+                            )}
                         </div>
                       </label>
                     );
@@ -153,8 +175,8 @@ const MemberList = ({
                 )}
               </div>
               <div className="flex justify-end gap-3">
-                <button 
-                  onClick={() => setShowModal(false)} 
+                <button
+                  onClick={() => setShowModal(false)}
                   className="px-4 py-2 text-sm bg-gray-200 rounded hover:bg-gray-300"
                 >
                   Cancel
@@ -163,8 +185,8 @@ const MemberList = ({
                   onClick={handleAddMembers}
                   disabled={selected.length === 0}
                   className={`px-4 py-2 text-sm rounded text-white ${
-                    selected.length 
-                      ? "bg-blue-600 hover:bg-blue-700" 
+                    selected.length
+                      ? "bg-blue-600 hover:bg-blue-700"
                       : "bg-blue-300 cursor-not-allowed"
                   }`}
                 >
@@ -182,9 +204,12 @@ const MemberList = ({
   return (
     <div className="bg-white p-4 rounded shadow h-fit">
       <div className="flex justify-between items-center mb-4">
-        <h3 className="text-lg font-semibold">{title}{headerCount}</h3>
-        <button 
-          onClick={() => setShowModal(true)} 
+        <h3 className="text-lg font-semibold">
+          {title}
+          {headerCount}
+        </h3>
+        <button
+          onClick={() => setShowModal(true)}
           className="flex items-center gap-2 text-sm text-blue-600 hover:underline"
         >
           <FaUserPlus /> {triggerText}
@@ -193,7 +218,10 @@ const MemberList = ({
 
       <ul className="space-y-4">
         {members.map((member) => (
-          <li key={member.user_id} className="flex items-start gap-3 p-3 border border-gray-200 rounded-lg">
+          <li
+            key={member.user_id}
+            className="flex items-start gap-3 p-3 border border-gray-200 rounded-lg"
+          >
             <FaUserCircle className="text-2xl text-gray-500 mt-1" />
             <div className="flex-1">
               <div className="flex items-center gap-2">
@@ -206,8 +234,8 @@ const MemberList = ({
                 <FaEnvelope className="text-xs" />
                 <span>{member.email}</span>
               </div>
-              <DomainTags 
-                domains={member.domains} 
+              <DomainTags
+                domains={member.domains}
                 matchingDomains={member.matchingDomains}
               />
             </div>
@@ -250,26 +278,29 @@ const MemberList = ({
                             </span>
                           )}
                         </div>
-                        
+
                         <div className="flex items-center gap-1 text-sm text-gray-600 mt-1">
                           <FaEnvelope className="text-xs" />
                           <span>{member.email}</span>
                         </div>
 
-                        <DomainTags 
-                          domains={member.domains} 
+                        <DomainTags
+                          domains={member.domains}
                           matchingDomains={member.matchingDomains}
                           isCompact={true}
                         />
 
-                        {member.matchingDomains && member.matchingDomains.length > 0 && (
-                          <div className="text-xs text-green-600 mt-1 flex items-center gap-1">
-                            <FaTags className="text-xs" />
-                            <span>
-                              {member.matchingDomains.length} matching domain{member.matchingDomains.length > 1 ? 's' : ''} with creator
-                            </span>
-                          </div>
-                        )}
+                        {member.matchingDomains &&
+                          member.matchingDomains.length > 0 && (
+                            <div className="text-xs text-green-600 mt-1 flex items-center gap-1">
+                              <FaTags className="text-xs" />
+                              <span>
+                                {member.matchingDomains.length} matching domain
+                                {member.matchingDomains.length > 1 ? "s" : ""}{" "}
+                                with creator
+                              </span>
+                            </div>
+                          )}
                       </div>
                     </label>
                   );
@@ -279,8 +310,8 @@ const MemberList = ({
               )}
             </div>
             <div className="flex justify-end gap-3">
-              <button 
-                onClick={() => setShowModal(false)} 
+              <button
+                onClick={() => setShowModal(false)}
                 className="px-4 py-2 text-sm bg-gray-200 rounded hover:bg-gray-300"
               >
                 Cancel
@@ -289,8 +320,8 @@ const MemberList = ({
                 onClick={handleAddMembers}
                 disabled={selected.length === 0}
                 className={`px-4 py-2 text-sm rounded text-white ${
-                  selected.length 
-                    ? "bg-blue-600 hover:bg-blue-700" 
+                  selected.length
+                    ? "bg-blue-600 hover:bg-blue-700"
                     : "bg-blue-300 cursor-not-allowed"
                 }`}
               >

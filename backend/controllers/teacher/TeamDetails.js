@@ -3,7 +3,6 @@ import redis from "../../DB/redis.client.js";
 import { userTeamsKey, teamDetailsKey } from "../../utils/cacheKeys.js";
 import { Vine, errors } from "@vinejs/vine";
 
-
 class TeamDetails {
     // GET /api/teams/my-teams
     static async index(req, res) {
@@ -125,9 +124,9 @@ class TeamDetails {
                 },
             });
 
-            if (!team) {
-                return res.status(404).json({ message: "Team not found" });
-            }
+      if (!team) {
+        return res.status(404).json({ message: "Team not found" });
+      }
 
             // Map DB data to frontend-friendly format
             const teamCardData = {
@@ -176,75 +175,95 @@ class TeamDetails {
                 })),
             };
 
-            return res.status(200).json({ data: teamCardData });
-        } catch (error) {
-            console.error("Error fetching team details:", error);
-            return res
-                .status(500)
-                .json({ message: "Server error", error: error.message });
-        }
+      //* Cache the result for 30 seconds
+      await redis.setex(cacheKey, 30, JSON.stringify(teamCardData)); // 30s TTL
+      return res.status(200).json({ data: teamCardData, fromCache: false });
+    } catch (error) {
+      console.error("Error fetching team details:", error);
+      return res
+        .status(500)
+        .json({ message: "Server error", error: error.message });
     }
+  }
 
-    // Add this inside TeamController class
-    static async addMembersToTeam(req, res) {
-        try {
-            const teamId = Number(req.params.id);
-            if (!teamId) return res.status(400).json({ error: "Invalid team ID" });
+  // Add this inside TeamController class
+  static async addMembersToTeam(req, res) {
+    try {
+      const teamId = Number(req.params.id);
+      if (!teamId) return res.status(400).json({ error: "Invalid team ID" });
 
-            const { members } = req.body;
-            if (!Array.isArray(members) || members.length === 0) {
-                return res.status(400).json({ error: "Members array is required" });
-            }
+      const { members } = req.body;
+      if (!Array.isArray(members) || members.length === 0) {
+        return res.status(400).json({ error: "Members array is required" });
+      }
 
-            // Validate roles
-            const ROLE_ENUM = ["LEAD", "RESEARCHER", "ASSISTANT"];
-            for (const m of members) {
-                if (!m.user_id) {
-                    return res.status(400).json({ error: "Each member must have a user_id" });
-                }
-                const role = (m.role_in_team || "RESEARCHER").toUpperCase();
-                if (!ROLE_ENUM.includes(role)) {
-                    return res.status(422).json({ error: `Invalid role "${role}" for user ${m.user_id}` });
-                }
-                m.role_in_team = role;
-            }
-
-            // Check if team exists
-            const team = await db.team.findUnique({ where: { team_id: teamId } });
-            if (!team) return res.status(404).json({ error: "Team not found" });
-
-            // Add members to team
-            const addedMembers = [];
-            for (const m of members) {
-                // Skip if user is already a member
-                const existing = await db.teammember.findFirst({
-                    where: { team_id: teamId, user_id: Number(m.user_id) },
-                });
-                if (existing) continue;
-
-                const tm = await db.teammember.create({
-                    data: {
-                        team_id: teamId,
-                        user_id: Number(m.user_id),
-                        role_in_team: m.role_in_team,
-                    },
-                });
-                addedMembers.push(tm);
-            }
-
-            // Clear Redis cache
-            try { await redis.del("/api/teams"); } catch (err) { console.error("Redis clear:", err); }
-
-            return res.status(201).json({
-                message: "Members added successfully",
-                data: addedMembers,
-            });
-
-        } catch (err) {
-            console.error("addMembersToTeam error:", err);
-            return res.status(500).json({ error: "Internal Server Error" });
+      // Validate roles
+      const ROLE_ENUM = ["LEAD", "RESEARCHER", "ASSISTANT"];
+      for (const m of members) {
+        if (!m.user_id) {
+          return res
+            .status(400)
+            .json({ error: "Each member must have a user_id" });
         }
+        const role = (m.role_in_team || "RESEARCHER").toUpperCase();
+        if (!ROLE_ENUM.includes(role)) {
+          return res
+            .status(422)
+            .json({ error: `Invalid role "${role}" for user ${m.user_id}` });
+        }
+        m.role_in_team = role;
+      }
+
+      // Check if team exists
+      const team = await db.team.findUnique({ where: { team_id: teamId } });
+      if (!team) return res.status(404).json({ error: "Team not found" });
+
+      // Add members to team
+      const addedMembers = [];
+      for (const m of members) {
+        // Skip if user is already a member
+        const existing = await db.teammember.findFirst({
+          where: { team_id: teamId, user_id: Number(m.user_id) },
+        });
+        if (existing) continue;
+
+        const tm = await db.teammember.create({
+          data: {
+            team_id: teamId,
+            user_id: Number(m.user_id),
+            role_in_team: m.role_in_team,
+          },
+        });
+        addedMembers.push(tm);
+      }
+
+      // Clear Redis cache
+    //   try {
+    //     await redis.del("/api/teams");
+    //   } catch (err) {
+    //     console.error("Redis clear:", err);
+    //   }
+
+     //* Invalidate affected caches
+ try {
+   await redis.del(teamDetailsKey(teamId));
+   // Invalidate "my teams" for each newly added member
+   for (const m of addedMembers) {
+     await redis.del(userTeamsKey(Number(m.user_id)));
+   }
+ } catch (err) {
+   console.error("Redis invalidate error:", err);
+ }
+
+      return res.status(201).json({
+        message: "Members added successfully",
+        data: addedMembers,
+      });
+    } catch (err) {
+      console.error("addMembersToTeam error:", err);
+      return res.status(500).json({ error: "Internal Server Error" });
     }
+  }
 
     static async getAllTeamPapers(req, res) {
         try {
@@ -402,6 +421,18 @@ class TeamDetails {
         }
     }
 
+  //         const proposals = await db.proposal.findMany({
+  //             where: { team_id: teamId },
+  //             select: {
+  //                 proposal_id: true,
+  //                 title: true,
+  //                 pdf_path: true,
+  //                 created_at: true,
+  //                 file_size: true,
+  //                 status: true, // optional, in case you want to show proposal status
+  //             },
+  //             orderBy: { created_at: "desc" },
+  //         });
 
 }
 export default TeamDetails;
