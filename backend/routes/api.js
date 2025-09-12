@@ -1,5 +1,4 @@
 import { Router } from "express";
-
 import AuthController from "../controllers/AuthController.js";
 import authMiddleware from "../middleware/Authenticate.js";
 import adminOnly from "../middleware/adminOnly.js";
@@ -13,7 +12,10 @@ import PaperController from "../controllers/teacher/PaperController.js";
 import ProposalController from "../controllers/teacher/ProposalController.js";
 import StudentTeamController from "../controllers/student/StudentTeamController.js";
 import TeamApplicationController from "../controllers/teacher/TeamApplicationController.js";
-import TeamCommentController from "../controllers/teacher/TeamCommentController.js"; // Added missing semicolon
+import TeamCommentController from "../controllers/teacher/TeamCommentController.js"; 
+import AssignmentController from './../controllers/admin/AssignmentController.js';
+import AdminProposalController from "../controllers/admin/AdminProposalController.js";
+import SubmissionsController from "../controllers/teacher/SubmissionsController.js";
 
 const router = Router();
 
@@ -24,11 +26,19 @@ router.get("/auth/verify-email", AuthController.verifyEmail);
 router.post("/auth/switch-role", authMiddleware, AuthController.switchRole);
 
 //! Profile Routes
-router.get("/profile", authMiddleware, ProfileController.index); //private route
-//! It requires authentication before accessing it to get user data
-//! You must include a valid JWT token (usually in the Authorization header) to access the route.
+router.get('/user/profile/:userId', authMiddleware, ProfileController.getUserProfile);
+router.get('/user/preferences/:userId', authMiddleware, ProfileController.getUserPreferences);
+router.put('/user/preferences/:userId', authMiddleware, ProfileController.updateUserPreferences);
 
-router.put("/profile/:id", authMiddleware, ProfileController.update);
+//! Avatar upload route (separate endpoint for cleaner handling)
+router.post('/user/avatar/:userId', authMiddleware, ProfileController.uploadAvatar);
+
+//! Department domain routes
+router.get('/department/:departmentId/domains', authMiddleware, ProfileController.getDomainsByDepartment);
+
+//! Data routes (for dropdowns and selections)
+router.get('/departments', authMiddleware, ProfileController.getDepartments);
+router.get('/domains', authMiddleware, ProfileController.getDomains);
 
 //! News Routes
 router.get("/news", redisCache.route(), NewsController.index); // redisCache.route({expire:60*30}) o llikha jay  at least 30 min
@@ -39,9 +49,17 @@ router.delete("/news/:id", authMiddleware, NewsController.destroy);
 
 //! Teacher Routes
 //! Team Routes (Protected)
+// Create a team
+router.post("/teams", authMiddleware, TeamController.store);
+
 // Team routes (existing)
 router.get("/teacher/my-teams", authMiddleware, TeamDetails.index);
 router.get("/teacher/teams/:id", authMiddleware, TeamDetails.getTeamById);
+
+// Get all papers
+router.get("/teacher/my-teams/papers", authMiddleware, TeamDetails.getAllTeamPapers);
+router.get("/teacher/my-teams/proposals", authMiddleware, TeamDetails.getAllTeamProposals);
+router.get("/teacher/my-teams/comments", authMiddleware, TeamDetails.getAllTeamComments);
 
 // Proposal routes
 router.post("/proposals/upload", authMiddleware, ProposalController.upload);
@@ -74,6 +92,12 @@ router.delete("/papers/:paperId", authMiddleware, PaperController.deletePaper);
 router.get("/student/my-teams", authMiddleware, StudentTeamController.myTeams);
 router.get("/student/teams/:id", authMiddleware, StudentTeamController.getTeamById);
 router.get("/student/my-teams/papers", authMiddleware, StudentTeamController.getAllTeamPapers);
+router.get("/student/my-teams/proposals", authMiddleware, StudentTeamController.getAllTeamProposals); 
+router.get("/student/my-teams/comments", authMiddleware, StudentTeamController.getAllTeamComments);   
+
+// Common for teacher & student
+router.get("/submissions", authMiddleware, SubmissionsController.list);
+router.get("/submissions/filters", authMiddleware, SubmissionsController.filters);
 
 // router.get("/teams/:id/proposals", authMiddleware, StudentTeamController.getProposalsByTeamId);
 // Reviewer Routes (Admin functionality)
@@ -84,6 +108,7 @@ router.post("/reviewers/add", authMiddleware, ReviewerController.addReviewer);
 router.put("/reviewers/:id", authMiddleware, ReviewerController.update);
 router.delete("/reviewers/:id", authMiddleware, ReviewerController.removeReviewer);
 router.get("/reviewers/:id/workload", authMiddleware, ReviewerController.getWorkloadDetails);
+
 
 //! Assignment Routes (Admin only)
 router.get(
@@ -115,10 +140,10 @@ router.post(
 ); // Auto-match reviewers
 
 // ====================== Admin Proposals Routes ======================
-router.get(
-  "/admin/proposals",
-  authMiddleware,
-  adminOnly,
-  getAllProposals
-);
+// router.get(
+//   "/admin/proposals",
+//   authMiddleware,
+//   adminOnly,
+//   AdminProposalController.getAllProposals
+// );
 export default router;

@@ -57,11 +57,8 @@ function RoleBasedRedirect() {
   if (!user) return <Navigate to="/" />;
   if (!user.emailVerified) return <Navigate to="/verify" />;
 
-  if (!user.emailVerified) {
-    return <Navigate to="/verify" />;
-  }
   console.log("User object:", user);
-console.log("user.emailVerified:", user?.emailVerified);
+  console.log("user.emailVerified:", user?.emailVerified);
 
   if (currentViewRole === "ADMIN" || user.isMainAdmin) {
     return <Navigate to="/admin/home" />;
@@ -72,7 +69,7 @@ console.log("user.emailVerified:", user?.emailVerified);
   } else if (currentViewRole === "STUDENT") {
     return <Navigate to="/student/home" />;
   } else if (currentViewRole === "GENERALUSER") {
-    return <Navigate to="/home" />;
+    return <Navigate to="/generaluser/home" />;
   } else {
     return <Navigate to="/login" />;
   }
@@ -88,7 +85,9 @@ export default function App() {
           <Route path="/signup" element={<SignUpForm />} />
           <Route path="/login" element={<LoginForm />} />
           <Route path="/verify" element={<VerifyPending />} />
-          <Route path="/home" element={<RoleBasedRedirect />} />
+
+          {/* Entry point redirection after login */}
+          <Route path="/redirect" element={<RoleBasedRedirect />} />
 
           {/* Admin */}
           <Route
@@ -99,7 +98,7 @@ export default function App() {
               </PrivateRoute>
             }
           >
-             <Route index element={<Homepage />} />
+            <Route index element={<Homepage />} />
             <Route path="home" element={<Homepage />} />
             <Route path="dashboard" element={<AdminHome />} />
             <Route path="all-papers" element={<AdminPapers />} />
@@ -162,6 +161,19 @@ export default function App() {
             <Route path="team" element={<MyTeams />} />
             <Route path="team/:id" element={<StudentTeamDetails />} />
             <Route path="mypapers" element={<StudentMyPapers />} />
+          </Route>
+
+          {/* General User */}
+          <Route
+            path="/generaluser"
+            element={
+              <PrivateRoute allowedRoles={["GENERALUSER"]}>
+                <Homepage />
+              </PrivateRoute>
+            }
+          >
+            <Route index element={<Homepage />} />
+            <Route path="home" element={<Homepage />} />
           </Route>
 
           {/* Catch all */}

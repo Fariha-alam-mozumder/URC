@@ -33,29 +33,19 @@ enum ApplicationStatus {
   REJECTED
 }
 
-<<<<<<< HEAD
-enum TeamRole{
-=======
 enum TeamRole {
->>>>>>> origin/trisha-feature-BE-fix
   LEAD
   RESEARCHER
   ASSISTANT
 }
 
-<<<<<<< HEAD
-enum PaperStatus{
-=======
 enum PaperStatus {
->>>>>>> origin/trisha-feature-BE-fix
   PENDING
   ACCEPTED
   REJECTED
   UNDER_REVIEW
 }
 
-<<<<<<< HEAD
-=======
 enum ReviewerStatus {
   ACTIVE
   INACTIVE
@@ -66,15 +56,16 @@ enum ReviewerStatus {
 // ============= MODELS =============
 
 model user {
-  user_id     Int      @id @default(autoincrement())
-  name        String?
-  email       String?  @unique
-  password    String?
-  role        Role?
-  isVerified  Boolean  @default(false)
-  isMainAdmin Boolean  @default(false)
-  verifyToken String?
-  created_at  DateTime @default(now())
+  user_id       Int      @id @default(autoincrement())
+  name          String?
+  email         String?  @unique
+  password      String?
+  profile_image String?
+  role          Role?
+  isVerified    Boolean  @default(false)
+  isMainAdmin   Boolean  @default(false)
+  verifyToken   String?
+  created_at    DateTime @default(now())
 
   // Relations
   student     student[]
@@ -87,7 +78,6 @@ model user {
   teamcomment teamcomment[]
 }
 
->>>>>>> origin/trisha-feature-BE-fix
 model admin {
   admin_id Int  @id @default(autoincrement())
   user_id  Int?
@@ -114,14 +104,13 @@ model domain {
   // Relations
   departmentdomain   departmentdomain[]
   userdomain         userdomain[]
-  reviewerpreference reviewerpreference[]
-  paper              paper[]
-  proposal           proposal[]
+  // paper              paper[]
+  // proposal           proposal[]
   team               team[]
 }
 
 model departmentdomain {
-  department_id Int @default(autoincrement())
+  department_id Int
   domain_id     Int
 
   // Relations
@@ -178,18 +167,6 @@ model reviewer {
 
   review             review[]
   reviewerassignment reviewerassignment[]
-  reviewerpreference reviewerpreference[]
-}
-
-model reviewerpreference {
-  reviewer_id Int
-  domain_id   Int
-
-  // Relations
-  reviewer reviewer @relation(fields: [reviewer_id], references: [reviewer_id])
-  domain   domain   @relation(fields: [domain_id], references: [domain_id])
-
-  @@id([reviewer_id, domain_id])
 }
 
 model team {
@@ -260,7 +237,7 @@ model paper {
   status       PaperStatus? @default(PENDING)
   team_id      Int?
   submitted_by Int?
-  domain_id    Int?
+  // domain_id    Int?
   pdf_path     String?
   file_size    Int?
   created_at   DateTime     @default(now())
@@ -268,7 +245,7 @@ model paper {
   // Relations
   team    team?    @relation(fields: [team_id], references: [team_id])
   teacher teacher? @relation(fields: [submitted_by], references: [teacher_id])
-  domain  domain?  @relation(fields: [domain_id], references: [domain_id])
+  // domain  domain?  @relation(fields: [domain_id], references: [domain_id])
 
   review             review[]
   reviewerassignment reviewerassignment[]
@@ -281,7 +258,7 @@ model proposal {
   status       PaperStatus? @default(PENDING)
   team_id      Int?
   submitted_by Int?
-  domain_id    Int?
+  // domain_id    Int?
   pdf_path     String?
   file_size    Int?
   created_at   DateTime     @default(now())
@@ -289,7 +266,7 @@ model proposal {
   // Relations
   team    team?    @relation(fields: [team_id], references: [team_id])
   teacher teacher? @relation(fields: [submitted_by], references: [teacher_id])
-  domain  domain?  @relation(fields: [domain_id], references: [domain_id])
+  // domain  domain?  @relation(fields: [domain_id], references: [domain_id])
 
   review             review[]
   reviewerassignment reviewerassignment[]
@@ -325,104 +302,6 @@ model reviewerassignment {
   admin    admin?    @relation(fields: [assigned_by], references: [admin_id])
 }
 
-<<<<<<< HEAD
-model reviewerpreference {
-  reviewer_id Int
-  domain_id   Int
-
-  reviewer reviewer @relation(fields: [reviewer_id], references: [reviewer_id])
-  domain   domain   @relation(fields: [domain_id], references: [domain_id])
-
-  @@id([reviewer_id, domain_id])
-}
-
-model student {
-  student_id    Int     @id @default(autoincrement())
-  roll_number   String?
-  department_id Int?
-  user_id       Int?
-
-  user       user?       @relation(fields: [user_id], references: [user_id])
-  department department? @relation(fields: [department_id], references: [department_id])
-
-  teamapplication teamapplication[]
-}
-
-model teacher {
-  teacher_id    Int     @id @default(autoincrement())
-  designation   String?
-  department_id Int?
-  user_id       Int?
-
-  isReviewer    Boolean @default(false)
-
-  user       user?       @relation(fields: [user_id], references: [user_id])
-  department department? @relation(fields: [department_id], references: [department_id])
-
-  paper    paper[]
-  proposal proposal[]
-  reviewer reviewer[]
-}
-
-model team {
-  team_id            Int             @id @default(autoincrement())
-  team_name          String?
-  team_description   String?
-  domain_id          Int?
-  status             TeamStatus?
-  visibility         TeamVisibility?
-  max_members        Int?
-  isHiring           Boolean?
-  created_at         DateTime        @default(now())
-  created_by_user_id Int?
-
-  domain          domain? @relation(fields: [domain_id], references: [domain_id])
-  created_by_user user?   @relation(fields: [created_by_user_id], references: [user_id])
-
-  paper           paper[]
-  proposal        proposal[]
-  teammember      teammember[]
-  teamapplication teamapplication[]
-  teamcomment     teamcomment[]
-}
-
-model teammember {
-  team_id      Int
-  user_id      Int
-  role_in_team TeamRole?
-
-  team team @relation(fields: [team_id], references: [team_id])
-  user user @relation(fields: [user_id], references: [user_id])
-
-  @@id([team_id, user_id])
-}
-
-model teamapplication {
-  application_id Int               @id @default(autoincrement())
-  team_id        Int
-  student_id     Int
-  status         ApplicationStatus @default(PENDING)
-  applied_at     DateTime          @default(now())
-
-  team    team    @relation(fields: [team_id], references: [team_id])
-  student student @relation(fields: [student_id], references: [student_id])
-
-  @@unique([team_id, student_id])
-}
-
-model teamcomment {
-  comment_id Int      @id @default(autoincrement())
-  team_id    Int
-  user_id    Int
-  comment    String
-  created_at DateTime @default(now())
-
-  team team @relation(fields: [team_id], references: [team_id])
-  user user @relation(fields: [user_id], references: [user_id])
-}
-
-=======
->>>>>>> origin/trisha-feature-BE-fix
 model userdomain {
   user_id   Int
   domain_id Int

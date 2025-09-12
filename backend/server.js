@@ -12,7 +12,7 @@ const PORT = process.env.PORT || 8000;
 
 
 
-//! Middleware
+//! Middleware before routes
 app.use (fileUpload()); // Giving authority of getting uploaded files by user
 app.use(express.json()); // api to json
 app.use(express.urlencoded({ extended: false })); // html form response to json
@@ -25,14 +25,26 @@ app.use(cors({
 })); 
 //app.use(cors()); // Allows or restricts access to your backend from different origins (frontends/apps)
 
-app.use(helmet()); // Secures the app by setting safe HTTP headers
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: "cross-origin" }, // <-- key line
+  crossOriginEmbedderPolicy: false,                      // avoid NotSameOrigin blocks
+})); // Secures the app by setting safe HTTP headers
 app.use(limiter); // Apply the rate limiting middleware to all requests.
 
 
 // Give permission to express js so that it can show images by url
 // means ww will tell express js that if someone want to "GET" static files from u than you can give it
 app.use(express.static("public")); // public directory te ja data ache ta publicly serve krte parbo
-
+//! To serve a default profile picture from your local public/images directory (instead of using an external URL)
+//! You're using Express, so serve the /public folder like this
+app.use(
+  "/images",
+  (req, res, next) => {
+    res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
+    next();
+  },
+  express.static("public/images")
+);
 
 app.get('/', (req, res) => {
   return res.json({ message: 'Welcome to the University Research Cell Management System API' });
@@ -56,6 +68,4 @@ app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
 
-//! To serve a default profile picture from your local public/images directory (instead of using an external URL)
-//! You're using Express, so serve the /public folder like this
-app.use("/images", express.static("public/images"));
+

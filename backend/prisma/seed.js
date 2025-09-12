@@ -4,17 +4,10 @@ import bcrypt from "bcryptjs";
 const prisma = new PrismaClient();
 
 async function main() {
-<<<<<<< HEAD
-  //  Check if admin user already exists
-  // const existingAdmin = await prisma.user.findFirst({
-  //   where: { role: "ADMIN" },
-  // });
-=======
-   
+  // Check if admin user already exists
   const existingAdmin = await prisma.user.findFirst({
     where: { role: "ADMIN" },
   });
->>>>>>> origin/trisha-feature-BE-fix
 
   if (!existingAdmin) {
     const hashedPassword = await bcrypt.hash("admin123", 10);
@@ -55,19 +48,6 @@ async function main() {
 
   console.log(`Inserted ${result.count} departments.`);
 
-<<<<<<< HEAD
-  // // Create domains (example domains including common domain)
-  // const domainsData = [
-  //   { domain_name: "Artificial Intelligence" },    // common domain
-  //   { domain_name: "Machine Learning" },
-  //   { domain_name: "Computer Vision" },
-  //   { domain_name: "Data Science" },
-  //   { domain_name: "Robotics" },
-  //   { domain_name: "Embedded Systems" },          // EEE only
-  //   { domain_name: "Power Electronics" },         // EEE only
-  //   { domain_name: "Software Engineering" },      // CSE only
-  // ];
-=======
   // Create domains (example domains including common domain)
   const domainsData = [
     { domain_name: "Artificial Intelligence" },    // common domain
@@ -79,7 +59,6 @@ async function main() {
     { domain_name: "Power Electronics" },         // EEE only
     { domain_name: "Software Engineering" },      // CSE only
   ];
->>>>>>> origin/trisha-feature-BE-fix
 
   // Upsert domains to avoid duplicates
   const domains = [];
@@ -192,20 +171,6 @@ async function main() {
   //   });
   //   console.log("Teacher with ID 3 is now a reviewer.");
   // }
-<<<<<<< HEAD
-
-  // console.log('Userdomain seeding completed.');
-
-  const existing = await prisma.teacher.findUnique({ where: { teacher_id: 3 } });
-  if (existing) {
-    await prisma.teacher.update({
-      where: { teacher_id: 3 },
-      data: { isReviewer: true },
-    });
-    console.log("Teacher with ID 3 is now a reviewer.");
-  }
-=======
->>>>>>> origin/trisha-feature-BE-fix
 }
 
 main()

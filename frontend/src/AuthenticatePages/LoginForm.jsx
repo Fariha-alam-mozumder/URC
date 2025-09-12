@@ -8,6 +8,7 @@ export default function LoginForm() {
   const [password, setPassword] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
   const [verifiedMessage, setVerifiedMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -28,6 +29,8 @@ export default function LoginForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
+    setErrorMsg("");
 
     try {
       const res = await axios.post("http://localhost:8000/api/auth/login", {
@@ -40,20 +43,23 @@ export default function LoginForm() {
       const role = res.data.user.role;
       const isMainAdmin = res.data.user.isMainAdmin;
 
-      // Navigate based on role, matching the App.jsx routing structure
-      if (isMainAdmin || role === "ADMIN") {
-        navigate("/admin/home");
-      } else if (role === "TEACHER") {
-        navigate("/teacher/home");
-      } else if (role === "REVIEWER") {
-        navigate("/reviewer/home");
-      } else if (role === "STUDENT") {
-        navigate("/student/home");
-      } else if (role === "GENERALUSER") {
-        navigate("/reviewer/home"); // Based on your original logic
-      } else {
-        navigate("/login");
-      }
+      // Add a small delay to ensure smooth navigation
+      setTimeout(() => {
+        // Navigate based on role
+        if (isMainAdmin || role === "ADMIN") {
+          navigate("/admin/home", { replace: true });
+        } else if (role === "TEACHER") {
+          navigate("/teacher/home", { replace: true });
+        } else if (role === "REVIEWER") {
+          navigate("/reviewer/home", { replace: true });
+        } else if (role === "STUDENT") {
+          navigate("/student/home", { replace: true });
+        } else if (role === "GENERALUSER") {
+          navigate("/generaluser/home", { replace: true });
+        } else {
+          navigate("/login", { replace: true });
+        }
+      }, 100);
 
     } catch (err) {
       console.error(err);
@@ -61,9 +67,13 @@ export default function LoginForm() {
         setErrorMsg(err.response.data.errors.email);
       } else if (err.response?.data?.error) {
         setErrorMsg(err.response.data.error);
+      } else if (err.code === 'ERR_NETWORK') {
+        setErrorMsg("Cannot connect to the server. Please check if the server is running.");
       } else {
         setErrorMsg("Something went wrong. Try again.");
       }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -85,7 +95,9 @@ export default function LoginForm() {
         )}
 
         {errorMsg && (
-          <p className="text-red-500 text-sm text-center mb-4">{errorMsg}</p>
+          <div className="bg-red-50 border border-red-200 rounded p-3 mb-4">
+            <p className="text-red-600 text-sm text-center">{errorMsg}</p>
+          </div>
         )}
 
         <form className="space-y-3" onSubmit={handleSubmit}>
@@ -96,6 +108,7 @@ export default function LoginForm() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
+            disabled={isLoading}
           />
           <input
             type="password"
@@ -104,16 +117,25 @@ export default function LoginForm() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
+            disabled={isLoading}
           />
           <label className="flex items-center">
-            <input type="checkbox" className="mr-2" />
+            <input type="checkbox" className="mr-2" disabled={isLoading} />
             Remember Me
           </label>
           <button
             type="submit"
-            className="w-full bg-gray-800 text-white py-2 rounded"
+            className="w-full bg-gray-800 text-white py-2 rounded disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={isLoading}
           >
-            Login
+            {isLoading ? (
+              <div className="flex items-center justify-center">
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                Logging in...
+              </div>
+            ) : (
+              "Login"
+            )}
           </button>
           <p className="text-center text-lg mt-3 p-7">
             Don't have an account?{" "}

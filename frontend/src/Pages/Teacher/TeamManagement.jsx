@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   FaClipboard,
@@ -29,7 +29,6 @@ const TeamManagement = () => {
     { title: "Pending", value: 2, icon: <FaExclamationTriangle /> },
   ];
 
-
   const pendingApplications = [
     { name: "Sarah Johnson", team: "AI Research 2025", timeAgo: "2 hours ago" },
     {
@@ -44,9 +43,14 @@ const TeamManagement = () => {
     const fetchTeams = async () => {
       try {
         setLoading(true);
-        const response = await axios.get("http://localhost:8000/api/teacher/my-teams", {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-        });
+        const response = await axios.get(
+          "http://localhost:8000/api/teacher/my-teams",
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
         setTeams(response.data.data || []);
       } catch (err) {
         setError(err.response?.data?.message || "Failed to fetch teams");
@@ -58,7 +62,14 @@ const TeamManagement = () => {
     fetchTeams();
   }, []);
 
-  if (loading) return <p>Loading teams...</p>;
+  if (loading) {
+    return (
+      <div className="p-6 text-center">
+        <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600 mx-auto"></div>
+        <p className="mt-4">Loading proposals...</p>
+      </div>
+    );
+  }
   if (error) return <p className="text-red-600">Error: {error}</p>;
 
   const visibleTeams = showAllTeams ? teams : teams.slice(0, 3);

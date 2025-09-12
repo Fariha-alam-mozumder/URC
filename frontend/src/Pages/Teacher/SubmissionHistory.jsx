@@ -1,199 +1,233 @@
 // src/pages/Teacher/SubmissionHistory.jsx
-import React, { useMemo, useState } from "react";
-import { FaEye, FaRegCopy } from "react-icons/fa";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import FilterBar from "../../components/Common/FilterBar";
-import CommonSubmissionTable, { StatusPill, Badge } from "../../components/Common/CommonSubmissionTable";
+import SubmissionTable from "../../components/Teacher/SubmissionTable";
 
-const RAW = [
-  { id: 1, code: "P-2024-001", title: "Advanced Machine Learning Techniques in Medical Imaging", authors: 3, field: "AI & Healthcare", submitted: "Aug 15, 2024", status: "Under Review", updated: "Aug 18, 2024" },
-  { id: 2, code: "P-2024-002", title: "Blockchain Applications in Supply Chain Security", authors: 2, field: "Blockchain Technology", submitted: "Jul 22, 2024", status: "Accepted", updated: "Aug 10, 2024" },
-  { id: 3, code: "P-2024-003", title: "Quantum Computing Algorithms for Optimization Problems", authors: 3, field: "Quantum Computing", submitted: "Jun 30, 2024", status: "Needs Revision", updated: "Jul 25, 2024" },
-  { id: 4, code: "P-2024-004", title: "Sustainable Energy Systems for Smart Cities", authors: 3, field: "Sustainability", submitted: "May 15, 2024", status: "Rejected", updated: "Jun 20, 2024" },
-  { id: 5, code: "P-2024-005", title: "Natural Language Processing in Educational Technology", authors: 2, field: "AI & Education", submitted: "Apr 20, 2024", status: "Submitted", updated: "Apr 20, 2024" },
-  { id: 6, code: "P-2024-006", title: "Cybersecurity Frameworks for IoT Networks", authors: 3, field: "Cybersecurity", submitted: "Mar 10, 2024", status: "Accepted", updated: "Apr 15, 2024" },
-  { id: 7, code: "P-2024-007", title: "Data Mining Techniques for Social Media Analysis", authors: 2, field: "Data Science", submitted: "Feb 28, 2024", status: "Under Review", updated: "Aug 5, 2024" },
-  { id: 8, code: "P-2024-008", title: "Reinforcement Learning in Autonomous Vehicle Navigation", authors: 3, field: "AI & Robotics", submitted: "Jan 15, 2024", status: "Needs Revision", updated: "Mar 20, 2024" },
-];
+const API_BASE = "http://localhost:8000"; // adjust if needed
 
-// robust date parse for strings like "Aug 15, 2024"
-const parseDate = (s) => {
-  const d = new Date(s);
-  if (!isNaN(d)) return d;
-  const [mon, dayWithComma, year] = s.split(" ");
-  const months = { Jan:0, Feb:1, Mar:2, Apr:3, May:4, Jun:5, Jul:6, Aug:7, Sep:8, Oct:9, Nov:10, Dec:11 };
-  return new Date(parseInt(year, 10), months[mon], parseInt(dayWithComma, 10));
+// Recognize P001 / PR001 and map to numeric IDs (1, etc.)
+const parseSearchCode = (raw) => {
+  if (!raw) return null;
+  const s = String(raw).trim().toUpperCase();
+  // Matches "P001", "P1", "PR001", "PR1"
+  const m = /^(PR|P)0*(\d+)$/.exec(s);
+  if (!m) return null;
+  const kind = m[1]; // "P" or "PR"
+  const idNum = parseInt(m[2], 10);
+  if (Number.isNaN(idNum)) return null;
+  return { kind, id: idNum, code: s };
 };
 
 export default function SubmissionHistory() {
-  // column definitions matching the screenshot
-  const columns = [
-    {
-      key: "title",
-      label: "Paper Title",
-      sortable: false, // keep sorting off for the composite cell; you can enable if you prefer
-      render: (_v, row) => (
-        <div className="flex flex-col">
-          <div className="font-medium text-gray-800">{row.title}</div>
-          <div className="text-xs text-gray-500">{row.code} • {row.authors} {row.authors > 1 ? "authors" : "author"}</div>
-        </div>
-      ),
-    },
-    {
-      key: "field",
-      label: "Field of Research",
-      sortable: true,
-      render: (v) => <Badge>{v}</Badge>,
-    },
-    {
-      key: "submitted",
-      label: "Submitted Date",
-      sortable: true,
-    },
-    {
-      key: "status",
-      label: "Status",
-      sortable: true,
-      render: (v) => (
-        <StatusPill
-          status={v}
-          classes={{
-            Submitted: "bg-blue-100 text-blue-700",
-            "Under Review": "bg-yellow-100 text-yellow-700",
-            Accepted: "bg-green-100 text-green-700",
-            "Needs Revision": "bg-gray-200 text-gray-700",
-            Rejected: "bg-red-100 text-red-700",
-          }}
-        />
-      ),
-    },
-  ];
-
-  // filters
-  const [filters, setFilters] = useState([
-    { name: "search", type: "input", inputType: "text", placeholder: "Search by title or team member...", value: "" },
-    { name: "time", type: "select", options: ["All Time", "Last 30 Days", "Last 90 Days", "This Year"], value: "All Time" },
-    { name: "status", type: "select", options: ["All Status", "Submitted", "Under Review", "Accepted", "Needs Revision", "Rejected"], value: "All Status" },
-    { name: "field", type: "select", options: ["All Fields", "AI & Healthcare", "Blockchain Technology", "Quantum Computing", "Sustainability", "AI & Education", "Cybersecurity", "Data Science", "AI & Robotics"], value: "All Fields" },
-  ]);
-
+  const [filters, setFilters] = useState([]);
   const [sort, setSort] = useState({ key: "submitted", dir: "desc" });
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const onFilterChange = (name, value) => {
-    setFilters((prev) => prev.map((f) => (f.name === name ? { ...f, value } : f)));
-  };
+  // Fetch filters (domains + status)
+  useEffect(() => {
+    const fetchFilters = async () => {
+      try {
+        const res = await axios.get(`${API_BASE}/api/submissions/filters`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          withCredentials: true,
+        });
 
-  // filtering + sorting
-  const data = useMemo(() => {
-    let rows = [...RAW];
-    const f = Object.fromEntries(filters.map(({ name, value }) => [name, value]));
+        const { domains, statusOptions } = res.data.data;
 
-    if (f.search?.trim()) {
-      const q = f.search.toLowerCase();
-      rows = rows.filter((x) => x.title.toLowerCase().includes(q) || x.code.toLowerCase().includes(q));
-    }
-    if (f.status !== "All Status") rows = rows.filter((x) => x.status === f.status);
-    if (f.field !== "All Fields") rows = rows.filter((x) => x.field === f.field);
-
-    const now = new Date();
-    if (f.time === "Last 30 Days") {
-      const from = new Date(now); from.setDate(now.getDate() - 30);
-      rows = rows.filter((x) => parseDate(x.submitted) >= from);
-    } else if (f.time === "Last 90 Days") {
-      const from = new Date(now); from.setDate(now.getDate() - 90);
-      rows = rows.filter((x) => parseDate(x.submitted) >= from);
-    } else if (f.time === "This Year") {
-      const y = new Date(now.getFullYear(), 0, 1);
-      rows = rows.filter((x) => parseDate(x.submitted) >= y);
-    }
-
-    // sort by selected key (submitted, field, status)
-    const { key, dir } = sort;
-    rows.sort((a, b) => {
-      let va = a[key], vb = b[key];
-      if (key === "submitted") {
-        va = parseDate(va).getTime();
-        vb = parseDate(vb).getTime();
-      } else {
-        va = String(va).toLowerCase();
-        vb = String(vb).toLowerCase();
+        setFilters([
+          {
+            name: "search",
+            type: "input",
+            inputType: "text",
+            placeholder: "Search by title, code (P001, PR001)...",
+            value: "",
+          },
+          {
+            name: "time",
+            type: "select",
+            options: ["All Time", "Last 30 Days", "Last 90 Days", "This Year"],
+            value: "All Time",
+          },
+          {
+            name: "status",
+            type: "select",
+            options: [
+              "All Status",
+              ...statusOptions.map((s) => {
+                const map = {
+                  PENDING: "Pending",
+                  ACCEPTED: "Accepted",
+                  REJECTED: "Rejected",
+                  UNDER_REVIEW: "Under Review",
+                };
+                return map[s] || s;
+              }),
+            ],
+            value: "All Status",
+          },
+          {
+            name: "field",
+            type: "select",
+            options: ["All Fields", ...domains.map((d) => d.domain_name)],
+            value: "All Fields",
+            domains: domains,
+          },
+        ]);
+      } catch (err) {
+        console.error("Failed to fetch filters:", err);
+        setError("Failed to load filter options");
       }
-      const cmp = va < vb ? -1 : va > vb ? 1 : 0;
-      return dir === "asc" ? cmp : -cmp;
-    });
+    };
 
-    return rows;
+    fetchFilters();
+  }, []);
+
+  // Fetch data whenever filters or sort change
+  useEffect(() => {
+    const fetchData = async () => {
+      if (filters.length === 0) return;
+
+      setLoading(true);
+      setError(null);
+
+      try {
+        const f = Object.fromEntries(
+          filters.map(({ name, value }) => [name, value])
+        );
+        const fieldFilter = filters.find((f) => f.name === "field");
+        const domains = fieldFilter?.domains || [];
+
+        const params = new URLSearchParams();
+
+        // For code searches, we'll handle filtering on frontend
+        // For text searches, send to backend
+        if (f.search?.trim()) {
+          const searchTerm = f.search.trim();
+          const parsedCode = parseSearchCode(searchTerm);
+          
+          if (!parsedCode) {
+            // Only send regular text searches to backend
+            params.append("q", searchTerm);
+          }
+          // Code searches will be handled by frontend filtering below
+        }
+
+        if (f.status && f.status !== "All Status") {
+          const statusMap = {
+            Pending: "PENDING",
+            Accepted: "ACCEPTED",
+            Rejected: "REJECTED",
+            "Under Review": "UNDER_REVIEW",
+          };
+          const backendStatus = statusMap[f.status];
+          if (backendStatus) params.append("status", backendStatus);
+        }
+
+        if (f.field && f.field !== "All Fields") {
+          const selectedDomain = domains.find((d) => d.domain_name === f.field);
+          if (selectedDomain) params.append("domain_id", selectedDomain.domain_id);
+        }
+
+        params.append("sort", sort.key);
+        params.append("order", sort.dir);
+
+        const url = `${API_BASE}/api/submissions?${params.toString()}`;
+
+        const res = await axios.get(url, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          withCredentials: true,
+        });
+
+        let results = res.data.data || [];
+
+        // Apply frontend filtering for code searches
+        const searchTerm = f.search?.trim();
+        if (searchTerm) {
+          const parsedCode = parseSearchCode(searchTerm);
+          if (parsedCode) {
+            // Filter by code: match against the actual database IDs
+            results = results.filter(item => {
+              // The backend generates codes like P001, P002 for papers and PR001, PR002 for proposals
+              // parsedCode.kind is "P" or "PR", parsedCode.id is the numeric ID
+              
+              if (parsedCode.kind === "P" && item.type === "paper") {
+                // For papers, extract the numeric ID from the composite ID "paper-1"
+                const numericId = parseInt(item.id.split("-")[1]);
+                return numericId === parsedCode.id;
+              } else if (parsedCode.kind === "PR" && item.type === "proposal") {
+                // For proposals, extract the numeric ID from the composite ID "proposal-1"  
+                const numericId = parseInt(item.id.split("-")[1]);
+                return numericId === parsedCode.id;
+              }
+              return false;
+            });
+          }
+        }
+
+        setData(results);
+      } catch (err) {
+        console.error("Failed to fetch submissions:", err);
+        setError(err.response?.data?.message || "Failed to fetch submissions");
+        setData([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
   }, [filters, sort]);
 
-  const handleSort = (key) => {
-    setSort((s) => (s.key === key ? { key, dir: s.dir === "asc" ? "desc" : "asc" } : { key, dir: "asc" }));
-  };
-
-  // actions column (eye + copy)
-  const actions = (row) => (
-    <div className="flex items-center justify-end gap-3">
-      <button
-        onClick={() => console.log("View:", row.code)}
-        className="p-2 rounded-md hover:bg-gray-100"
-        title="View"
-        aria-label="View"
-      >
-        <FaEye />
-      </button>
-      <button
-        onClick={() => navigator.clipboard?.writeText?.(row.code)}
-        className="p-2 rounded-md hover:bg-gray-100"
-        title="Copy Paper Code"
-        aria-label="Copy"
-      >
-        <FaRegCopy />
-      </button>
-    </div>
-  );
-
-  // simple CSV export for current filtered rows
-  const handleExport = () => {
-    const cols = ["code", "title", "authors", "field", "submitted", "status", "updated"];
-    const header = cols.join(",");
-    const lines = data.map((r) =>
-      cols.map((c) => `"${String(r[c] ?? "").replace(/"/g, '""')}"`).join(",")
+  const onFilterChange = (name, value) => {
+    setFilters((prev) =>
+      prev.map((f) => (f.name === name ? { ...f, value } : f))
     );
-    const csv = [header, ...lines].join("\n");
-    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "submissions.csv";
-    a.click();
-    URL.revokeObjectURL(url);
   };
+
+  const handleSort = (key) => {
+    setSort((s) =>
+      s.key === key
+        ? { key, dir: s.dir === "asc" ? "desc" : "asc" }
+        : { key, dir: "asc" }
+    );
+  };
+
+  if (error) {
+    return (
+      <div className="p-4 md:p-6 bg-gray-50 min-h-screen">
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+          Error: {error}
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="p-6 sm:p-6 bg-gray-50 min-h-screen">
-      <h1 className="text-2xl font-bold mb-2">Submission History</h1>
-
-      {/* Filters */}
-      <FilterBar filters={filters} onFilterChange={onFilterChange} />
-
-      {/* Table header strip with Export aligned right (outside the common table) */}
-      <div className="flex items-center justify-between mt-4 mb-2">
-        <div className="text-sm text-gray-500"></div>
-        <button
-          onClick={handleExport}
-          className="inline-flex items-center gap-2 px-3 py-1.5 text-sm border rounded-md bg-white hover:bg-gray-50"
-        >
-          Export
-        </button>
+    <div className="p-4 md:p-6 bg-gray-50 min-h-screen">
+      <h1 className="text-xl md:text-2xl font-bold mb-4">Submission History</h1>
+      {filters.length > 0 && (
+        <div className="mb-6">
+          <FilterBar filters={filters} onFilterChange={onFilterChange} />
+        </div>
+      )}
+      <div className="flex items-center justify-between mb-4">
+        <div className="text-sm text-gray-600">
+          {loading ? "Loading..." : `${data.length} submissions found`}
+        </div>
       </div>
-
-      {/* Table */}
-      <CommonSubmissionTable
-        title={`Papers`}
-        data={data}
-        columns={columns}
-        sort={sort}
-        onSort={handleSort}
-        actions={actions}
-      />
+      {loading ? (
+        <div className="bg-white rounded-xl shadow border p-8 text-center text-gray-500">
+          Loading submissions...
+        </div>
+      ) : (
+        <SubmissionTable items={data} onSort={handleSort} />
+      )}
     </div>
   );
 }

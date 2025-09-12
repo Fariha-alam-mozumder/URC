@@ -1,11 +1,16 @@
 import prisma from "../DB/db.config.js";
 import { Vine, errors } from "@vinejs/vine";
-import { registerSchema, loginSchema, validateRollNumber } from "../validations/authValidation.js";
+import {
+  registerSchema,
+  loginSchema,
+  validateRollNumber,
+} from "../validations/authValidation.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
 import { emailQueue, emailQueueName } from "../jobs/SendEmailJob.js";
 import logger from "../config/logger.js";
+
 
 const vine = new Vine();
 
@@ -35,12 +40,13 @@ class AuthController {
 
       //! Check if email is already pending verification
       const existingPending = Array.from(pendingRegistrations.values()).find(
-        reg => reg.email === payload.email
+        (reg) => reg.email === payload.email
       );
       if (existingPending) {
         return res.status(400).json({
           errors: {
-            email: "Registration already pending for this email. Please check your email or wait before trying again.",
+            email:
+              "Registration already pending for this email. Please check your email or wait before trying again.",
           },
         });
       }
@@ -48,7 +54,10 @@ class AuthController {
       //! Additional roll number validation for students
       if (payload.role === "STUDENT" && payload.roll_number) {
         // Check roll number format
-        const rollNumberError = validateRollNumber(payload.roll_number, payload.department_name);
+        const rollNumberError = validateRollNumber(
+          payload.roll_number,
+          payload.department_name
+        );
         if (rollNumberError) {
           return res.status(400).json({
             errors: {
@@ -60,8 +69,8 @@ class AuthController {
         // Check if roll number already exists in database
         const existingStudent = await prisma.student.findFirst({
           where: {
-            roll_number: payload.roll_number
-          }
+            roll_number: payload.roll_number,
+          },
         });
 
         if (existingStudent) {
@@ -73,9 +82,9 @@ class AuthController {
         }
 
         // Check if roll number is pending verification
-        const existingPendingRoll = Array.from(pendingRegistrations.values()).find(
-          reg => reg.roll_number === payload.roll_number
-        );
+        const existingPendingRoll = Array.from(
+          pendingRegistrations.values()
+        ).find((reg) => reg.roll_number === payload.roll_number);
         if (existingPendingRoll) {
           return res.status(400).json({
             errors: {
@@ -102,7 +111,7 @@ class AuthController {
         roll_number: payload.roll_number,
         designation: payload.designation,
         createdAt: new Date(),
-        expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000) // 24 hours expiry
+        expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours expiry
       };
 
       pendingRegistrations.set(verifyToken, registrationData);
@@ -131,9 +140,10 @@ class AuthController {
 
         return res.json({
           status: 200,
-          message: "Please check your email to verify and complete your registration.",
+          message:
+            "Please check your email to verify and complete your registration.",
           emailSent: true,
-          note: "Your account will be created only after email verification."
+          note: "Your account will be created only after email verification.",
         });
       } catch (emailError) {
         console.error("Email sending failed:", emailError);
@@ -166,6 +176,7 @@ class AuthController {
   }
 
   //! Email verification handler - Creates user in database upon verification
+  // Updated verifyEmail method with proper transaction handling
   static async verifyEmail(req, res) {
     try {
       const { token } = req.params;
@@ -175,136 +186,151 @@ class AuthController {
 
       if (!registrationData) {
         return res.status(400).send(`
-          <html>
-            <body style="font-family: Arial, sans-serif; text-align: center; padding: 50px;">
-              <h2 style="color: #dc3545;">Invalid or Expired Verification Link</h2>
-              <p>This verification link is invalid or has expired.</p>
-              <p>Please try registering again.</p>
-              <a href="http://localhost:5173/signup" style="color: #007bff;">Go to Registration</a>
-            </body>
-          </html>
-        `);
+        <html>
+          <body style="font-family: Arial, sans-serif; text-align: center; padding: 50px;">
+            <h2 style="color: #dc3545;">Invalid or Expired Verification Link</h2>
+            <p>This verification link is invalid or has expired.</p>
+            <p>Please try registering again.</p>
+            <a href="http://localhost:5173/signup" style="color: #007bff;">Go to Registration</a>
+          </body>
+        </html>
+      `);
       }
 
       // Check if registration has expired (24 hours)
       if (new Date() > registrationData.expiresAt) {
         pendingRegistrations.delete(token);
         return res.status(400).send(`
-          <html>
-            <body style="font-family: Arial, sans-serif; text-align: center; padding: 50px;">
-              <h2 style="color: #dc3545;">Verification Link Expired</h2>
-              <p>This verification link has expired. Please register again.</p>
-              <a href="http://localhost:5173/signup" style="color: #007bff;">Go to Registration</a>
-            </body>
-          </html>
-        `);
-      }
-
-      // Double-check if email or roll number was taken by someone else while pending
-      const findUser = await prisma.user.findUnique({
-        where: { email: registrationData.email },
-      });
-      if (findUser) {
-        pendingRegistrations.delete(token);
-        return res.status(400).send(`
-          <html>
-            <body style="font-family: Arial, sans-serif; text-align: center; padding: 50px;">
-              <h2 style="color: #dc3545;">Email Already Registered</h2>
-              <p>This email address has been registered by someone else while you were verifying.</p>
-              <p>Please try with a different email address.</p>
-              <a href="http://localhost:5173/signup" style="color: #007bff;">Go to Registration</a>
-            </body>
-          </html>
-        `);
-      }
-
-      if (registrationData.role === "STUDENT" && registrationData.roll_number) {
-        const existingStudent = await prisma.student.findFirst({
-          where: { roll_number: registrationData.roll_number }
-        });
-        if (existingStudent) {
-          pendingRegistrations.delete(token);
-          return res.status(400).send(`
-            <html>
-              <body style="font-family: Arial, sans-serif; text-align: center; padding: 50px;">
-                <h2 style="color: #dc3545;">Roll Number Already Taken</h2>
-                <p>This roll number has been registered by someone else while you were verifying.</p>
-                <p>Please contact support if you believe this is an error.</p>
-                <a href="http://localhost:5173/signup" style="color: #007bff;">Go to Registration</a>
-              </body>
-            </html>
-          `);
-        }
-      }
-
-      //! Now create the user in database
-      let departmentId = null;
-      if (registrationData.department_name) {
-        let department = await prisma.department.findUnique({
-          where: { department_name: registrationData.department_name },
-        });
-
-        if (!department) {
-          department = await prisma.department.create({
-            data: { department_name: registrationData.department_name },
-          });
-        }
-
-        departmentId = department.department_id;
-      }
-
-      // Create user record
-      const newUser = await prisma.user.create({
-        data: {
-          name: registrationData.name,
-          email: registrationData.email,
-          password: registrationData.password,
-          role: registrationData.role,
-          isVerified: true, // Mark as verified since they clicked the link
-        },
-      });
-
-      // Create role-specific entry
-      if (registrationData.role === "STUDENT") {
-        await prisma.student.create({
-          data: {
-            roll_number: registrationData.roll_number,
-            department_id: departmentId,
-            user_id: newUser.user_id,
-          },
-        });
-      } else if (registrationData.role === "TEACHER") {
-        await prisma.teacher.create({
-          data: {
-            designation: registrationData.designation,
-            department_id: departmentId,
-            user_id: newUser.user_id,
-          },
-        });
-      } else if (registrationData.role === "GENERALUSER") {
-        await prisma.generaluser.create({
-          data: {
-            user_id: newUser.user_id,
-          },
-        });
-      }
-
-      // Remove from pending registrations
-      pendingRegistrations.delete(token);
-
-      // Redirect to login with success message
-      res.redirect("http://localhost:5173/login?verified=true&registered=true");
-    } catch (err) {
-      console.error("Email verification error:", err);
-      res.status(400).send(`
         <html>
           <body style="font-family: Arial, sans-serif; text-align: center; padding: 50px;">
-            <h2 style="color: #dc3545;">Verification Failed</h2>
-            <p>An error occurred during verification. Please try registering again.</p>
+            <h2 style="color: #dc3545;">Verification Link Expired</h2>
+            <p>This verification link has expired. Please register again.</p>
             <a href="http://localhost:5173/signup" style="color: #007bff;">Go to Registration</a>
           </body>
         </html>
       `);
+      }
+
+      // Use Prisma transaction to ensure data consistency
+      const result = await prisma.$transaction(async (tx) => {
+        // Double-check if email was taken by someone else while pending
+        const findUser = await tx.user.findUnique({
+          where: { email: registrationData.email },
+        });
+        if (findUser) {
+          throw new Error('EMAIL_TAKEN');
+        }
+
+        if (registrationData.role === "STUDENT" && registrationData.roll_number) {
+          const existingStudent = await tx.student.findFirst({
+            where: { roll_number: registrationData.roll_number },
+          });
+          if (existingStudent) {
+            throw new Error('ROLL_NUMBER_TAKEN');
+          }
+        }
+
+        // Get or create department
+        let departmentId = null;
+        if (registrationData.department_name) {
+          let department = await tx.department.findUnique({
+            where: { department_name: registrationData.department_name },
+          });
+
+          if (!department) {
+            department = await tx.department.create({
+              data: { department_name: registrationData.department_name },
+            });
+          }
+
+          departmentId = department.department_id;
+        }
+
+        // Create user record
+        const newUser = await tx.user.create({
+          data: {
+            name: registrationData.name,
+            email: registrationData.email,
+            password: registrationData.password,
+            role: registrationData.role,
+            isVerified: true,
+          },
+        });
+
+        // Create role-specific entry
+        if (registrationData.role === "STUDENT") {
+          await tx.student.create({
+            data: {
+              roll_number: registrationData.roll_number,
+              department_id: departmentId,
+              user_id: newUser.user_id,
+            },
+          });
+        } else if (registrationData.role === "TEACHER") {
+          await tx.teacher.create({
+            data: {
+              designation: registrationData.designation,
+              department_id: departmentId,
+              user_id: newUser.user_id,
+            },
+          });
+        } else if (registrationData.role === "GENERALUSER") {
+          await tx.generaluser.create({
+            data: {
+              user_id: newUser.user_id,
+            },
+          });
+        }
+
+        return newUser;
+      });
+
+      // Remove from pending registrations only after successful creation
+      pendingRegistrations.delete(token);
+
+      // Add a small delay to ensure the redirect works properly
+      setTimeout(() => {
+        res.redirect("http://localhost:5173/login?verified=true&registered=true");
+      }, 100);
+
+    } catch (err) {
+      console.error("Email verification error:", err);
+
+      if (err.message === 'EMAIL_TAKEN') {
+        pendingRegistrations.delete(token);
+        return res.status(400).send(`
+        <html>
+          <body style="font-family: Arial, sans-serif; text-align: center; padding: 50px;">
+            <h2 style="color: #dc3545;">Email Already Registered</h2>
+            <p>This email address has been registered by someone else.</p>
+            <a href="http://localhost:5173/signup" style="color: #007bff;">Go to Registration</a>
+          </body>
+        </html>
+      `);
+      }
+
+      if (err.message === 'ROLL_NUMBER_TAKEN') {
+        pendingRegistrations.delete(token);
+        return res.status(400).send(`
+        <html>
+          <body style="font-family: Arial, sans-serif; text-align: center; padding: 50px;">
+            <h2 style="color: #dc3545;">Roll Number Already Taken</h2>
+            <p>This roll number has been registered by someone else.</p>
+            <a href="http://localhost:5173/signup" style="color: #007bff;">Go to Registration</a>
+          </body>
+        </html>
+      `);
+      }
+
+      res.status(400).send(`
+      <html>
+        <body style="font-family: Arial, sans-serif; text-align: center; padding: 50px;">
+          <h2 style="color: #dc3545;">Verification Failed</h2>
+          <p>An error occurred during verification. Please try registering again.</p>
+          <a href="http://localhost:5173/signup" style="color: #007bff;">Go to Registration</a>
+        </body>
+      </html>
+    `);
     }
   }
 
@@ -355,6 +381,7 @@ class AuthController {
       const token = jwt.sign(payloadData, process.env.JWT_SECRET, {
         expiresIn: "30d",
       });
+
 
       return res.status(200).json({
         success: true,
@@ -476,87 +503,6 @@ class AuthController {
   }
 
 
-  static async switchRole(req, res) {
-    try {
-      const userId = req.user.id; // from auth middleware
-      const { newRole } = req.body;
-
-      if (!["TEACHER", "REVIEWER"].includes(newRole)) {
-        return res.status(400).json({ error: "Invalid role to switch." });
-      }
-
-      // Fetch user with related teacher info (if exists)
-      const user = await prisma.user.findUnique({
-        where: { user_id: userId },
-      });
-
-      if (!user) {
-        return res.status(404).json({ error: "User not found." });
-      }
-
-      if (user.role === newRole) {
-        return res.status(400).json({ error: `Already in role ${newRole}.` });
-      }
-
-      // Fetch teacher record for this user
-      const teacherRecord = await prisma.teacher.findFirst({
-        where: { user_id: userId },
-      });
-
-      // Check if switching to REVIEWER is allowed
-      if (newRole === "REVIEWER") {
-        if (!teacherRecord || teacherRecord.isReviewer === false) {
-          return res.status(403).json({
-            error:
-              "User is not authorized to switch to REVIEWER role. Must be a teacher marked as reviewer.",
-          });
-        }
-      }
-
-      // If switching back to TEACHER, no extra check needed
-
-      // Update user role in DB
-      await prisma.user.update({
-        where: { user_id: userId },
-        data: {
-          role: newRole,
-        },
-      });
-
-      // Issue new JWT token with updated role
-      const payloadData = {
-        id: user.user_id,
-        name: user.name,
-        email: user.email,
-        role: newRole,
-        emailVerified: !!user.isVerified,
-        isMainAdmin: !!user.isMainAdmin,
-      };
-
-      const token = jwt.sign(payloadData, process.env.JWT_SECRET, {
-        expiresIn: "30d",
-      });
-
-      return res.status(200).json({
-        success: true,
-        message: `Role switched to ${newRole} successfully.`,
-        token,
-        user: {
-          id: user.user_id,
-          name: user.name,
-          email: user.email,
-          role: newRole,
-          isMainAdmin: user.isMainAdmin,
-          emailVerified: !!user.isVerified,
-        },
-      });
-    } catch (error) {
-      console.error("SwitchRole error:", error);
-      return res.status(500).json({
-        error: "Something went wrong while switching roles.",
-      });
-    }
-  }
 
   /*/* Send test Email
   static async sendTestEmail(req, res) {
@@ -596,7 +542,6 @@ class AuthController {
         .json({ error: "Something went wrong. Please try again." });
     }
   }*/
-
 }
 
 // Clean up expired registrations every hour
