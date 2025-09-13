@@ -27,28 +27,19 @@ const WaitingAssignment = () => {
 
   const { token } = useContext(AuthContext) || {};
 
-  // Create axios instance with token - following AdminProposals pattern
   const getAuthHeaders = () => {
     const authToken = token || localStorage.getItem("token");
     return authToken ? { Authorization: `Bearer ${authToken}` } : {};
   };
 
-  // Fetch waiting assignments - following AdminProposals pattern
   const fetchWaitingAssignments = async () => {
     setLoading(true);
     try {
-      console.log(" Fetching waiting assignments...");
-
       const res = await axios.get(
         "http://localhost:8000/api/assignments/waiting",
-        {
-          headers: getAuthHeaders(),
-        }
+        { headers: getAuthHeaders() }
       );
 
-      console.log(" Response received:", res.data);
-
-      // Handle the response structure from your backend
       if (res.data) {
         const { waitingItems = [], stats: responseStats = {} } = res.data;
 
@@ -59,66 +50,37 @@ const WaitingAssignment = () => {
           availableReviewers: responseStats.availableReviewers || 0,
           autoMatchAvailable: responseStats.autoMatchAvailable || 0,
         });
-
-        console.log(` Loaded ${waitingItems.length} waiting items`);
         setError("");
       } else {
         setPapers([]);
-        console.warn(" No data received from API");
       }
     } catch (err) {
-      console.error(" Error fetching waiting assignments:", err);
-
-      // More detailed error handling
       if (err.response) {
-        // Server responded with error status
         const status = err.response.status;
         const message =
           err.response.data?.message ||
           err.response.data?.error ||
           "Server error";
 
-        if (status === 401) {
-          setError("Authentication required. Please login again.");
-        } else if (status === 403) {
-          setError("Access denied. Admin permissions required.");
-        } else if (status === 404) {
-          setError(
-            "API endpoint not found. Please check server configuration."
-          );
-        } else {
-          setError(`Server error (${status}): ${message}`);
-        }
+        if (status === 401) setError("Authentication required. Please login again.");
+        else if (status === 403) setError("Access denied. Admin permissions required.");
+        else if (status === 404) setError("API endpoint not found. Please check server configuration.");
+        else setError(`Server error (${status}): ${message}`);
       } else if (err.request) {
-        // Network error - server not reachable
-        setError(
-          "Cannot connect to server. Please ensure the backend is running on http://localhost:8000"
-        );
+        setError("Cannot connect to server. Please ensure the backend is running on http://localhost:8000");
       } else {
-        // Other error
         setError(`Request failed: ${err.message}`);
       }
 
       setPapers([]);
-      setStats({
-        awaitingAssignment: 0,
-        availableReviewers: 0,
-        autoMatchAvailable: 0,
-      });
+      setStats({ awaitingAssignment: 0, availableReviewers: 0, autoMatchAvailable: 0 });
     } finally {
       setLoading(false);
     }
   };
 
-  // Fetch available reviewers - following AdminProposals pattern
-  const fetchAvailableReviewers = async (
-    domainId = null,
-    itemType = null,
-    itemId = null
-  ) => {
+  const fetchAvailableReviewers = async (domainId = null, itemType = null, itemId = null) => {
     try {
-      console.log("👥 Fetching available reviewers...");
-
       const params = {};
       if (domainId) params.domain_id = domainId;
       if (itemType) params.item_type = itemType;
@@ -126,63 +88,38 @@ const WaitingAssignment = () => {
 
       const res = await axios.get(
         "http://localhost:8000/api/assignments/reviewers",
-        {
-          headers: getAuthHeaders(),
-          params,
-        }
+        { headers: getAuthHeaders(), params }
       );
-
-      console.log(" Reviewers response:", res.data);
 
       if (Array.isArray(res.data)) {
         setPotentialReviewers(res.data);
-        console.log(` Loaded ${res.data.length} reviewers`);
       } else if (res.data.success && Array.isArray(res.data.data)) {
         setPotentialReviewers(res.data.data);
-        console.log(` Loaded ${res.data.data.length} reviewers`);
       } else {
         setPotentialReviewers([]);
-        console.warn(" No reviewers data received");
       }
-    } catch (err) {
-      console.error(" Error fetching reviewers:", err);
+    } catch {
       setPotentialReviewers([]);
-
-      // Don't show reviewer errors as main error, just log them
-      if (err.response?.status !== 401 && err.response?.status !== 403) {
-        console.warn("Failed to load reviewers, but continuing...");
-      }
+      // non-fatal; keep page usable
     }
   };
 
-  // Initial data fetch
   useEffect(() => {
     fetchWaitingAssignments();
   }, []);
 
-  // Handle assign button click
   const handleAssignClick = async (paper) => {
-    console.log(" Opening assignment modal for:", paper);
     setSelectedPaper(paper);
-
-    // Fetch reviewers when modal opens, with paper context
     await fetchAvailableReviewers(paper.domain_id, paper.type, paper.actual_id);
-
     setShowModal(true);
   };
 
-  // Send assignment to backend - following AdminProposals pattern
   const handleAssignReviewers = async (reviewerIds) => {
     try {
       if (!selectedPaper || !reviewerIds.length) {
         alert("Please select at least one reviewer");
         return;
       }
-
-      console.log(" Assigning reviewers:", {
-        paper: selectedPaper.id,
-        reviewers: reviewerIds,
-      });
 
       const payload = {
         assignments: [
@@ -197,65 +134,40 @@ const WaitingAssignment = () => {
       const res = await axios.post(
         "http://localhost:8000/api/assignments/assign",
         payload,
-        {
-          headers: getAuthHeaders(),
-        }
+        { headers: getAuthHeaders() }
       );
 
-      console.log(" Assignment response:", res.data);
-
-      // Safely read the response shape
       const { success, results, message } = res.data || {};
-
-      // Handle success response
       if (success) {
-        // Only now do we update UI state (because backend says success)
-        // Remove the assigned paper from the list
         setPapers((prev) => prev.filter((p) => p.id !== selectedPaper.id));
-
-        // Update stats
         setStats((prev) => ({
           ...prev,
           awaitingAssignment: Math.max(0, prev.awaitingAssignment - 1),
         }));
-
         setShowModal(false);
         setSelectedPaper(null);
 
-        const message =
+        const msg =
           res.data.message ||
           `Successfully assigned ${reviewerIds.length} reviewers!`;
-        alert(message || "Assigned successfully");
-
-        console.log(" Assignment completed successfully");
+        alert(msg);
       } else {
-        // error message if the API reported failures
         const failMsg =
-          message || // [11]
+          message ||
           results?.map((r) => `${r.item_id}: ${r.message}`).join("\n") ||
           "Assignment failed";
-        alert(failMsg); // [12]
+        alert(failMsg);
       }
     } catch (err) {
-      console.error(" Error assigning reviewers:", err);
-
       let errorMessage = "Failed to assign reviewers. Please try again.";
-
-      if (err.response?.data?.message) {
-        errorMessage = err.response.data.message;
-      } else if (err.response?.data?.error) {
-        errorMessage = err.response.data.error;
-      }
-
+      if (err.response?.data?.message) errorMessage = err.response.data.message;
+      else if (err.response?.data?.error) errorMessage = err.response.data.error;
       alert(errorMessage);
     }
   };
 
-  // Auto-match reviewers - following AdminProposals pattern
   const handleAutoMatch = async (paper) => {
     try {
-      console.log("🤖 Auto-matching reviewers for:", paper.id);
-
       const payload = {
         item_id: paper.actual_id,
         item_type: paper.type === "paper" ? "paper" : "proposal",
@@ -264,59 +176,39 @@ const WaitingAssignment = () => {
       const res = await axios.post(
         "http://localhost:8000/api/assignments/auto-match",
         payload,
-        {
-          headers: getAuthHeaders(),
-        }
+        { headers: getAuthHeaders() }
       );
 
-      console.log(" Auto-match response:", res.data);
-
       if (res.data) {
-        // Check if it's just recommendations or actual assignment
         if (res.data.recommendations) {
-          // Show recommendations to user
           const recommendedNames = res.data.recommendations
             .map((r) => r.name)
             .join(", ");
-          const confirmMessage = `Found ${res.data.recommendations.length} recommended reviewers:\n${recommendedNames}\n\nWould you like to assign them automatically?`;
+          const confirmMessage = `Found ${res.data.recommendations.length} recommended reviewers:\n${recommendedNames}\n\nAssign them automatically?`;
 
           if (confirm(confirmMessage)) {
-            // If user confirms, assign the recommended reviewers
             const reviewerIds = res.data.recommendations.map((r) => r.id);
             await handleAssignReviewers(reviewerIds);
           }
         } else {
-          // Direct assignment completed
           setPapers((prev) => prev.filter((p) => p.id !== paper.id));
-
           setStats((prev) => ({
             ...prev,
             awaitingAssignment: Math.max(0, prev.awaitingAssignment - 1),
             autoMatchAvailable: Math.max(0, prev.autoMatchAvailable - 1),
           }));
-
-          const message =
-            res.data.message || "Auto-assignment completed successfully!";
-          alert(message);
+          const msg = res.data.message || "Auto-assignment completed successfully!";
+          alert(msg);
         }
       }
     } catch (err) {
-      console.error(" Error with auto-assignment:", err);
-
-      let errorMessage =
-        "Auto-assignment failed. Please try manual assignment.";
-
-      if (err.response?.data?.message) {
-        errorMessage = err.response.data.message;
-      } else if (err.response?.data?.error) {
-        errorMessage = err.response.data.error;
-      }
-
+      let errorMessage = "Auto-assignment failed. Please try manual assignment.";
+      if (err.response?.data?.message) errorMessage = err.response.data.message;
+      else if (err.response?.data?.error) errorMessage = err.response.data.error;
       alert(errorMessage);
     }
   };
 
-  // Loading state
   if (loading) {
     return (
       <div className="max-w-full">
@@ -345,7 +237,6 @@ const WaitingAssignment = () => {
         </button>
       </div>
 
-      {/* Error Message */}
       {error && (
         <div className="mt-4 p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg">
           <div className="flex items-start gap-2">
@@ -365,7 +256,6 @@ const WaitingAssignment = () => {
         </div>
       )}
 
-      {/* Stat Cards */}
       <div className="grid mt-4 mb-5 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
         <StatCard
           title="Awaiting Assignment"
@@ -387,7 +277,6 @@ const WaitingAssignment = () => {
         />
       </div>
 
-      {/* Papers List */}
       <div className="border border-gray-200 rounded-lg p-4">
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-lg font-semibold">
@@ -432,9 +321,9 @@ const WaitingAssignment = () => {
           setSelectedPaper(null);
         }}
         potentialReviewers={potentialReviewers}
-        onSendInvitation={handleAssignReviewers}
+        onSubmit={handleAssignReviewers} 
         buttonLabel="Assign Selected Reviewers"
-        title={`Assign Reviewers - ${selectedPaper?.title || "Unknown"}`}
+        title={`Assign Reviewers • ${selectedPaper?.title || "Unknown"}`}
       />
     </div>
   );

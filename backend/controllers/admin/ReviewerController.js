@@ -11,180 +11,128 @@ import {
 const vine = new Vine();
 
 class ReviewerController {
-  // GET /api/reviewers - Fetch all reviewers with stats
+  // GET /api/reviewers
   static async index(req, res) {
     try {
-      console.log("ReviewerController.index called");
-
-      // Fetch all reviewers with related data
       const reviewers = await prisma.reviewer.findMany({
         include: {
           teacher: {
             include: {
-              user: {
-                select: {
-                  name: true,
-                  email: true
-                }
-              },
-              department: {
-                select: {
-                  department_name: true
-                }
-              }
-            }
+              user: { select: { name: true, email: true } },
+              department: { select: { department_name: true } },
+            },
           },
-          _count: {
-            select: {
-              review: true,
-              reviewerassignment: true
-            }
-          }
-        }
+          _count: { select: { review: true, reviewerassignment: true } },
+        },
       });
 
-      // Calculate stats for each reviewer
       const reviewersWithStats = await Promise.all(
         reviewers.map(async (reviewer) => {
           try {
-            // Get completed reviews count
             const completedReviews = await prisma.review.count({
-              where: {
-                reviewer_id: reviewer.reviewer_id,
-                decision: { not: null }
-              }
+              where: { reviewer_id: reviewer.reviewer_id, decision: { not: null } },
             });
 
-            // Get average review time (in days) with better error handling
             let avgReviewTime = null;
             try {
               const reviewTimes = await prisma.review.findMany({
                 where: {
                   reviewer_id: reviewer.reviewer_id,
                   decision: { not: null },
-                  reviewed_at: { not: null }
+                  reviewed_at: { not: null },
                 },
                 include: {
                   paper: { select: { created_at: true } },
-                  proposal: { select: { created_at: true } }
-                }
+                  proposal: { select: { created_at: true } },
+                },
               });
 
               if (reviewTimes.length > 0) {
-                const validReviewTimes = reviewTimes.filter(review => {
-                  const submittedAt = review.paper?.created_at || review.proposal?.created_at;
-                  return submittedAt && review.reviewed_at;
+                const valid = reviewTimes.filter((r) => {
+                  const submittedAt = r.paper?.created_at || r.proposal?.created_at;
+                  return submittedAt && r.reviewed_at;
                 });
-
-                if (validReviewTimes.length > 0) {
-                  const totalDays = validReviewTimes.reduce((sum, review) => {
-                    const submittedAt = review.paper?.created_at || review.proposal?.created_at;
-                    const days = Math.ceil(
-                      (new Date(review.reviewed_at) - new Date(submittedAt)) / (1000 * 60 * 60 * 24)
-                    );
+                if (valid.length > 0) {
+                  const totalDays = valid.reduce((sum, r) => {
+                    const submittedAt = r.paper?.created_at || r.proposal?.created_at;
+                    const days = Math.ceil((new Date(r.reviewed_at) - new Date(submittedAt)) / (1000 * 60 * 60 * 24));
                     return sum + Math.max(0, days);
                   }, 0);
-                  avgReviewTime = Math.round(totalDays / validReviewTimes.length);
+                  avgReviewTime = Math.round(totalDays / valid.length);
                 }
               }
-            } catch (timeError) {
-              logger.error(`Error calculating review time for reviewer ${reviewer.reviewer_id}:`, timeError);
-              avgReviewTime = null;
+            } catch (e) {
+              logger.error(`Error calculating review time for reviewer ${reviewer.reviewer_id}:`, e);
             }
 
-            // Get user domains for expertise
             let expertise = [];
             try {
               if (reviewer.teacher?.user_id) {
                 const userDomains = await prisma.userdomain.findMany({
                   where: { user_id: reviewer.teacher.user_id },
-                  include: {
-                    domain: {
-                      select: {
-                        domain_name: true
-                      }
-                    }
-                  }
+                  include: { domain: { select: { domain_name: true } } },
                 });
-                expertise = userDomains.map(ud => ud.domain?.domain_name || 'Unknown').filter(Boolean);
+                expertise = userDomains.map((ud) => ud.domain?.domain_name || "Unknown").filter(Boolean);
               }
-            } catch (domainError) {
-              logger.error(`Error fetching domains for reviewer ${reviewer.reviewer_id}:`, domainError);
-              expertise = [];
+            } catch (e) {
+              logger.error(`Error fetching domains for reviewer ${reviewer.reviewer_id}:`, e);
             }
 
-            // Calculate workload percentage (assuming max 5 assignments)
             const assignmentCount = reviewer._count?.reviewerassignment || 0;
             const workloadPercentage = Math.min((assignmentCount / 5) * 100, 100);
 
             return {
               id: reviewer.reviewer_id,
-              name: reviewer.teacher?.user?.name || 'N/A',
-              email: reviewer.teacher?.user?.email || 'N/A',
-              department: reviewer.teacher?.department?.department_name || 'N/A',
-              designation: reviewer.teacher?.designation || 'N/A',
-              expertise: expertise,
+              teacherId: reviewer.teacher_id, // <-- ADDED for frontend email action
+              name: reviewer.teacher?.user?.name || "N/A",
+              email: reviewer.teacher?.user?.email || "N/A",
+              department: reviewer.teacher?.department?.department_name || "N/A",
+              designation: reviewer.teacher?.designation || "N/A",
+              expertise,
               assigned: assignmentCount,
               completed: completedReviews,
               workload: Math.round(workloadPercentage),
               avgTime: avgReviewTime,
-              status: reviewer.status || 'PENDING'
+              status: reviewer.status || "PENDING",
             };
-          } catch (reviewerError) {
-            logger.error(`Error processing reviewer ${reviewer.reviewer_id}:`, reviewerError);
-            // Return a basic reviewer object if processing fails
+          } catch (err) {
+            logger.error(`Error processing reviewer ${reviewer.reviewer_id}:`, err);
             return {
               id: reviewer.reviewer_id,
-              name: reviewer.teacher?.user?.name || 'N/A',
-              email: reviewer.teacher?.user?.email || 'N/A',
-              department: reviewer.teacher?.department?.department_name || 'N/A',
-              designation: reviewer.teacher?.designation || 'N/A',
+              teacherId: reviewer.teacher_id,
+              name: reviewer.teacher?.user?.name || "N/A",
+              email: reviewer.teacher?.user?.email || "N/A",
+              department: reviewer.teacher?.department?.department_name || "N/A",
+              designation: reviewer.teacher?.designation || "N/A",
               expertise: [],
               assigned: 0,
               completed: 0,
               workload: 0,
               avgTime: null,
-              status: reviewer.status || 'PENDING'
+              status: reviewer.status || "PENDING",
             };
           }
         })
       );
 
-      // Calculate overall stats with error handling
       const totalReviewers = reviewers.length;
-      const activeReviewers = reviewers.filter(r => r.status === 'ACTIVE').length;
-      const totalCompletedReviews = reviewersWithStats.reduce((sum, r) => sum + (r.completed || 0), 0);
-      const totalAssignedReviews = reviewersWithStats.reduce((sum, r) => sum + (r.assigned || 0), 0);
-      const completionRate = totalAssignedReviews > 0 
-        ? Math.round((totalCompletedReviews / totalAssignedReviews) * 100) 
-        : 0;
-      
-      const reviewTimesWithData = reviewersWithStats.filter(r => r.avgTime !== null && r.avgTime > 0);
-      const avgReviewTime = reviewTimesWithData.length > 0
-        ? Math.round(reviewTimesWithData.reduce((sum, r) => sum + r.avgTime, 0) / reviewTimesWithData.length)
-        : null;
-
-      const stats = {
-        totalReviewers,
-        activeReviewers,
-        completedReviews: totalCompletedReviews,
-        completionRate,
-        avgReviewTime
-      };
+      const activeReviewers = reviewers.filter((r) => r.status === "ACTIVE").length;
+      const totalCompletedReviews = reviewersWithStats.reduce((s, r) => s + (r.completed || 0), 0);
+      const totalAssignedReviews = reviewersWithStats.reduce((s, r) => s + (r.assigned || 0), 0);
+      const completionRate = totalAssignedReviews > 0 ? Math.round((totalCompletedReviews / totalAssignedReviews) * 100) : 0;
+      const times = reviewersWithStats.filter((r) => r.avgTime !== null && r.avgTime > 0);
+      const avgReviewTime = times.length > 0 ? Math.round(times.reduce((s, r) => s + r.avgTime, 0) / times.length) : null;
 
       return res.json({
         reviewers: reviewersWithStats,
-        stats
+        stats: { totalReviewers, activeReviewers, completedReviews: totalCompletedReviews, completionRate, avgReviewTime },
       });
-
     } catch (error) {
-      console.error("Error fetching reviewers:", error);
       logger.error("Reviewers fetch error:", error);
-      
-      const isDevelopment = process.env.NODE_ENV === 'development';
+      const isDevelopment = process.env.NODE_ENV === "development";
       return res.status(500).json({
         error: "Failed to fetch reviewers data",
-        ...(isDevelopment && { details: error.message, stack: error.stack })
+        ...(isDevelopment && { details: error.message, stack: error.stack }),
       });
     }
   }
@@ -265,7 +213,7 @@ class ReviewerController {
     } catch (error) {
       console.error("Error fetching potential reviewers:", error);
       logger.error("Potential reviewers fetch error:", error);
-      
+
       const isDevelopment = process.env.NODE_ENV === 'development';
       return res.status(500).json({
         error: "Failed to fetch potential reviewers",
@@ -274,259 +222,244 @@ class ReviewerController {
     }
   }
 
-  // POST /api/reviewers/invite - Send invitations to potential reviewers
+  // POST /api/reviewers/invite - Send invitations AND upsert reviewer rows
+  // POST /api/reviewers/invite (single path: invite + upsert reviewer row)
   static async sendInvitations(req, res) {
     try {
-      logger.info("inviteReviewers called");
-      logger.info("Request body: ", req.body);
-
       const validator = vine.compile(inviteReviewersSchema);
       const payload = await validator.validate(req.body);
 
-      if (!payload.reviewer_ids || !Array.isArray(payload.reviewer_ids) || payload.reviewer_ids.length === 0) {
-        return res.status(400).json({
-          error: "reviewer_ids must be a non-empty array"
-        });
+      const teacherIds = Array.isArray(payload.reviewer_ids)
+        ? [...new Set(payload.reviewer_ids.map((id) => parseInt(id, 10)).filter((n) => Number.isInteger(n)))]
+        : [];
+
+      if (teacherIds.length === 0) {
+        return res.status(400).json({ error: "reviewer_ids must be a non-empty array of integers" });
       }
 
-      // Get teacher details for the selected IDs
       const teachers = await prisma.teacher.findMany({
-        where: {
-          teacher_id: { in: payload.reviewer_ids }
-        },
-        include: {
-          user: {
-            select: {
-              name: true,
-              email: true
-            }
+        where: { teacher_id: { in: teacherIds } },
+        include: { user: { select: { name: true, email: true, isVerified: true } } },
+      });
+
+      if (teachers.length === 0) {
+        return res.status(404).json({ error: "No valid teachers found for the provided IDs" });
+      }
+
+      let createdCount = 0;
+      await prisma.$transaction(async (tx) => {
+        for (const t of teachers) {
+          await tx.teacher.update({ where: { teacher_id: t.teacher_id }, data: { isReviewer: true } });
+
+          const existing = await tx.reviewer.findUnique({ where: { teacher_id: t.teacher_id } });
+          if (!existing) {
+            await tx.reviewer.create({ data: { teacher_id: t.teacher_id, status: "PENDING" } });
+            createdCount++;
           }
         }
       });
 
-      if (teachers.length === 0) {
-        return res.status(404).json({
-          error: "No valid teachers found for the provided IDs"
-        });
-      }
-
-      // Prepare email jobs with error handling
       const emailJobs = teachers
-        .filter(teacher => teacher.user?.email)
-        .map(teacher => ({
-          toEmail: teacher.user.email,
+        .filter((t) => t.user?.email)
+        .map((t) => ({
+          toEmail: t.user.email,
           subject: "Invitation to Join Review Committee",
           body: `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
               <h2 style="color: #2563eb;">Review Committee Invitation</h2>
-              
-              <p>Dear ${teacher.user.name || 'Professor'},</p>
-              
+              <p>Dear ${t.user.name || "Professor"},</p>
               <p>You have been invited to join our review committee. Your expertise would be valuable in reviewing academic papers and proposals in your field.</p>
-              
-              ${payload.custom_message ? `
+              ${
+                payload.custom_message
+                  ? `
               <div style="background-color: #f3f4f6; padding: 15px; border-left: 4px solid #2563eb; margin: 20px 0;">
                 <p style="margin: 0;"><strong>Personal Message:</strong></p>
                 <p style="margin: 5px 0 0 0;">${payload.custom_message}</p>
               </div>
-              ` : ''}
-              
-              <p>To accept this invitation and join the review committee, please log into your account and contact the administrator.</p>
-              
+              `
+                  : ""
+              }
+              <p>To accept this invitation and join the review committee, please log in to your account and contact the administrator.</p>
               <div style="margin: 30px 0;">
-                <a href="${process.env.UI_URL || 'http://localhost:5173'}/login" 
+                <a href="${process.env.UI_URL || "http://localhost:5173"}/login"
                    style="background-color: #2563eb; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; display: inline-block;">
                   Login to Your Account
                 </a>
               </div>
-              
-              <p>Thank you for considering this opportunity to contribute to academic excellence.</p>
-              
-              <p>Best regards,<br>The Review Committee Team</p>
+              <p>Best regards,<br/>The Review Committee Team</p>
             </div>
-          `
+          `,
         }));
 
-      if (emailJobs.length === 0) {
-        return res.status(400).json({
-          error: "No valid email addresses found for the selected teachers"
-        });
-      }
-
       try {
-        await emailQueue.add(emailQueueName, emailJobs);
+        if (emailJobs.length > 0) {
+          await emailQueue.add(emailQueueName, emailJobs);
+        }
       } catch (emailError) {
         logger.error("Error adding emails to queue:", emailError);
       }
 
-      logger.info(`Reviewer invitations sent to ${emailJobs.length} teachers`);
-
       return res.json({
-        message: `Invitations sent successfully to ${emailJobs.length} reviewer(s)`,
-        invitedCount: emailJobs.length
+        message: `Invitations sent to ${emailJobs.length} teacher(s). ${createdCount} new reviewer record(s) created.`,
+        invitedCount: emailJobs.length,
+        createdCount,
       });
-
     } catch (error) {
-      console.error("Error sending invitations:", error);
       logger.error("Reviewer invitations error:", error);
-
       if (error instanceof errors.E_VALIDATION_ERROR) {
-        return res.status(400).json({
-          errors: error.messages
-        });
+        return res.status(400).json({ errors: error.messages });
       }
-
-      const isDevelopment = process.env.NODE_ENV === 'development';
+      const isDevelopment = process.env.NODE_ENV === "development";
       return res.status(500).json({
         error: "Failed to send invitations",
-        ...(isDevelopment && { details: error.message })
+        ...(isDevelopment && { details: error.message }),
       });
     }
   }
 
-  // POST /api/reviewers/add - Add a reviewer manually (domain_ids removed from payload)
-  static async addReviewer(req, res) {
-    try {
-      const validator = vine.compile(addReviewerSchema);
-      const payload = await validator.validate(req.body);
 
-      // Check if teacher exists and is verified
-      const teacher = await prisma.teacher.findUnique({
-        where: { teacher_id: payload.teacher_id },
-        include: {
-          user: {
-            select: {
-              user_id: true,
-              name: true,
-              email: true,
-              isVerified: true,
-              role: true
-            }
-          }
-        }
-      });
+  // // POST /api/reviewers/add - Add a reviewer manually (domain_ids removed from payload)
+  // static async addReviewer(req, res) {
+  //   try {
+  //     const validator = vine.compile(addReviewerSchema);
+  //     const payload = await validator.validate(req.body);
 
-      if (!teacher) {
-        return res.status(404).json({
-          error: "Teacher not found"
-        });
-      }
+  //     // Check if teacher exists and is verified
+  //     const teacher = await prisma.teacher.findUnique({
+  //       where: { teacher_id: payload.teacher_id },
+  //       include: {
+  //         user: {
+  //           select: {
+  //             user_id: true,
+  //             name: true,
+  //             email: true,
+  //             isVerified: true,
+  //             role: true
+  //           }
+  //         }
+  //       }
+  //     });
 
-      if (!teacher.user?.isVerified) {
-        return res.status(400).json({
-          error: "Teacher's email is not verified"
-        });
-      }
+  //     if (!teacher) {
+  //       return res.status(404).json({
+  //         error: "Teacher not found"
+  //       });
+  //     }
 
-      if (teacher.user?.role !== 'TEACHER') {
-        return res.status(400).json({
-          error: "User must have TEACHER role"
-        });
-      }
+  //     if (!teacher.user?.isVerified) {
+  //       return res.status(400).json({
+  //         error: "Teacher's email is not verified"
+  //       });
+  //     }
 
-      // Check if already a reviewer (idempotent approach)
-      const existingReviewer = await prisma.reviewer.findUnique({
-        where: { teacher_id: payload.teacher_id }
-      });
+  //     if (teacher.user?.role !== 'TEACHER') {
+  //       return res.status(400).json({
+  //         error: "User must have TEACHER role"
+  //       });
+  //     }
 
-      if (existingReviewer) {
-        return res.json({
-          message: "Teacher is already a reviewer",
-          reviewer_id: existingReviewer.reviewer_id
-        });
-      }
+  //     // Check if already a reviewer (idempotent approach)
+  //     const existingReviewer = await prisma.reviewer.findUnique({
+  //       where: { teacher_id: payload.teacher_id }
+  //     });
 
-      // Use transaction to add reviewer and update teacher status
-      const result = await prisma.$transaction(async (tx) => {
-        // Update teacher to mark as reviewer
-        await tx.teacher.update({
-          where: { teacher_id: payload.teacher_id },
-          data: { isReviewer: true }
-        });
+  //     if (existingReviewer) {
+  //       return res.json({
+  //         message: "Teacher is already a reviewer",
+  //         reviewer_id: existingReviewer.reviewer_id
+  //       });
+  //     }
 
-        // Create reviewer record
-        const newReviewer = await tx.reviewer.create({
-          data: {
-            reviewer_id: payload.teacher_id,
-            teacher_id: payload.teacher_id,
-            status: 'ACTIVE'
-          }
-        });
+  //     // Use transaction to add reviewer and update teacher status
+  //     const result = await prisma.$transaction(async (tx) => {
+  //       // Update teacher to mark as reviewer
+  //       await tx.teacher.update({
+  //         where: { teacher_id: payload.teacher_id },
+  //         data: { isReviewer: true }
+  //       });
 
-        return newReviewer;
-      });
+  //       // Create reviewer record
+  //       const newReviewer = await tx.reviewer.create({
+  //         data: {
+  //           teacher_id: payload.teacher_id,
+  //           status: 'ACTIVE'
+  //         }
+  //       });
 
-      // Send welcome email if email is available
-      if (teacher.user?.email) {
-        const welcomeEmail = {
-          toEmail: teacher.user.email,
-          subject: "Welcome to the Review Committee",
-          body: `
-            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-              <h2 style="color: #16a34a;">Welcome to the Review Committee!</h2>
+  //       return newReviewer;
+  //     });
+
+  //     // Send welcome email if email is available
+  //     if (teacher.user?.email) {
+  //       const welcomeEmail = {
+  //         toEmail: teacher.user.email,
+  //         subject: "Welcome to the Review Committee",
+  //         body: `
+  //           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+  //             <h2 style="color: #16a34a;">Welcome to the Review Committee!</h2>
               
-              <p>Dear ${teacher.user.name || 'Professor'},</p>
+  //             <p>Dear ${teacher.user.name || 'Professor'},</p>
               
-              <p>Congratulations! You have been successfully added to our review committee.</p>
+  //             <p>Congratulations! You have been successfully added to our review committee.</p>
               
-              <p>You can now:</p>
-              <ul>
-                <li>Review assigned papers and proposals</li>
-                <li>Access the reviewer dashboard</li>
-                <li>Manage your review preferences</li>
-              </ul>
+  //             <p>You can now:</p>
+  //             <ul>
+  //               <li>Review assigned papers and proposals</li>
+  //               <li>Access the reviewer dashboard</li>
+  //               <li>Manage your review preferences</li>
+  //             </ul>
               
-              <div style="margin: 30px 0;">
-                <a href="${process.env.UI_URL || 'http://localhost:5173'}/login" 
-                   style="background-color: #16a34a; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; display: inline-block;">
-                  Access Reviewer Dashboard
-                </a>
-              </div>
+  //             <div style="margin: 30px 0;">
+  //               <a href="${process.env.UI_URL || 'http://localhost:5173'}/login" 
+  //                  style="background-color: #16a34a; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; display: inline-block;">
+  //                 Access Reviewer Dashboard
+  //               </a>
+  //             </div>
               
-              <p>Thank you for joining our review committee!</p>
+  //             <p>Thank you for joining our review committee!</p>
               
-              <p>Best regards,<br>The Review Committee Team</p>
-            </div>
-          `
-        };
+  //             <p>Best regards,<br>The Review Committee Team</p>
+  //           </div>
+  //         `
+  //       };
 
-        try {
-          await emailQueue.add(emailQueueName, [welcomeEmail]);
-        } catch (emailError) {
-          logger.error("Error sending welcome email:", emailError);
-        }
-      }
+  //       try {
+  //         await emailQueue.add(emailQueueName, [welcomeEmail]);
+  //       } catch (emailError) {
+  //         logger.error("Error sending welcome email:", emailError);
+  //       }
+  //     }
 
-      logger.info(`New reviewer added: ${teacher.user?.name} (ID: ${result.reviewer_id})`);
+  //     logger.info(`New reviewer added: ${teacher.user?.name} (ID: ${result.reviewer_id})`);
 
-      return res.status(201).json({
-        message: "Reviewer added successfully",
-        reviewer_id: result.reviewer_id
-      });
+  //     return res.status(201).json({
+  //       message: "Reviewer added successfully",
+  //       reviewer_id: result.reviewer_id
+  //     });
 
-    } catch (error) {
-      console.error("Error adding reviewer:", error);
-      logger.error("Add reviewer error:", error);
+  //   } catch (error) {
+  //     console.error("Error adding reviewer:", error);
+  //     logger.error("Add reviewer error:", error);
 
-      if (error instanceof errors.E_VALIDATION_ERROR) {
-        return res.status(400).json({
-          errors: error.messages
-        });
-      }
+  //     if (error instanceof errors.E_VALIDATION_ERROR) {
+  //       return res.status(400).json({
+  //         errors: error.messages
+  //       });
+  //     }
 
-      const isDevelopment = process.env.NODE_ENV === 'development';
-      return res.status(500).json({
-        error: "Failed to add reviewer",
-        ...(isDevelopment && { details: error.message })
-      });
-    }
-  }
+  //     const isDevelopment = process.env.NODE_ENV === 'development';
+  //     return res.status(500).json({
+  //       error: "Failed to add reviewer",
+  //       ...(isDevelopment && { details: error.message })
+  //     });
+  //   }
+  // }
 
   // PUT /api/reviewers/:id - Update reviewer status
   static async update(req, res) {
     try {
       const reviewerId = parseInt(req.params.id);
-      
+
       if (isNaN(reviewerId)) {
         return res.status(400).json({
           error: "Invalid reviewer ID"
@@ -635,7 +568,7 @@ class ReviewerController {
   static async removeReviewer(req, res) {
     try {
       const reviewerId = parseInt(req.params.id);
-      
+
       if (isNaN(reviewerId)) {
         return res.status(400).json({
           error: "Invalid reviewer ID"
@@ -732,7 +665,7 @@ class ReviewerController {
     } catch (error) {
       console.error("Error removing reviewer:", error);
       logger.error("Remove reviewer error:", error);
-      
+
       const isDevelopment = process.env.NODE_ENV === 'development';
       return res.status(500).json({
         error: "Failed to remove reviewer",
@@ -745,7 +678,7 @@ class ReviewerController {
   static async getWorkloadDetails(req, res) {
     try {
       const reviewerId = parseInt(req.params.id);
-      
+
       if (isNaN(reviewerId)) {
         return res.status(400).json({
           error: "Invalid reviewer ID"
@@ -837,7 +770,7 @@ class ReviewerController {
     } catch (error) {
       console.error("Error fetching workload details:", error);
       logger.error("Workload details error:", error);
-      
+
       const isDevelopment = process.env.NODE_ENV === 'development';
       return res.status(500).json({
         error: "Failed to fetch workload details",

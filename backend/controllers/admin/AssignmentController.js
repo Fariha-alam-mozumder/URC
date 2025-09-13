@@ -136,7 +136,7 @@ class AssignmentController {
           }));
 
     return {
-          id: `P${String(proposal.proposal_id).padStart(3, "0")}`,
+          id: `PR${String(proposal.proposal_id).padStart(3, "0")}`,
           actual_id: proposal.proposal_id,
           type: "proposal",
           title: proposal.title || "Untitled proposal",

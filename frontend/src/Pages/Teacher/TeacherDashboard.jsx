@@ -1,8 +1,7 @@
 import React from 'react';
 import { FaClipboard, FaCheckCircle, FaClock, FaExclamationTriangle } from 'react-icons/fa';
 import StatCard from '../../components/Common/statcard';
-// import RecentSubmission from '../../components/Teacher/RecentSubmission';
-import TeamActivity from '../../components/Teacher/TeamActivity';
+import TeamActivity from '../../components/Common/TeamActivity';
 import RecentSubmission from '../../components/Common/RecentSubmission';
 const TeacherDashboard = () => {
   return (
@@ -41,7 +40,7 @@ const TeacherDashboard = () => {
 
       {/* Bottom sections */}
       <div className="flex flex-col lg:flex-row gap-4">
-        <RecentSubmission />
+        <RecentSubmission scope="teacher"/>
         <TeamActivity />
       </div>
     </div>

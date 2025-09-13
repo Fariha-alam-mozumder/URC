@@ -101,19 +101,26 @@ class StudentTeamController {
                     team: {
                         select: {
                             team_id: true,
-                            team_name: true
+                            team_name: true,
+                            domain: {
+                                select: {
+                                    domain_name: true
+
+                                }
+                            }
                         }
                     },
-                    domain: true,
                     teacher: {
-                        select: { teacher_id: true, 
-                                  user: { select: { name: true, email: true } } }
+                        select: {
+                            teacher_id: true,
+                            user: { select: { name: true, email: true } }
+                        }
                     }
                 },
                 orderBy: { created_at: "desc" }
             });
-            
-                // FIXED: Construct proper URLs for frontend
+
+            // FIXED: Construct proper URLs for frontend
             const papersWithUrls = papers.map(paper => {
                 let fileUrl = null;
                 if (paper.pdf_path) {
@@ -135,6 +142,88 @@ class StudentTeamController {
         }
     }
 
+    static async getAllTeamProposals(req, res) {
+        try {
+            const userId = Number(req.user?.user_id ?? req.user?.id);
+            if (!userId) return res.status(400).json({ message: "Missing user id" });
+
+            const teacher = await db.teacher.findFirst({
+                where: { user_id: userId },
+                select: { teacher_id: true },
+            });
+
+            const orClause = [
+                { team: { teammember: { some: { user_id: userId } } } },
+                { team: { created_by_user_id: userId } },
+            ];
+            if (teacher) {
+                orClause.push({ submitted_by: teacher.teacher_id });
+            }
+
+            const proposals = await db.proposal.findMany({
+                where: { OR: orClause },
+                include: {
+                    team: {
+                        select: {
+                            team_id: true,
+                            team_name: true,
+                            domain: {
+                                select: {
+                                    domain_name: true
+
+                                }
+                            }
+                        }
+                    },
+                    teacher: {
+                        select: {
+                            teacher_id: true,
+                            user: { select: { name: true, email: true } },
+                        },
+                    },
+                },
+                orderBy: { created_at: "desc" },
+            });
+
+            const base = process.env.APP_URL || "http://localhost:8000";
+            const proposalsWithUrls = proposals.map((p) => ({
+                ...p,
+                download_url: p.pdf_path ? `${base}/${p.pdf_path}` : null,
+            }));
+
+            return res.status(200).json({ data: proposalsWithUrls });
+        } catch (error) {
+            console.error("Error fetching team proposals:", error);
+            return res
+                .status(500)
+                .json({ message: "Server error", error: error.message });
+        }
+    }
+
+    // GET /api/student/my-teams/comments
+    static async getAllTeamComments(req, res) {
+        try {
+            const userId = Number(req.user?.user_id ?? req.user?.id);
+            if (!userId) return res.status(400).json({ message: "Missing user id" });
+
+            const comments = await db.teamcomment.findMany({
+                where: {
+                    team: { teammember: { some: { user_id: userId } } },
+                },
+                include: {
+                    user: { select: { user_id: true, name: true, email: true } },
+                    team: { select: { team_id: true, team_name: true } },
+                },
+                orderBy: { created_at: "desc" },
+                take: 20,
+            });
+
+            return res.status(200).json({ data: comments });
+        } catch (error) {
+            console.error("Error fetching team comments:", error);
+            return res.status(500).json({ message: "Server error", error: error.message });
+        }
+    }
 }
 
 export default StudentTeamController;

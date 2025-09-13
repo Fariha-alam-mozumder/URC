@@ -83,7 +83,6 @@ const TeacherLayout = () => {
         >
         <FaHome /> Home
         </Link>
-        
         <Link
           to="/teacher/dashboard"
           onClick={() => setSidebarOpen(false)}
@@ -97,6 +96,13 @@ const TeacherLayout = () => {
           className="flex items-center gap-3 px-4 py-2 hover:bg-gray-100 rounded-md text-gray-700"
         >
           <FaFileAlt /> My Papers
+        </Link>
+        <Link
+          to="/teacher/myproposals"
+          onClick={() => setSidebarOpen(false)}
+          className="flex items-center gap-3 px-4 py-2 hover:bg-gray-100 rounded-md text-gray-700"
+        >
+          <FaFileAlt /> My Proposals
         </Link>
         <Link
           to="/teacher/team"

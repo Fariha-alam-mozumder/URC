@@ -176,14 +176,14 @@ class TeamController {
 
       const file =
         req.files?.proposal || req.files?.file || req.files?.proposalFile;
-      
+
       if (file) {
         // Verify user is a teacher before creating proposal
         const teacher = await db.teacher.findFirst({
           where: { user_id: Number(req.user.id) },
           select: { teacher_id: true },
         });
-        
+
         if (!teacher) {
           return res
             .status(400)
@@ -207,22 +207,27 @@ class TeamController {
           data: {
             title: payload.proposal_title || `${team.team_name} - Proposal`,
             abstract: payload.proposal_abstract,
-            team_id: team.team_id,
             pdf_path,
-            submitted_by: teacher.teacher_id,
-            domain_id: payload.domain_id, // REMOVED: This field doesn't exist in proposal model
             file_size: file.size,
             status: "PENDING", // PaperStatus enum
+            // Relations
+            team: {
+              connect: { team_id: team.team_id }, // connect to existing team
+            },
+            teacher: {
+              connect: { teacher_id: teacher.teacher_id }, // connect to existing teacher
+            },
             // created_at is auto-generated
           },
         });
+
       }
 
       // Invalidate caches
       try {
         const creatorId = Number(req.user.id);
         await redis.del(userTeamsKey(creatorId));
-        
+
         // Also invalidate each added member's "my teams"
         if (Array.isArray(payload.members)) {
           for (const m of payload.members) {
@@ -242,9 +247,9 @@ class TeamController {
     } catch (err) {
       if (err instanceof errors.E_VALIDATION_ERROR)
         return res.status(422).json({ errors: err.messages });
-      
+
       console.error("Team creation error:", err);
-      
+
       // More specific error handling
       if (err.code === 'P2002') {
         return res.status(400).json({ error: "Duplicate entry - team name or constraint violation" });
@@ -255,7 +260,7 @@ class TeamController {
       if (err.code === 'P2025') {
         return res.status(400).json({ error: "Record not found" });
       }
-      
+
       return res.status(500).json({ error: "Internal Server Error" });
     }
   }
@@ -383,9 +388,9 @@ class TeamController {
       const domainIdsParam = req.query.domainIds;
       const domainIds = domainIdsParam
         ? String(domainIdsParam)
-            .split(",")
-            .map((s) => Number(s.trim()))
-            .filter((n) => !Number.isNaN(n))
+          .split(",")
+          .map((s) => Number(s.trim()))
+          .filter((n) => !Number.isNaN(n))
         : [];
 
       if (Number.isNaN(departmentId))

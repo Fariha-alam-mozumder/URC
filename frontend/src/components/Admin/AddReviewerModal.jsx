@@ -2,51 +2,47 @@ import React, { useMemo, useState } from "react";
 import { X } from "lucide-react";
 import CommonButton from "../Common/CommonButton";
 
+/**
+ * This modal is used in two contexts:
+ * 1) Inviting teachers to become reviewers (items look like { id: teacher_id, domains: [{id,name}], ... })
+ * 2) Assigning active reviewers (items look like { id: reviewer_id, expertise: ["AI","ML"], ... })
+ *
+ * It now reads tags from EITHER `domains[].name` OR `expertise[]`.
+ */
 const AddReviewerModal = ({
   show,
   onClose,
   potentialReviewers = [],
-  onSendInvitation,
-  onAddReviewer,
-  buttonLabel = "Send Invitation",
-  title = "Add Reviewer",
+  onSubmit, // single callback
+  buttonLabel = "Confirm",
+  title = "Select Reviewers",
 }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedIds, setSelectedIds] = useState([]);
 
-  // Fixed helper to extract domain names based on actual API response
-  const getDomainNames = (reviewer) => {
-    // The API returns domains in this format: domains: [{ id: 1, name: "AI" }]
+  const getTagNames = (reviewer) => {
+    // domains: [{id, name}] (invite flow)
     if (Array.isArray(reviewer?.domains) && reviewer.domains.length > 0) {
-      return reviewer.domains.map((domain) => domain.name).filter(Boolean);
+      return reviewer.domains.map((d) => d?.name).filter(Boolean);
+    }
+    // expertise: ["AI", "ML"] (assignment flow)
+    if (Array.isArray(reviewer?.expertise) && reviewer.expertise.length > 0) {
+      return reviewer.expertise.filter(Boolean);
     }
     return [];
   };
 
-  const getDomainIds = (reviewer) => {
-    if (Array.isArray(reviewer?.domains) && reviewer.domains.length > 0) {
-      return reviewer.domains
-        .map((domain) => domain.id)
-        .filter((id) => typeof id === "number");
-    }
-    return [];
-  };
-
-  // Fixed search filtering
   const term = searchTerm.trim().toLowerCase();
   const filteredReviewers = useMemo(() => {
-    return potentialReviewers.filter((reviewer) => {
-      const inName = (reviewer?.name || "").toLowerCase().includes(term);
-      const inEmail = (reviewer?.email || "").toLowerCase().includes(term);
-      const inDept = (reviewer?.department || "").toLowerCase().includes(term);
-      const inDomains = getDomainNames(reviewer).some((domainName) =>
-        (domainName || "").toLowerCase().includes(term)
-      );
-      return inName || inEmail || inDept || inDomains;
+    return potentialReviewers.filter((r) => {
+      const inName = (r?.name || "").toLowerCase().includes(term);
+      const inEmail = (r?.email || "").toLowerCase().includes(term);
+      const inDept = (r?.department || "").toLowerCase().includes(term);
+      const inTags = getTagNames(r).some((t) => (t || "").toLowerCase().includes(term));
+      return inName || inEmail || inDept || inTags;
     });
   }, [potentialReviewers, term]);
 
-  // Only render if modal should be shown
   if (!show) return null;
 
   const toggleSelect = (id) =>
@@ -54,12 +50,16 @@ const AddReviewerModal = ({
       prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
     );
 
-  const handleAdd = async () => {
+  const handlePrimary = async () => {
     if (selectedIds.length === 0) {
-      alert("Please select at least one reviewer.");
+      alert("Please select at least one person.");
       return;
     }
-    await Promise.all(selectedIds.map((id) => onAddReviewer(id)));
+    if (onSubmit) {
+      await onSubmit(selectedIds);
+    } else {
+      console.warn("No onSubmit handler provided to AddReviewerModal");
+    }
     setSelectedIds([]);
     setSearchTerm("");
   };
@@ -88,18 +88,17 @@ const AddReviewerModal = ({
         {/* Search */}
         <input
           type="text"
-          placeholder="Search reviewers..."
+          placeholder="Search by name, email, department, expertise..."
           className="mb-4 w-full px-3 py-2 border rounded focus:outline-none focus:ring focus:ring-blue-300"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
 
-        {/* Scrollable reviewers list */}
+        {/* List */}
         <div className="overflow-auto flex-1 mb-16">
           {filteredReviewers.length > 0 ? (
-            filteredReviewers.map((reviewer) => {
-              const domainNames = getDomainNames(reviewer);
-
+            filteredReviewers.map((r) => {
+              const tags = getTagNames(r);
               return (
                 <label
                   key={reviewer.id}
@@ -120,17 +119,20 @@ const AddReviewerModal = ({
                       {reviewer.department}
                     </div>
 
-                    {/* Display domains */}
-                    {domainNames.length > 0 && (
+                    {tags.length > 0 ? (
                       <div className="flex flex-wrap gap-1 mt-2">
-                        {domainNames.map((domainName, idx) => (
+                        {tags.map((t, idx) => (
                           <span
                             key={idx}
                             className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
                           >
-                            {domainName}
+                            {t}
                           </span>
                         ))}
+                      </div>
+                    ) : (
+                      <div className="text-xs text-gray-400 mt-1">
+                        No expertise/domains specified
                       </div>
                     )}
 
@@ -147,7 +149,7 @@ const AddReviewerModal = ({
           ) : (
             <div className="text-gray-500 text-center py-8">
               {potentialReviewers.length === 0
-                ? "No potential reviewers available."
+                ? "No reviewers available."
                 : "No reviewers found matching your search."}
             </div>
           )}
@@ -157,7 +159,7 @@ const AddReviewerModal = ({
         <div className="absolute bottom-6 left-6 right-6">
           <CommonButton
             label={`${buttonLabel} (${selectedIds.length} selected)`}
-            onClick={handleAdd}
+            onClick={handlePrimary}
             disabled={selectedIds.length === 0}
             className={`w-full flex items-center justify-center gap-1 text-sm px-3 py-2 rounded ${
               selectedIds.length === 0

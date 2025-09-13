@@ -21,13 +21,12 @@ export const fileValidator = (maxSize, mimeType) => {
   }
 }
 
-// FIXED: Upload PDF file to the correct directory that will be served by Express
+// Upload PDF file to the correct directory that will be served by Express
 export const uploadFile = async (file, isFile = true, type = 'pdf') => {
   const ext = path.extname(file.name || '')
   const filename = `${uuidv4()}${ext}`
   
-  // CHANGED: Upload PDFs to public/documents instead of public/files
-  // This way they can be accessed via /documents/ URL
+  // Upload PDFs to public/documents instead of public/files
   const uploadDir = type === 'pdf' ? 'public/documents' : 'public/images'
 
   // Ensure directory exists
@@ -41,14 +40,13 @@ export const uploadFile = async (file, isFile = true, type = 'pdf') => {
     await fs.promises.writeFile(uploadPath, file.data)
   }
 
-  // IMPORTANT: Return path that will work with static file serving
-  // Since Express serves public/ as static, we return the path relative to public/
+  // Return path that will work with static file serving
   return type === 'pdf' ? `documents/${filename}` : `images/${filename}`
 }
 
 export const imageValidator = (size, mime) => {
-  if (byteToMb(size) > 2) {
-    return "Image size must be less than 2MB";
+  if (byteToMb(size) > 3) { // Fixed: Changed from 2MB to 3MB as per your requirement
+    return "Image size must be less than 3MB";
   } else if (!supportedMimes.includes(mime)) {
     return "IMAGE must be type of png, jpg, gif, jpeg, webp, svg...";
   }
@@ -90,11 +88,29 @@ const BASE = process.env.APP_URL || 'http://localhost:8000';
 
 };
 
-export const getImageUrl = (imgName) => {
-  if (!imgName) {
+// Fixed: Updated getImageUrl to handle different image path formats
+export const getImageUrl = (imgPath) => {
+  if (!imgPath) {
     return `${process.env.APP_URL}/images/default.png`;
   }
-  return `${process.env.APP_URL}/images/${imgName}`;
+  
+  // If it's already a full path starting with images/, use it as-is
+  if (imgPath.startsWith('images/')) {
+    return `${process.env.APP_URL}/${imgPath}`;
+  }
+  
+  // If it's just a filename, add the images/ prefix
+  if (!imgPath.includes('/')) {
+    return `${process.env.APP_URL}/images/${imgPath}`;
+  }
+  
+  // If it starts with /images/, remove the leading slash
+  if (imgPath.startsWith('/images/')) {
+    return `${process.env.APP_URL}${imgPath}`;
+  }
+  
+  // Default case - assume it's a relative path from public/
+  return `${process.env.APP_URL}/${imgPath}`;
 };
 
 // Remove document file
@@ -108,17 +124,37 @@ export const removeDocument = (docPath) => {
   }
 };
 
-export const removeImage = (imageName) => {
-  const path = process.cwd() + "/public/images/" + imageName;
+// Fixed: Updated removeImage to handle different path formats
+export const removeImage = (imagePath) => {
+  if (!imagePath) return;
+  
+  let fullPath;
+  
+  // If it's a full path starting with images/, use it as-is
+  if (imagePath.startsWith('images/')) {
+    fullPath = path.join(process.cwd(), "public", imagePath);
+  }
+  // If it's just a filename, assume it's in the images directory
+  else if (!imagePath.includes('/')) {
+    fullPath = path.join(process.cwd(), "public", "images", imagePath);
+  }
+  // If it starts with /images/, remove the leading slash
+  else if (imagePath.startsWith('/images/')) {
+    fullPath = path.join(process.cwd(), "public", imagePath.substring(1));
+  }
+  // Default case - assume it's a relative path from public/
+  else {
+    fullPath = path.join(process.cwd(), "public", imagePath);
+  }
 
-  if (fs.existsSync(path)) {
-    fs.unlinkSync(path);
+  if (fs.existsSync(fullPath)) {
+    fs.unlinkSync(fullPath);
   }
 };
 
 export const uploadImage = (image) => {
   const imgExt = image?.name.split(".");
-  const imageName = generateRandomNum() + "." + imgExt[1];
+  const imageName = generateRandomNum() + "." + imgExt[imgExt.length - 1]; // Fixed: Use imgExt.length - 1 for last element
   const uploadPath = process.cwd() + "/public/images/" + imageName;
 
   image.mv(uploadPath, (err) => {

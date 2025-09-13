@@ -6,7 +6,6 @@ export const paperValidator = vine.compile(
     title: vine.string().trim().minLength(5).maxLength(200),
     abstract: vine.string().trim().maxLength(1000).optional(),
     team_id: vine.number().positive(),
-    domain_id: vine.number().positive().optional(),
     status: vine.enum(["PENDING","ACCEPTED","REJECTED","UNDER_REVIEW"]).optional(),
   })
 )

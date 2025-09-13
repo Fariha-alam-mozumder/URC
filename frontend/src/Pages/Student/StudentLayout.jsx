@@ -69,6 +69,14 @@ const StudentLayout = () => {
           <FaFileAlt /> My Papers
         </Link>
         <Link
+          to="/student/myproposals"
+          onClick={() => setSidebarOpen(false)}
+          className="flex items-center gap-3 px-4 py-2 hover:bg-gray-100 rounded-md text-gray-700"
+        >
+          <FaFileAlt /> My Proposals
+        </Link>
+        
+        <Link
           to="/student/team"
           onClick={() => setSidebarOpen(false)}
           className="flex items-center gap-3 px-4 py-2 hover:bg-gray-100 rounded-md text-gray-700"

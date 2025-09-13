@@ -1,148 +1,136 @@
--- Data Insert Script - PostgreSQL Database
--- Clean data inserts without schema creation or migrations
+-- =========================================
+-- 1) Core Users
+-- =========================================
+INSERT INTO public."user" (user_id, name, email, password, role, "isVerified", "isMainAdmin", "verifyToken", created_at, profile_image) VALUES
+(1,'Umme Maimuna Tishma','fahmida.csecu@gmail.com','$2b$10$9YTDap34YNQJY1rB4TUmpu6yqk4E5St4Vr1sV4eVDcHc1OnhznE4u','GENERALUSER',TRUE,FALSE,NULL,'2025-09-12 15:07:33.946',NULL),
+(2,'Dr. Humayratul Ekra','ekrahumayratul@gmail.com','$2b$10$xzgs1.Vvrd15CVbfYs8zR.jsNQ.dn6Q29hacRYpiIcwaryICAeora','TEACHER',TRUE,FALSE,NULL,'2025-09-12 15:54:42.719','images/4dfe974e-e8bb-45de-bee0-083bdb1f8ecc.png'),
+(3,'Dr. Fahmida Rahman','fahmidarahman027@gmail.com','$2b$10$9H0lC3KMmJVoLx7z0biK2ubugW6Vc.XEsvXd6uyMf3oiWUybPMpaO','TEACHER',TRUE,FALSE,NULL,'2025-09-12 16:38:03.631',NULL),
+(4,'Toasean Elmah Tasean','tushu.016@gmail.com','$2b$10$bW3njuBZzvgDXOaFY9BzrOhV.5ihuOQqdiDBmX.kcZ7wpcAWfEYey','STUDENT',TRUE,FALSE,NULL,'2025-09-12 16:40:43.135',NULL),
+(5,'Fariha Alam Mazumder','toaseanelmah@gmail.com','$2b$10$eGvBicy3f1wgjXdsuK0vm.h9knvnS..bB.imQz2Tqq1.YAWumcmVS','STUDENT',TRUE,FALSE,NULL,'2025-09-12 16:44:07.207',NULL),
+(6,'Mohammad Rokan Uddin Faruqi','urcms.cu@gmail.com','$2b$10$VWs26xz8xfLErPm.LqSbjeAJV.II8PNzVX43K7NFuok8dZD.mEv8K','TEACHER',TRUE,FALSE,NULL,'2025-09-12 16:47:42.77',NULL),
+(7,'Umme Fahmida','tushu.rs7@gmail.com','$2b$10$tTHAfPaXro/76v0KUtyXe.I51P0COXjsMhczr6vSQLHWrQ5qfjEi.','STUDENT',TRUE,FALSE,NULL,'2025-09-12 16:49:35.065',NULL),
+(8,'Dipannita Das','fatimashome258@gmail.com','$2b$10$sPHnZJ7Z7rgFPphOgAzP2.m5ltYA8dtV49EtOf9eMyHqyRnznJ71G','TEACHER',TRUE,FALSE,NULL,'2025-09-12 16:56:48.907',NULL),
+(9,'Dr. Elmah','toaseanafnan0208@gmail.com','$2b$10$t8oqkTPhg3TGNXDI3UqTJe1nzSW/sCCUQbmhFWm2uciRF/bueNvIC','TEACHER',TRUE,FALSE,NULL,'2025-09-12 17:00:48.458',NULL),
+(10,'Mst. Erina Akter','fatima.tushu@gmail.com','$2b$10$HwhGa46K2rjOozPFosQYDeioz5kkghSdWhA8LgtrA8DLhmEwef7y','STUDENT',TRUE,FALSE,NULL,'2025-09-12 17:07:09.828',NULL),
+(11,'Main Admin','admin@example.com','$2b$10$WNB0/49wxFvdf2tU7PSJMezjNk4PJgPXAlj8fYnlOjGvz0/MsLZdq','ADMIN',TRUE,TRUE,NULL,'2025-09-12 17:12:56.277','images/75eb4e61-4412-490d-9f84-cb89b06eea6d.png');
 
--- Insert Admin data
-INSERT INTO admin (admin_id, user_id) VALUES
-(1, 1);
+-- Update user_id sequence
+SELECT pg_catalog.setval('public.user_user_id_seq', 11, TRUE);
 
--- Insert Department data
-INSERT INTO department (department_id, department_name) VALUES
-(1, 'CSE'),
-(2, 'EEE');
+-- =========================================
+-- 2) Departments
+-- =========================================
+INSERT INTO public.department (department_id, department_name) VALUES
+(1,'CSE'),
+(2,'EEE');
+SELECT pg_catalog.setval('public.department_department_id_seq', 2, TRUE);
 
--- Insert Domain data
-INSERT INTO domain (domain_id, domain_name) VALUES
-(1, 'Artificial Intelligence'),
-(2, 'Machine Learning'),
-(3, 'Computer Vision'),
-(4, 'Data Science'),
-(5, 'Robotics'),
-(6, 'Embedded Systems'),
-(7, 'Power Electronics'),
-(8, 'Software Engineering'),
-(9, 'Cybersecurity'),
-(10, 'Internet of Things'),
-(11, 'Signal Processing'),
-(12, 'Natural Language Processing'),
-(13, 'Cloud Computing'),
-(14, 'Big Data Analytics'),
-(15, 'Human-Computer Interaction'),
-(16, 'Algorithms and Complexity'),
-(17, 'Control Systems'),
-(18, 'Renewable Energy Systems'),
-(19, 'VLSI Design'),
-(20, 'Electrical Machines'),
-(21, 'High Voltage Engineering');
+-- =========================================
+-- 3) Domains
+-- =========================================
+INSERT INTO public.domain (domain_id, domain_name) VALUES
+(1,'Artificial Intelligence'),
+(2,'Machine Learning'),
+(3,'Computer Vision'),
+(4,'Data Science'),
+(5,'Robotics'),
+(6,'Embedded Systems'),
+(7,'Power Electronics'),
+(8,'Control Systems'),
+(9,'Renewable Energy Systems'),
+(10,'Signal Processing'),
+(11,'Microelectronics'),
+(12,'VLSI Design'),
+(13,'Software Engineering'),
+(14,'Cybersecurity'),
+(15,'Computer Networks'),
+(16,'Databases and Information Systems'),
+(17,'Human-Computer Interaction'),
+(18,'Operating Systems'),
+(19,'Distributed Systems');
+SELECT pg_catalog.setval('public.domain_domain_id_seq', 19, TRUE);
 
--- Insert Department-Domain relationships
-INSERT INTO departmentdomain (department_id, domain_id) VALUES
-(1, 1), (1, 2), (1, 4), (1, 8), (1, 3), (1, 9), (1, 10), (1, 12), (1, 13), (1, 14), (1, 15), (1, 16), (1, 5),
-(2, 1), (2, 3), (2, 5), (2, 6), (2, 7), (2, 2), (2, 10), (2, 11), (2, 17), (2, 18), (2, 19), (2, 20), (2, 21);
+-- =========================================
+-- 4) User ↔ Domain interests (skip sequence)
+-- =========================================
+INSERT INTO public.userdomain (user_id, domain_id) VALUES
+(2,1),(2,4),(2,17),(2,2),(2,13),
+(3,1),(3,3),(3,5),(3,6),(3,7),
+(4,1),(4,2),(4,4),(4,13),
+(5,1),(5,2),(5,4),(5,13),
+(6,1),(6,2),(6,4),(6,13),
+(7,1),(7,3),(7,5),(7,6),(7,7),
+(8,1),(8,3),(8,5),(8,6),(8,7),
+(9,1),(9,2),(9,4),(9,13),
+(10,1),(10,3),(10,5),(10,6),(10,7);
 
--- Insert General User data
-INSERT INTO generaluser (generaluser_id, user_id) VALUES
-(1, 4);
+-- =========================================
+-- 5) Department ↔ Domain mapping
+-- =========================================
+INSERT INTO public.departmentdomain (department_id, domain_id) VALUES
+(1,1),(1,2),(1,4),(1,13),(1,14),(1,15),(1,16),(1,17),(1,18),(1,19),
+(2,1),(2,3),(2,5),(2,6),(2,7),(2,8),(2,9),(2,10),(2,11);
 
--- Insert User data
-INSERT INTO "user" (user_id, name, email, password, role, "isVerified", "isMainAdmin", "verifyToken", created_at) VALUES
-(1, 'Main Admin', 'admin@example.com', '$2b$10$dqkI0SscRw7NWSD62.ABI.BAIgWK6qkWqQZfrNPyE1M3esb/KXOo6', 'ADMIN', true, true, NULL, '2025-08-09 20:09:08.127'),
-(2, 'Dr. Fahmida Khanam', 'fahmida.csecu@gmail.com', '$2b$10$hPBNmWCyVTl5DGa2LBiOueddUWzx8LnLFNmy4Ja8BcLOUo/C8p0na', 'TEACHER', true, false, '7a151075c08bc5c95860828446d081d4c08542d6eb2f6481b90883577e877f31', '2025-08-09 20:11:12.867'),
-(3, 'Toasean Elmah', 'toasean.csecu@gmail.com', '$2b$10$WvJyWoVRsMMpOyCohYpm6evRMMIO1LmPgEMtohA0gxVpKSfSg9bYa', 'STUDENT', true, false, 'ccbb94a0e53838f262a235977fab85b99c35609b093a1ced41e9661f57c7545b', '2025-08-09 20:17:03.368'),
-(4, 'Fariha Rabbi', 'tushu.rs7@gmail.com', '$2b$10$/WbCV1nK37KWjvh1BUUxtulTFxbwY7DoXKhQae5mAyjS1sELNlJJO', 'GENERALUSER', true, false, '1bf39fb3fdb2419045c4e66aba1641ca05c12bb74dfc1f2c69b017de03eb36a2', '2025-08-09 20:26:45.135'),
-(5, 'Dr. Toasean Elmah Tasean', 'tushu.016@gmail.com', '$2b$10$6yQfvcM7/GA/cQ9uyo5c7ulFwDuHVaSa/Gr8auZCvoqRF3gs6PpJ2', 'REVIEWER', true, false, 'bd73398b3c022be3ed6290b175be1571b7f5f7cd50ad1af3e799b5bbdb6aa8f8', '2025-08-09 20:34:12.421'),
-(6, 'Dr. Humayratul Ekra', 'ekrahumayratul@gmail.com', '$2b$10$vhWK0sww/y1E2Q7aT7NSSOc/XGMAniODelBsNpgGRYN2At.diC0mS', 'REVIEWER', true, false, 'f0fbf43b60d5fc8e96c8313b9ce337194f3bfe37681b06cb06906029e037dd33', '2025-08-09 20:36:58.746'),
-(7, 'Rokan Uddin', 'fahmidafahmi115@gmail.com', '$2b$10$1WOT7TCSEOUYdy2BDm1w5Oq7HnDMtsE25sp8qEoHxQ9CiBGCegCym', 'TEACHER', true, false, '4ed72e03a816fca528dc8739ced1cc10de22335766268469a05dfe768994c4aa', '2025-08-09 20:38:52.522'),
-(8, 'Fariha Mazumder Sinthy', 'toaseanelmah@gmail.com', '$2b$10$KuxdiBn/aVwnB60Lvi6Qf..nPFj5Eh.q5FFC6RdaDPnQZX0DLjIDO', 'STUDENT', true, false, '073b1230fc6747e7313486ec5e4c84dcf974542a0f9ecd29faca4c50c9f55402', '2025-08-09 20:41:22.195'),
-(9, 'Dipannita Das', 'fahmidarahman027@gmail.com', '$2b$10$zisjDCwM7RarQuDki0kzie/L3XiB.4BJw64oFg..RO22W3U1ngHXu', 'STUDENT', true, false, '17837808bd82fe22ee7cfdb9c52b42d3ad471034ea3e7322487128ad1e16e796', '2025-08-09 20:43:03.726'),
-(10, 'Erina Akter', 'urcms.cu@gmail.com', '$2b$10$yMNfYgyRDIPL.khkQRe95eUQdbqQ97CFuoiu3sYRXEi34oMRhBHKy', 'STUDENT', true, false, '3d70cd893be74c11cc14e19243d28ebd73c8f17916e574143b85766123bebb12', '2025-08-09 20:57:17.799');
+-- =========================================
+-- 6) Students
+-- =========================================
+INSERT INTO public.student (student_id, roll_number, department_id, user_id) VALUES
+(1,'20701051',1,4),
+(2,'21701039',1,5),
+(3,'20702027',2,7),
+(4,'21702016',2,10);
+SELECT pg_catalog.setval('public.student_student_id_seq', 4, TRUE);
 
--- Insert Student data
-INSERT INTO student (student_id, roll_number, department_id, user_id) VALUES
-(1, '20701051', 1, 3),
-(2, '20701001', 2, 8),
-(3, '21701027', 1, 9),
-(4, '21701016', 2, 10);
+-- =========================================
+-- 7) Teachers
+-- =========================================
+INSERT INTO public.teacher (teacher_id, designation, department_id, user_id, "isReviewer") VALUES
+(1,'Professor',1,2,FALSE),
+(2,'Associate Professor',2,3,FALSE),
+(3,'Professor',1,6,TRUE),
+(4,'Professor',2,8,TRUE),
+(5,'Lecturer',1,9,FALSE);
+SELECT pg_catalog.setval('public.teacher_teacher_id_seq', 5, TRUE);
 
--- Insert Teacher data
-INSERT INTO teacher (teacher_id, designation, department_id, user_id, "isReviewer") VALUES
-(1, 'Lecturer', 1, 2, false),
-(2, 'Associate Professor', 1, 5, true),
-(3, 'Professor', 2, 6, true),
-(4, 'Associate Professor', 1, 7, false);
+-- =========================================
+-- 8) Admins
+-- =========================================
+INSERT INTO public.admin (admin_id, user_id) VALUES
+(1,11);
+SELECT pg_catalog.setval('public.admin_admin_id_seq', 1, TRUE);
 
--- Insert Reviewer data
-INSERT INTO reviewer (reviewer_id, teacher_id, status) VALUES
-(2, 2, 'ACTIVE');
+-- =========================================
+-- 9) General Users
+-- =========================================
+INSERT INTO public.generaluser (generaluser_id, user_id) VALUES
+(1,1);
+SELECT pg_catalog.setval('public.generaluser_generaluser_id_seq', 1, TRUE);
 
--- Insert User-Domain relationships
-INSERT INTO userdomain (user_id, domain_id) VALUES
-(2, 1), (2, 2), (2, 4), (2, 8),
-(3, 1), (3, 2), (3, 4),
-(5, 1), (5, 2), (5, 4), (5, 8),
-(6, 1), (6, 3), (6, 5), (6, 6), (6, 7),
-(7, 1), (7, 2), (7, 4), (7, 8),
-(8, 3), (8, 5), (8, 6),
-(9, 2), (9, 4), (9, 8),
-(10, 6), (10, 7);
+-- =========================================
+-- 10) Teams
+-- =========================================
+INSERT INTO public.team (team_id, team_name, team_description, domain_id, status, visibility, max_members, "isHiring", created_at, created_by_user_id) VALUES
+(1,'DeepVision Innovators','A collaborative research team focusing on advanced computer vision, deep learning, and AI-driven solutions for real-world applications.',1,'ACTIVE','PUBLIC',3,TRUE,'2025-09-12 19:17:36.1',2);
+SELECT pg_catalog.setval('public.team_team_id_seq', 2, TRUE);
 
--- Insert Team data
-INSERT INTO team (team_id, team_name, team_description, domain_id, status, visibility, max_members, "isHiring", created_at, created_by_user_id) VALUES
-(1, 'AI Research 2025', 'AI Research Team Description', 1, 'RECRUITING', 'PUBLIC', 4, true, '2025-08-12 14:34:40.161', 6),
-(2, 'ETL Process team with AI', 'ETL Process team description', 1, 'RECRUITING', 'PUBLIC', 5, true, '2025-08-12 17:03:09.773', 6),
-(3, 'New Research in AI', 'New Research in AI explores the living probability of human beings on the Mars. But the limitations urges us to not be hopeful of something like this.', 1, 'ACTIVE', 'PRIVATE', 4, false, '2025-08-12 17:37:18.616', 6),
-(4, 'AI in predicting market value', 'AI in predicting market value ......', 1, 'RECRUITING', 'PUBLIC', 1, true, '2025-08-12 21:22:36.637', 6),
-(5, 'New Research on Solar Energy', 'Solar energy is one of most sustainable renewable energy on earth. This research is conducted to deliver more efficient way to generate solar energy.', 7, 'INACTIVE', 'PRIVATE', 10, false, '2025-08-13 09:37:24.274', 6),
-(6, 'Research in Robotics for helping in cooking', 'Robots helps us in various purposes in our life. This research is aimed to build a robot to help in making recipes and cooking.', 5, 'RECRUITING', 'PUBLIC', 10, true, '2025-08-13 19:10:04.542', 6),
-(7, 'Research in Robotics for helping in cooking', 'Robots helps us in various purposes in our life. This research is aimed to build a robot to help in making recipes and cooking.', 5, 'RECRUITING', 'PUBLIC', 3, true, '2025-08-13 19:10:48.243', 6);
+-- =========================================
+-- 11) Team Members (skip sequence)
+-- =========================================
+INSERT INTO public.teammember (team_id, user_id, role_in_team) VALUES
+(1,2,'LEAD'),
+(1,4,'ASSISTANT');
 
--- Insert Team Member data
-INSERT INTO teammember (team_id, user_id, role_in_team) VALUES
-(1, 8, NULL), (1, 10, NULL),
-(2, 6, NULL), (2, 8, NULL), (2, 10, NULL),
-(3, 6, NULL), (3, 8, NULL),
-(4, 6, NULL), (4, 8, NULL), (4, 10, NULL),
-(5, 6, NULL), (5, 10, NULL),
-(6, 6, NULL), (6, 8, NULL),
-(7, 6, NULL), (7, 8, NULL), (7, 10, NULL);
+-- =========================================
+-- 12) Proposals
+-- =========================================
+INSERT INTO public.proposal (proposal_id, title, abstract, team_id, submitted_by, pdf_path, file_size, created_at, status) VALUES
+(1,'Smart Traffic Monitoring Using Deep Learning','This research proposal aims to develop an intelligent traffic monitoring system using deep learning techniques to detect and analyze vehicles, pedestrians, and traffic patterns in real-time. The system will leverage convolutional neural networks (CNNs) and object detection algorithms to enhance traffic management and safety.',NULL,1,'documents/b9a5dd82-4387-4b7b-a614-6a7b2ed332c1.pdf',1850417,'2025-09-12 19:26:24.433','PENDING'),
+(2,'Smart Traffic Monitoring Using Deep Learning','This research proposal aims to develop an intelligent traffic monitoring system using deep learning techniques to detect and analyze vehicles, pedestrians, and traffic patterns in real-time. The system will leverage convolutional neural networks (CNNs) and object detection algorithms to enhance traffic management and safety.',1,1,'documents/ab27f488-e43b-4b34-a932-c7c3a426c697.pdf',94464,'2025-09-12 19:30:32.03','PENDING');
+SELECT pg_catalog.setval('public.proposal_proposal_id_seq', 2, TRUE);
 
--- Insert Team Comment data
-INSERT INTO teamcomment (comment_id, team_id, user_id, comment, created_at) VALUES
-(1, 2, 6, 'Dear fellows! This is our first day in our research program! Welcome to all!', '2025-08-13 23:50:07.97'),
-(2, 7, 6, 'This is a comment', '2025-08-14 05:00:10.054'),
-(3, 7, 6, 'ppl;]', '2025-08-14 05:21:48.183'),
-(4, 7, 6, 'p', '2025-08-14 06:36:50.78');
-
--- Insert Proposal data
-INSERT INTO proposal (proposal_id, title, abstract, team_id, submitted_by, domain_id, pdf_path, file_size, created_at, status) VALUES
-(1, 'AI Research Proposal Title', 'AI Research Abstract', 1, 3, 1, 'public\\files\\eb99e5fb-8d39-44b5-bc7b-56a70eb52cb2.pdf', 86583, '2025-08-12 14:34:40.22', 'PENDING'),
-(2, 'ETL Process AI title', 'ETL Process team abstract', 2, 3, 1, 'public\\files\\c90e9fee-ee27-42f1-a760-a24269cd4654.pdf', 76145, '2025-08-12 17:03:09.82', 'PENDING'),
-(3, 'New Research in AI  on Mars', 'New Research in AI abstract', 3, 3, 1, 'public\\files\\8a78fc92-71ee-4150-bc3b-718b315e77f0.pdf', 76145, '2025-08-12 17:37:18.671', 'PENDING'),
-(4, 'AI in predicting market value', 'AI in predicting market value abc ......', 4, 3, 1, 'public\\files\\ac9cbcb9-ff43-4616-9bde-e3e51d9404b9.pdf', 3956212, '2025-08-12 21:22:36.73', 'PENDING'),
-(5, 'This is the title of our reserach', 'This is the abstract of our reserach', 5, 3, 7, 'public\\files\\98cdfd1f-c31a-4cc8-befd-7d3ebcb81a1d.pdf', 4354200, '2025-08-13 09:37:24.566', 'PENDING'),
-(6, 'AI Research Paper', 'AI Research Paper Abstract', 3, 3, NULL, 'public\\files\\a8d31ce9-b5e1-4739-9004-c5e7f5b1cd4f.pdf', 61444, '2025-08-13 14:41:31.598', 'PENDING'),
-(7, 'abcd', 'abcd', 7, 3, 5, 'documents/d6ac8186-e321-4464-8783-6f02d25ccdfc.pdf', 4357277, '2025-08-13 19:10:48.27', 'PENDING'),
-(8, 'Research proposal', 'Research abstract', 7, 3, NULL, 'documents/3aef6a6c-11df-4d7e-aa7b-a8d794e0ab89.pdf', 5290126, '2025-08-14 05:32:45.523', 'PENDING'),
-(9, 'proposal', 'abstract', 7, 3, NULL, 'documents/d6e24627-53c2-4491-bed6-2b9ec495fa19.pdf', 778652, '2025-08-14 06:36:17.619', 'PENDING');
-
--- Insert Paper data
-INSERT INTO paper (paper_id, title, abstract, team_id, submitted_by, domain_id, pdf_path, file_size, created_at, status) VALUES
-(1, 'Research Paper on Solar Energy', 'Research Paper Abstract on Solar Energy', 5, 3, NULL, 'public\\files\\8a826c98-a57f-45c4-9f44-f4f80441ba5f.pdf', 69321, '2025-08-13 14:40:18.367', 'PENDING'),
-(2, 'AI Research Paper on Living Probability', 'AI Research Abstract on Living Probability', 3, 3, NULL, 'public\\files\\64adb058-2296-4e45-80c3-7096d8efe002.pdf', 18025084, '2025-08-13 14:46:26.894', 'PENDING'),
-(3, 'abcd paper', 'abcd abstract paper', 6, 3, NULL, 'documents/51eb830c-d5f2-4b00-af57-e1cce46ca5ee.pdf', 4319250, '2025-08-13 19:11:22.186', 'PENDING'),
-(4, 'title', 'abstract', 7, 3, NULL, 'documents/24cde354-2e97-417f-a77a-7e92ac16e917.pdf', 5264671, '2025-08-14 05:33:35.24', 'PENDING');
-
--- Update sequences to match the inserted data
-SELECT setval('admin_admin_id_seq', 1, true);
-SELECT setval('department_department_id_seq', 4, true);
-SELECT setval('domain_domain_id_seq', 21, true);
-SELECT setval('generaluser_generaluser_id_seq', 1, true);
-SELECT setval('paper_paper_id_seq', 4, true);
-SELECT setval('proposal_proposal_id_seq', 9, true);
-SELECT setval('review_review_id_seq', 1, false);
-SELECT setval('reviewerassignment_assignment_id_seq', 1, false);
-SELECT setval('student_student_id_seq', 4, true);
-SELECT setval('teacher_teacher_id_seq', 4, true);
-SELECT setval('team_team_id_seq', 7, true);
-SELECT setval('teamapplication_application_id_seq', 1, false);
-SELECT setval('teamcomment_comment_id_seq', 4, true);
-SELECT setval('user_user_id_seq', 10, true);
+-- =========================================
+-- 13) Reviewers
+-- =========================================
+INSERT INTO public.reviewer (reviewer_id, teacher_id, status) VALUES
+(3,3,'PENDING'),
+(4,4,'ACTIVE');

@@ -51,7 +51,6 @@ class ProposalController {
           pdf_path,
           team_id: Number(payload.team_id),
           submitted_by: teacher.teacher_id,
-          domain_id: payload.domain_id || null,
           file_size: file.size,
           status: "PENDING",
         },
@@ -81,16 +80,16 @@ class ProposalController {
         include: {
           teacher: {
             include: {
-              user: {
-                select: { name: true, email: true }
-              }
-            }
+              user: { select: { name: true, email: true } },
+            },
           },
-          domain: {
-            select: { domain_name: true }
-          }
+          team: {
+            include: {
+              domain: { select: { domain_name: true } },
+            },
+          },
         },
-        orderBy: { created_at: 'desc' }
+        orderBy: { created_at: "desc" },
       });
 
       return res.json({ data: proposals });
