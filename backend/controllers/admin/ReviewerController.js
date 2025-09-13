@@ -34,15 +34,6 @@ class ReviewerController {
               }
             }
           },
-          reviewerpreference: {
-            include: {
-              domain: {
-                select: {
-                  domain_name: true
-                }
-              }
-            }
-          },
           _count: {
             select: {
               review: true,
@@ -71,7 +62,7 @@ class ReviewerController {
                 where: {
                   reviewer_id: reviewer.reviewer_id,
                   decision: { not: null },
-                  reviewed_at: { not: null } // Ensure reviewed_at is not null
+                  reviewed_at: { not: null }
                 },
                 include: {
                   paper: { select: { created_at: true } },
@@ -91,7 +82,7 @@ class ReviewerController {
                     const days = Math.ceil(
                       (new Date(review.reviewed_at) - new Date(submittedAt)) / (1000 * 60 * 60 * 24)
                     );
-                    return sum + Math.max(0, days); // Ensure no negative days
+                    return sum + Math.max(0, days);
                   }, 0);
                   avgReviewTime = Math.round(totalDays / validReviewTimes.length);
                 }
@@ -99,6 +90,27 @@ class ReviewerController {
             } catch (timeError) {
               logger.error(`Error calculating review time for reviewer ${reviewer.reviewer_id}:`, timeError);
               avgReviewTime = null;
+            }
+
+            // Get user domains for expertise
+            let expertise = [];
+            try {
+              if (reviewer.teacher?.user_id) {
+                const userDomains = await prisma.userdomain.findMany({
+                  where: { user_id: reviewer.teacher.user_id },
+                  include: {
+                    domain: {
+                      select: {
+                        domain_name: true
+                      }
+                    }
+                  }
+                });
+                expertise = userDomains.map(ud => ud.domain?.domain_name || 'Unknown').filter(Boolean);
+              }
+            } catch (domainError) {
+              logger.error(`Error fetching domains for reviewer ${reviewer.reviewer_id}:`, domainError);
+              expertise = [];
             }
 
             // Calculate workload percentage (assuming max 5 assignments)
@@ -111,9 +123,7 @@ class ReviewerController {
               email: reviewer.teacher?.user?.email || 'N/A',
               department: reviewer.teacher?.department?.department_name || 'N/A',
               designation: reviewer.teacher?.designation || 'N/A',
-              expertise: (reviewer.reviewerpreference || []).map(pref => 
-                pref.domain?.domain_name || 'Unknown'
-              ),
+              expertise: expertise,
               assigned: assignmentCount,
               completed: completedReviews,
               workload: Math.round(workloadPercentage),
@@ -171,7 +181,6 @@ class ReviewerController {
       console.error("Error fetching reviewers:", error);
       logger.error("Reviewers fetch error:", error);
       
-      // Return more detailed error information in development
       const isDevelopment = process.env.NODE_ENV === 'development';
       return res.status(500).json({
         error: "Failed to fetch reviewers data",
@@ -234,7 +243,7 @@ class ReviewerController {
               domains: userDomains.map(ud => ({
                 id: ud.domain?.domain_id,
                 name: ud.domain?.domain_name || 'Unknown'
-              })).filter(domain => domain.id) // Filter out invalid domains
+              })).filter(domain => domain.id)
             };
           } catch (teacherError) {
             logger.error(`Error processing teacher ${teacher.teacher_id}:`, teacherError);
@@ -268,14 +277,12 @@ class ReviewerController {
   // POST /api/reviewers/invite - Send invitations to potential reviewers
   static async sendInvitations(req, res) {
     try {
-
-        logger.info("inviteReviewers called");
-    logger.info("Request body: ", req.body);
+      logger.info("inviteReviewers called");
+      logger.info("Request body: ", req.body);
 
       const validator = vine.compile(inviteReviewersSchema);
       const payload = await validator.validate(req.body);
 
-      // Validate reviewer_ids array
       if (!payload.reviewer_ids || !Array.isArray(payload.reviewer_ids) || payload.reviewer_ids.length === 0) {
         return res.status(400).json({
           error: "reviewer_ids must be a non-empty array"
@@ -305,7 +312,7 @@ class ReviewerController {
 
       // Prepare email jobs with error handling
       const emailJobs = teachers
-        .filter(teacher => teacher.user?.email) // Only include teachers with valid emails
+        .filter(teacher => teacher.user?.email)
         .map(teacher => ({
           toEmail: teacher.user.email,
           subject: "Invitation to Join Review Committee",
@@ -346,12 +353,10 @@ class ReviewerController {
         });
       }
 
-      // Send emails via queue
       try {
         await emailQueue.add(emailQueueName, emailJobs);
       } catch (emailError) {
         logger.error("Error adding emails to queue:", emailError);
-        // Continue execution - emails might still be sent
       }
 
       logger.info(`Reviewer invitations sent to ${emailJobs.length} teachers`);
@@ -379,7 +384,7 @@ class ReviewerController {
     }
   }
 
-  // POST /api/reviewers/add - Add a reviewer manually
+  // POST /api/reviewers/add - Add a reviewer manually (domain_ids removed from payload)
   static async addReviewer(req, res) {
     try {
       const validator = vine.compile(addReviewerSchema);
@@ -425,7 +430,6 @@ class ReviewerController {
       });
 
       if (existingReviewer) {
-        // Already a reviewer - just return success (idempotent)
         return res.json({
           message: "Teacher is already a reviewer",
           reviewer_id: existingReviewer.reviewer_id
@@ -443,28 +447,11 @@ class ReviewerController {
         // Create reviewer record
         const newReviewer = await tx.reviewer.create({
           data: {
-            reviewer_id: payload.teacher_id, // Use teacher_id as reviewer_id
+            reviewer_id: payload.teacher_id,
             teacher_id: payload.teacher_id,
             status: 'ACTIVE'
           }
         });
-
-        // Add domain preferences if provided
-        if (payload.domain_ids && Array.isArray(payload.domain_ids) && payload.domain_ids.length > 0) {
-          // Verify domains exist first
-          const validDomains = await tx.domain.findMany({
-            where: { domain_id: { in: payload.domain_ids } }
-          });
-
-          if (validDomains.length > 0) {
-            await tx.reviewerpreference.createMany({
-              data: validDomains.map(domain => ({
-                reviewer_id: newReviewer.reviewer_id,
-                domain_id: domain.domain_id
-              }))
-            });
-          }
-        }
 
         return newReviewer;
       });
@@ -507,7 +494,6 @@ class ReviewerController {
           await emailQueue.add(emailQueueName, [welcomeEmail]);
         } catch (emailError) {
           logger.error("Error sending welcome email:", emailError);
-          // Don't fail the request if email fails
         }
       }
 
@@ -614,7 +600,6 @@ class ReviewerController {
           await emailQueue.add(emailQueueName, [statusEmail]);
         } catch (emailError) {
           logger.error("Error sending status update email:", emailError);
-          // Don't fail the request if email fails
         }
       }
 
@@ -695,11 +680,6 @@ class ReviewerController {
 
       // Use transaction to remove reviewer
       await prisma.$transaction(async (tx) => {
-        // Remove reviewer preferences
-        await tx.reviewerpreference.deleteMany({
-          where: { reviewer_id: reviewerId }
-        });
-
         // Remove reviewer record
         await tx.reviewer.delete({
           where: { reviewer_id: reviewerId }
@@ -740,7 +720,6 @@ class ReviewerController {
           await emailQueue.add(emailQueueName, [removalEmail]);
         } catch (emailError) {
           logger.error("Error sending removal email:", emailError);
-          // Don't fail the request if email fails
         }
       }
 
@@ -820,7 +799,6 @@ class ReviewerController {
         });
       }
 
-      // Safely process assignments
       const assignments = reviewer.reviewerassignment || [];
       const reviews = reviewer.review || [];
 

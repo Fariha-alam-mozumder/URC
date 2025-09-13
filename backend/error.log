@@ -2281,3 +2281,3501 @@ Invalid `prisma.teacher.findUnique()` invocation:
 }
 
 Argument `where` of type teacherWhereUniqueInput needs at least one of `teacher_id` arguments. Available options are marked with ?.
+2025-09-12T16:01:14.801Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:01:15.301Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:01:15.314Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:01:16.323Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:01:16.394Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:01:17.360Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:01:17.424Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:01:18.383Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:01:18.452Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:01:19.401Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:01:19.463Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:01:20.409Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:01:20.471Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:01:21.523Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:01:21.583Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:01:23.046Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:01:24.517Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:01:24.577Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:01:32.643Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:01:32.696Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:01:43.079Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:01:52.680Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:01:52.726Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:02:03.099Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:02:12.705Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:02:12.737Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:02:23.149Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:02:32.715Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:02:32.749Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:02:43.158Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:02:52.734Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:02:52.770Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:03:03.184Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:03:12.749Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:03:12.795Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:03:23.202Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:03:32.758Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:03:32.809Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:03:43.210Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:03:52.778Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:03:52.823Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:04:03.220Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:04:12.794Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:04:12.836Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:04:23.243Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:04:32.810Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:04:32.850Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:04:43.264Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:04:52.841Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:04:52.867Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:05:03.288Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:05:12.854Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:05:12.909Z [right meow!] error: Worker error: Reached the max retries per request limit (which is 20). Refer to "maxRetriesPerRequest" option for details.
+2025-09-12T16:05:12.917Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:05:23.301Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:05:32.866Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:05:32.928Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:05:43.309Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:05:52.870Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:05:52.933Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:06:03.319Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:06:12.886Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:06:12.948Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:06:23.332Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:06:32.890Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:06:32.951Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:06:43.339Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:06:52.907Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:06:52.971Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:07:03.365Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:07:12.923Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:07:12.996Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:07:23.386Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:07:32.949Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:07:33.009Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:07:43.413Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:07:52.962Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:07:53.030Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:08:03.439Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:08:12.980Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:08:13.058Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:08:23.452Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:08:32.993Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:08:33.071Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:08:43.471Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:08:53.003Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:08:53.077Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:09:03.499Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:09:13.036Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:09:13.097Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:09:23.525Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:09:33.050Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:09:33.104Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:09:43.546Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:09:53.073Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:09:53.127Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:10:03.560Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:10:13.107Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:10:13.142Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:10:23.574Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:10:33.126Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:10:33.159Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:10:43.589Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:10:53.134Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:10:53.166Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:11:03.614Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:11:13.146Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:11:13.179Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:11:23.628Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:11:33.168Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:11:33.196Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:11:43.643Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:11:53.179Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:11:53.212Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:12:03.668Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:12:13.200Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:12:13.216Z [right meow!] error: Worker error: Reached the max retries per request limit (which is 20). Refer to "maxRetriesPerRequest" option for details.
+2025-09-12T16:12:13.225Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:12:23.683Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:12:33.217Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:12:33.252Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:12:43.697Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:12:53.248Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:12:53.265Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:13:03.705Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:13:13.278Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:13:13.283Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:13:23.730Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:13:33.298Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:13:33.316Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:13:43.748Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:13:53.313Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:13:53.330Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:14:03.761Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:14:13.316Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:14:13.342Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:14:23.789Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:14:33.330Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:14:33.360Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:14:43.813Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:14:53.351Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:14:53.386Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:15:03.830Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:15:13.382Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:15:13.418Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:15:23.844Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:15:33.405Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:15:33.437Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:15:43.875Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:15:53.423Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:15:53.458Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:16:03.895Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:16:13.445Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:16:13.483Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:16:23.908Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:16:33.460Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:16:33.506Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:16:43.921Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:16:53.482Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:16:53.516Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:17:03.945Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:17:13.498Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:17:13.547Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:17:23.975Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:17:33.509Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:17:33.565Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:17:43.998Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:17:53.535Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:17:53.581Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:18:04.020Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:18:13.556Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:18:13.600Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:18:24.055Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:18:33.572Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:18:33.619Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:18:44.075Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:18:53.596Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:18:53.637Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:19:04.086Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:19:13.631Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:19:13.642Z [right meow!] error: Worker error: Reached the max retries per request limit (which is 20). Refer to "maxRetriesPerRequest" option for details.
+2025-09-12T16:19:13.663Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:19:24.098Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:19:33.658Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:19:33.718Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:19:44.112Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:19:53.687Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:19:53.731Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:20:04.120Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:20:13.715Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:20:13.748Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:20:24.146Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:20:33.729Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:20:33.761Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:20:44.166Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:20:53.743Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:20:53.776Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:21:04.197Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:21:13.761Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:21:13.804Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:21:24.219Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:21:33.779Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:21:33.826Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:21:44.232Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:21:53.805Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:21:53.867Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:22:04.245Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:22:13.835Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:22:13.887Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:22:24.272Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:22:33.850Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:22:33.917Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:22:44.283Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:22:53.876Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:22:53.931Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:23:04.297Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:23:13.896Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:23:13.946Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:23:24.315Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:23:33.905Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:23:33.959Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:23:44.348Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:23:53.922Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:23:53.977Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:24:04.366Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:24:13.942Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:24:13.988Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:24:24.391Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:24:33.953Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:24:34.004Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:24:44.413Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:24:53.972Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:24:54.031Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:25:04.442Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:25:13.997Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:25:14.045Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:25:24.466Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:25:34.024Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:25:34.074Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:25:44.477Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:25:54.050Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:25:54.110Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:26:04.488Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:26:14.067Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:26:14.075Z [right meow!] error: Worker error: Reached the max retries per request limit (which is 20). Refer to "maxRetriesPerRequest" option for details.
+2025-09-12T16:26:14.121Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:26:24.506Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:26:34.095Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:26:34.140Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:26:44.528Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:26:54.122Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:26:54.168Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:27:04.552Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:27:14.155Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:27:14.185Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:27:24.573Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:27:34.169Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:27:34.221Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:27:44.586Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:27:54.185Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:27:54.232Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:28:04.607Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:28:14.204Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:28:14.252Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:28:24.633Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:28:34.216Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:28:34.284Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:28:44.655Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:28:54.235Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:28:54.302Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:29:04.688Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:29:14.262Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:29:14.323Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:29:24.708Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:29:34.275Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:29:34.334Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:29:44.722Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:29:54.293Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:29:54.353Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:30:04.746Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:30:14.315Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:30:14.368Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:30:24.768Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:30:34.333Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:30:34.396Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:30:44.785Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:30:54.346Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:30:54.424Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:31:04.804Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:31:14.363Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:31:14.437Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:31:24.816Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:31:34.386Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:31:34.459Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:31:44.835Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:31:54.408Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:31:54.478Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:32:04.847Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:32:14.434Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:32:14.489Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:32:24.873Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:32:34.446Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:32:34.506Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:32:44.887Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:32:54.471Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:32:54.533Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:33:04.903Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:33:14.484Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:33:14.502Z [right meow!] error: Worker error: Reached the max retries per request limit (which is 20). Refer to "maxRetriesPerRequest" option for details.
+2025-09-12T16:33:14.568Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:33:24.921Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:33:34.499Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:33:34.605Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:33:44.946Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:33:54.522Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:33:54.624Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:34:04.970Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:34:14.549Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:34:14.646Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:34:24.989Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:34:34.569Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:34:34.661Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:34:45.007Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:34:54.593Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:34:54.690Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:35:05.022Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:35:14.603Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:35:14.696Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:35:25.032Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:35:34.631Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:35:34.712Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:35:45.049Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:35:54.646Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:35:54.721Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:36:05.065Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:36:14.680Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:36:14.741Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:36:25.079Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:36:34.699Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:36:34.776Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:36:45.105Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:36:54.711Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:36:54.795Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:37:05.119Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:37:14.730Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:37:14.808Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:37:25.133Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:37:34.752Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:37:34.813Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:37:45.158Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:37:54.773Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:37:54.843Z [right meow!] error: Queue error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:38:05.173Z [right meow!] error: Worker error: connect ECONNREFUSED 127.0.0.1:6379
+2025-09-12T16:45:20.912Z [right meow!] error: Reviewers fetch error: 
+Invalid `prisma.reviewer.findMany()` invocation:
+
+{
+  include: {
+    teacher: {
+      include: {
+        user: {
+          select: {
+            name: true,
+            email: true
+          }
+        },
+        department: {
+          select: {
+            department_name: true
+          }
+        }
+      }
+    },
+    reviewerpreference: {
+    ~~~~~~~~~~~~~~~~~~
+      include: {
+        domain: {
+          select: {
+            domain_name: true
+          }
+        }
+      }
+    },
+    _count: {
+      select: {
+        review: true,
+        reviewerassignment: true
+      }
+    },
+?   review?: true,
+?   reviewerassignment?: true
+  }
+}
+
+Unknown field `reviewerpreference` for include statement on model `reviewer`. Available options are marked with ?.
+2025-09-12T16:45:20.945Z [right meow!] error: Reviewers fetch error: 
+Invalid `prisma.reviewer.findMany()` invocation:
+
+{
+  include: {
+    teacher: {
+      include: {
+        user: {
+          select: {
+            name: true,
+            email: true
+          }
+        },
+        department: {
+          select: {
+            department_name: true
+          }
+        }
+      }
+    },
+    reviewerpreference: {
+    ~~~~~~~~~~~~~~~~~~
+      include: {
+        domain: {
+          select: {
+            domain_name: true
+          }
+        }
+      }
+    },
+    _count: {
+      select: {
+        review: true,
+        reviewerassignment: true
+      }
+    },
+?   review?: true,
+?   reviewerassignment?: true
+  }
+}
+
+Unknown field `reviewerpreference` for include statement on model `reviewer`. Available options are marked with ?.
+2025-09-12T16:45:26.489Z [right meow!] error: Reviewers fetch error: 
+Invalid `prisma.reviewer.findMany()` invocation:
+
+{
+  include: {
+    teacher: {
+      include: {
+        user: {
+          select: {
+            name: true,
+            email: true
+          }
+        },
+        department: {
+          select: {
+            department_name: true
+          }
+        }
+      }
+    },
+    reviewerpreference: {
+    ~~~~~~~~~~~~~~~~~~
+      include: {
+        domain: {
+          select: {
+            domain_name: true
+          }
+        }
+      }
+    },
+    _count: {
+      select: {
+        review: true,
+        reviewerassignment: true
+      }
+    },
+?   review?: true,
+?   reviewerassignment?: true
+  }
+}
+
+Unknown field `reviewerpreference` for include statement on model `reviewer`. Available options are marked with ?.
+2025-09-12T16:45:26.540Z [right meow!] error: Reviewers fetch error: 
+Invalid `prisma.reviewer.findMany()` invocation:
+
+{
+  include: {
+    teacher: {
+      include: {
+        user: {
+          select: {
+            name: true,
+            email: true
+          }
+        },
+        department: {
+          select: {
+            department_name: true
+          }
+        }
+      }
+    },
+    reviewerpreference: {
+    ~~~~~~~~~~~~~~~~~~
+      include: {
+        domain: {
+          select: {
+            domain_name: true
+          }
+        }
+      }
+    },
+    _count: {
+      select: {
+        review: true,
+        reviewerassignment: true
+      }
+    },
+?   review?: true,
+?   reviewerassignment?: true
+  }
+}
+
+Unknown field `reviewerpreference` for include statement on model `reviewer`. Available options are marked with ?.
+2025-09-12T17:03:06.591Z [right meow!] error: Error calculating review time for reviewer 1: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 1,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T17:03:06.602Z [right meow!] error: Error calculating review time for reviewer 4: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 4,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T17:03:06.674Z [right meow!] error: Error calculating review time for reviewer 1: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 1,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T17:03:06.803Z [right meow!] error: Error calculating review time for reviewer 4: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 4,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T17:13:21.302Z [right meow!] error: Error calculating review time for reviewer 4: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 4,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T17:13:21.323Z [right meow!] error: Error calculating review time for reviewer 1: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 1,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T17:13:21.370Z [right meow!] error: Error calculating review time for reviewer 1: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 1,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T17:13:21.531Z [right meow!] error: Error calculating review time for reviewer 4: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 4,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T17:13:52.270Z [right meow!] error: Error calculating review time for reviewer 4: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 4,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T17:13:52.275Z [right meow!] error: Error calculating review time for reviewer 1: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 1,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T17:13:57.407Z [right meow!] error: Error calculating review time for reviewer 4: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 4,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T17:13:57.416Z [right meow!] error: Error calculating review time for reviewer 1: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 1,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T17:14:01.392Z [right meow!] error: Error calculating review time for reviewer 1: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 1,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T17:14:01.399Z [right meow!] error: Error calculating review time for reviewer 4: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 4,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T17:14:11.622Z [right meow!] error: Error calculating review time for reviewer 1: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 1,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T17:14:11.626Z [right meow!] error: Error calculating review time for reviewer 4: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 4,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T17:14:15.899Z [right meow!] error: Error calculating review time for reviewer 1: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 1,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T17:14:15.904Z [right meow!] error: Error calculating review time for reviewer 4: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 4,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T17:35:49.916Z [right meow!] error: Error fetching all papers for admin: members is not defined
+2025-09-12T17:35:49.956Z [right meow!] error: Error fetching all papers for admin: members is not defined
+2025-09-12T17:42:53.974Z [right meow!] error: Error fetching all papers for admin: members is not defined
+2025-09-12T17:42:54.017Z [right meow!] error: Error fetching all papers for admin: members is not defined
+2025-09-12T18:23:24.590Z [right meow!] error: Error fetching all papers for admin: pr is not defined
+2025-09-12T18:23:24.624Z [right meow!] error: Error fetching all papers for admin: pr is not defined
+2025-09-12T18:23:27.697Z [right meow!] error: Error fetching all papers for admin: pr is not defined
+2025-09-12T18:23:27.750Z [right meow!] error: Error fetching all papers for admin: pr is not defined
+2025-09-12T19:00:04.701Z [right meow!] error: Error calculating review time for reviewer 1: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 1,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T19:00:04.716Z [right meow!] error: Error calculating review time for reviewer 4: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 4,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T19:00:04.793Z [right meow!] error: Error calculating review time for reviewer 4: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 4,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T19:00:04.798Z [right meow!] error: Error calculating review time for reviewer 1: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 1,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T19:43:06.413Z [right meow!] error: Error calculating review time for reviewer 1: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 1,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T19:43:06.461Z [right meow!] error: Error calculating review time for reviewer 4: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 4,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T19:43:06.544Z [right meow!] error: Error calculating review time for reviewer 1: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 1,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T19:43:06.553Z [right meow!] error: Error calculating review time for reviewer 4: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 4,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T19:48:39.406Z [right meow!] error: Error calculating review time for reviewer 4: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 4,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T19:48:39.451Z [right meow!] error: Error calculating review time for reviewer 1: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 1,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T19:48:42.785Z [right meow!] error: Error calculating review time for reviewer 4: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 4,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T19:48:42.790Z [right meow!] error: Error calculating review time for reviewer 1: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 1,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T19:48:42.825Z [right meow!] error: Error calculating review time for reviewer 4: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 4,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T19:48:42.829Z [right meow!] error: Error calculating review time for reviewer 1: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 1,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T20:21:05.061Z [right meow!] error: Error calculating review time for reviewer 4: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 4,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T20:21:05.130Z [right meow!] error: Error calculating review time for reviewer 1: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 1,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T20:21:05.237Z [right meow!] error: Error calculating review time for reviewer 1: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 1,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T20:21:05.244Z [right meow!] error: Error calculating review time for reviewer 4: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 4,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T20:21:12.547Z [right meow!] error: Error calculating review time for reviewer 1: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 1,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T20:21:12.557Z [right meow!] error: Error calculating review time for reviewer 4: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 4,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T20:21:12.641Z [right meow!] error: Error calculating review time for reviewer 2: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 2,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T20:22:37.214Z [right meow!] error: Error calculating review time for reviewer 1: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 1,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T20:22:37.232Z [right meow!] error: Error calculating review time for reviewer 4: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 4,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T20:22:37.248Z [right meow!] error: Error calculating review time for reviewer 2: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 2,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T20:22:37.336Z [right meow!] error: Error calculating review time for reviewer 4: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 4,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T20:22:37.350Z [right meow!] error: Error calculating review time for reviewer 1: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 1,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T20:22:37.354Z [right meow!] error: Error calculating review time for reviewer 2: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 2,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T21:39:28.030Z [right meow!] error: Error calculating review time for reviewer 2: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 2,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T21:39:28.142Z [right meow!] error: Error calculating review time for reviewer 1: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 1,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T21:39:28.160Z [right meow!] error: Error calculating review time for reviewer 4: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 4,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T21:39:28.248Z [right meow!] error: Error calculating review time for reviewer 2: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 2,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T21:39:28.275Z [right meow!] error: Error calculating review time for reviewer 4: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 4,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T21:39:28.388Z [right meow!] error: Error calculating review time for reviewer 1: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 1,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T21:39:35.728Z [right meow!] error: Error calculating review time for reviewer 1: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 1,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T21:39:35.742Z [right meow!] error: Error calculating review time for reviewer 4: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 4,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T21:39:45.060Z [right meow!] error: Error calculating review time for reviewer 1: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 1,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T21:39:45.081Z [right meow!] error: Error calculating review time for reviewer 4: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 4,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T21:39:45.127Z [right meow!] error: Error calculating review time for reviewer 1: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 1,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T21:39:45.130Z [right meow!] error: Error calculating review time for reviewer 4: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 4,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T21:39:50.792Z [right meow!] error: Error calculating review time for reviewer 1: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 1,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T21:39:50.806Z [right meow!] error: Error calculating review time for reviewer 4: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 4,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T21:39:50.809Z [right meow!] error: Error calculating review time for reviewer 2: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 2,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T21:40:24.890Z [right meow!] error: Error calculating review time for reviewer 4: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 4,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T21:40:24.906Z [right meow!] error: Error calculating review time for reviewer 2: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 2,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T21:40:24.919Z [right meow!] error: Error calculating review time for reviewer 1: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 1,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T21:40:24.988Z [right meow!] error: Error calculating review time for reviewer 1: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 1,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T21:40:24.998Z [right meow!] error: Error calculating review time for reviewer 2: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 2,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T21:40:25.006Z [right meow!] error: Error calculating review time for reviewer 4: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 4,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T21:40:38.334Z [right meow!] error: Error calculating review time for reviewer 1: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 1,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T21:40:38.337Z [right meow!] error: Error calculating review time for reviewer 4: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 4,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T21:40:51.133Z [right meow!] error: Error calculating review time for reviewer 1: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 1,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T21:40:51.145Z [right meow!] error: Error calculating review time for reviewer 4: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 4,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T21:40:51.213Z [right meow!] error: Error calculating review time for reviewer 1: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 1,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T21:40:51.222Z [right meow!] error: Error calculating review time for reviewer 4: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 4,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T21:41:17.876Z [right meow!] error: Error calculating review time for reviewer 4: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 4,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T21:41:17.882Z [right meow!] error: Error calculating review time for reviewer 1: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 1,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T21:41:17.966Z [right meow!] error: Error calculating review time for reviewer 1: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 1,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T21:41:17.978Z [right meow!] error: Error calculating review time for reviewer 4: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 4,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T21:45:11.365Z [right meow!] error: Error calculating review time for reviewer 1: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 1,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T21:45:11.415Z [right meow!] error: Error calculating review time for reviewer 4: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 4,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T21:45:11.502Z [right meow!] error: Error calculating review time for reviewer 1: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 1,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T21:45:11.529Z [right meow!] error: Error calculating review time for reviewer 4: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 4,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T21:45:17.783Z [right meow!] error: Error calculating review time for reviewer 4: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 4,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T21:45:33.471Z [right meow!] error: Error calculating review time for reviewer 1: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 1,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T21:45:38.160Z [right meow!] error: Error calculating review time for reviewer 2: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 2,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T21:45:38.168Z [right meow!] error: Error calculating review time for reviewer 1: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 1,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T21:46:09.341Z [right meow!] error: Error calculating review time for reviewer 2: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 2,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T21:46:09.347Z [right meow!] error: Error calculating review time for reviewer 3: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 3,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T21:46:09.356Z [right meow!] error: Error calculating review time for reviewer 1: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 1,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T21:47:11.351Z [right meow!] error: Error calculating review time for reviewer 1: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 1,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T21:47:11.372Z [right meow!] error: Error calculating review time for reviewer 2: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 2,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T21:47:14.908Z [right meow!] error: Error calculating review time for reviewer 2: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 2,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T21:47:28.135Z [right meow!] error: Error calculating review time for reviewer 4: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 4,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T21:47:51.985Z [right meow!] error: Error calculating review time for reviewer 1: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 1,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T21:47:51.996Z [right meow!] error: Error calculating review time for reviewer 4: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 4,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T21:48:15.532Z [right meow!] error: Error calculating review time for reviewer 1: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 1,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T21:57:48.568Z [right meow!] error: Error calculating review time for reviewer 1: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 1,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T21:57:48.575Z [right meow!] error: Error calculating review time for reviewer 3: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 3,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T21:57:48.627Z [right meow!] error: Error calculating review time for reviewer 3: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 3,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T21:57:48.640Z [right meow!] error: Error calculating review time for reviewer 1: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 1,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T22:00:11.087Z [right meow!] error: Error calculating review time for reviewer 3: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 3,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T22:00:11.104Z [right meow!] error: Error calculating review time for reviewer 1: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 1,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T22:00:11.190Z [right meow!] error: Error calculating review time for reviewer 3: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 3,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T22:00:11.206Z [right meow!] error: Error calculating review time for reviewer 1: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 1,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T22:00:27.102Z [right meow!] error: Error calculating review time for reviewer 3: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 3,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T22:00:27.119Z [right meow!] error: Error calculating review time for reviewer 1: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 1,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T22:00:27.268Z [right meow!] error: Error calculating review time for reviewer 3: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 3,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T22:00:27.284Z [right meow!] error: Error calculating review time for reviewer 1: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 1,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-12T22:44:34.290Z [right meow!] error: Worker error: read ECONNRESET

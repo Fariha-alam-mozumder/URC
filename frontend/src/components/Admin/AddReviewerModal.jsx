@@ -11,73 +11,55 @@ const AddReviewerModal = ({
   buttonLabel = "Send Invitation",
   title = "Add Reviewer",
 }) => {
-  // 1) Hooks must be top-level and unconditional
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedIds, setSelectedIds] = useState([]);
 
-
-
-
-  // Enhanced helper to extract domain names with more property checks
-// Enhanced helper to extract domain names based on your Prisma schema
-const getDomainNames = (r) => {
-  if (Array.isArray(r?.expertise) && r.expertise.length > 0) {
-    return r.expertise; // ["AI", "Networks"]
-  }
-  // Optional fallback if in future you pass the nested relation:
-  if (Array.isArray(r?.teacher?.user?.userdomain)) {
-    return r.teacher.user.userdomain
-      .map((ud) => ud?.domain?.domain_name)
-      .filter(Boolean);
-  }
-  return [];
-};
-
-
-  const getDomainIds = (r) =>
-    Array.isArray(r?.domain)
-      ? r.domain
-          .map((d) => (typeof d === "object" ? d.id ?? d.domain_id : undefined))
-          .filter((v) => typeof v === "number")
-      : [];
-
-  // Debug function to log domain structure
-  const debugDomainStructure = (reviewer) => {
-    console.log("Reviewer domain structure:", {
-      reviewer: reviewer.name,
-      domain: reviewer.domain,
-      domainType: typeof reviewer.domain,
-      isArray: Array.isArray(reviewer.domain)
-    });
+  // Fixed helper to extract domain names based on actual API response
+  const getDomainNames = (reviewer) => {
+    // The API returns domains in this format: domains: [{ id: 1, name: "AI" }]
+    if (Array.isArray(reviewer?.domains) && reviewer.domains.length > 0) {
+      return reviewer.domains.map((domain) => domain.name).filter(Boolean);
+    }
+    return [];
   };
 
-  // 2) useMemo still runs every render (that's fine)
+  const getDomainIds = (reviewer) => {
+    if (Array.isArray(reviewer?.domains) && reviewer.domains.length > 0) {
+      return reviewer.domains
+        .map((domain) => domain.id)
+        .filter((id) => typeof id === "number");
+    }
+    return [];
+  };
+
+  // Fixed search filtering
   const term = searchTerm.trim().toLowerCase();
-const filteredReviewers = useMemo(() => {
-  return potentialReviewers.filter((r) => {
-    const inName = (r?.name || "").toLowerCase().includes(term);
-    const inEmail = (r?.email || "").toLowerCase().includes(term);
-    const inDept = (r?.department || "").toLowerCase().includes(term);
-    const inDomains = getDomainNames(r).some((dn) =>
-      (dn || "").toLowerCase().includes(term)
-    );
-    return inName || inEmail || inDept || inDomains;
-  });
-}, [potentialReviewers, term]);
+  const filteredReviewers = useMemo(() => {
+    return potentialReviewers.filter((reviewer) => {
+      const inName = (reviewer?.name || "").toLowerCase().includes(term);
+      const inEmail = (reviewer?.email || "").toLowerCase().includes(term);
+      const inDept = (reviewer?.department || "").toLowerCase().includes(term);
+      const inDomains = getDomainNames(reviewer).some((domainName) =>
+        (domainName || "").toLowerCase().includes(term)
+      );
+      return inName || inEmail || inDept || inDomains;
+    });
+  }, [potentialReviewers, term]);
 
-
-  // 3) Only now, after hooks, short-circuit rendering
+  // Only render if modal should be shown
   if (!show) return null;
 
   const toggleSelect = (id) =>
-    setSelectedIds((prev) => (prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]));
+    setSelectedIds((prev) =>
+      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
+    );
 
-  const handleSend = () => {
+  const handleAdd = async () => {
     if (selectedIds.length === 0) {
       alert("Please select at least one reviewer.");
       return;
     }
-    onSendInvitation(selectedIds);
+    await Promise.all(selectedIds.map((id) => onAddReviewer(id)));
     setSelectedIds([]);
     setSearchTerm("");
   };
@@ -115,48 +97,47 @@ const filteredReviewers = useMemo(() => {
         {/* Scrollable reviewers list */}
         <div className="overflow-auto flex-1 mb-16">
           {filteredReviewers.length > 0 ? (
-            filteredReviewers.map((r) => {
-              const domainNames = getDomainNames(r);
-              
-              // Debug log for first few reviewers to check domain structure
-              if (filteredReviewers.indexOf(r) < 3) {
-                debugDomainStructure(r);
-              }
-              
+            filteredReviewers.map((reviewer) => {
+              const domainNames = getDomainNames(reviewer);
+
               return (
                 <label
-                  key={r.id}
+                  key={reviewer.id}
                   className="flex items-center border rounded p-3 mb-2 cursor-pointer hover:bg-gray-100"
                 >
                   <input
                     type="checkbox"
-                    checked={selectedIds.includes(r.id)}
-                    onChange={() => toggleSelect(r.id)}
+                    checked={selectedIds.includes(reviewer.id)}
+                    onChange={() => toggleSelect(reviewer.id)}
                     className="mr-4"
                   />
                   <div className="flex-1">
-                    <div className="font-semibold">{r.name}</div>
-                    <div className="text-gray-500 text-sm">{r.email}</div>
-                    <div className="text-sm text-gray-600">{r.department}</div>
+                    <div className="font-semibold">{reviewer.name}</div>
+                    <div className="text-gray-500 text-sm">
+                      {reviewer.email}
+                    </div>
+                    <div className="text-sm text-gray-600">
+                      {reviewer.department}
+                    </div>
 
-                    {/* Debug info - remove this after fixing */}
-                    {domainNames.length === 0 && r.domain && (
-                      <div className="text-xs text-red-500 mt-1">
-                        Debug: Domain exists but not displaying. Check console.
-                      </div>
-                    )}
-
-                    {/* Multiple domain tags */}
+                    {/* Display domains */}
                     {domainNames.length > 0 && (
                       <div className="flex flex-wrap gap-1 mt-2">
-                        {domainNames.map((domainItem, idx) => (
+                        {domainNames.map((domainName, idx) => (
                           <span
                             key={idx}
                             className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
                           >
-                            {domainItem}
+                            {domainName}
                           </span>
                         ))}
+                      </div>
+                    )}
+
+                    {/* Show message if no domains */}
+                    {domainNames.length === 0 && (
+                      <div className="text-xs text-gray-400 mt-1">
+                        No expertise domains specified
                       </div>
                     )}
                   </div>
@@ -164,16 +145,25 @@ const filteredReviewers = useMemo(() => {
               );
             })
           ) : (
-            <div className="text-gray-500 text-center py-8">No reviewers found.</div>
+            <div className="text-gray-500 text-center py-8">
+              {potentialReviewers.length === 0
+                ? "No potential reviewers available."
+                : "No reviewers found matching your search."}
+            </div>
           )}
         </div>
 
-        {/* Assign button */}
+        {/* Action button */}
         <div className="absolute bottom-6 left-6 right-6">
           <CommonButton
-            label={buttonLabel}
-            onClick={handleSend}
-            className="w-full flex items-center justify-center flex gap-1 text-sm bg-blue-700 text-white px-3 py-1 rounded hover:bg-blue-900"
+            label={`${buttonLabel} (${selectedIds.length} selected)`}
+            onClick={handleAdd}
+            disabled={selectedIds.length === 0}
+            className={`w-full flex items-center justify-center gap-1 text-sm px-3 py-2 rounded ${
+              selectedIds.length === 0
+                ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                : "bg-blue-700 text-white hover:bg-blue-900"
+            }`}
           />
         </div>
       </div>

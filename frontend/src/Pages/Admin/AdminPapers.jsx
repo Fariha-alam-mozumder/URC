@@ -4,6 +4,8 @@ import CommonSubmissionTable from "../../components/Common/CommonSubmissionTable
 import FilterBar from "../../components/Common/FilterBar";
 import CommonButton from "../../components/Common/CommonButton";
 import axios from "axios";
+import PdfViewerModal from "../../components/Common/PdfViewerModal";
+
 
 const API_BASE_URL = import.meta.env.APP_URL || "http://localhost:8000/api";
 
@@ -11,12 +13,17 @@ function AdminPapers() {
   const [filters, setFilters] = useState({
     search: "",
     status: "",
-    track: "",
+    team_name: "",
   });
 
   const [submissions, setSubmissions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+
+  // modal state
+  const [openPdf, setOpenPdf] = useState(false);
+  const [selectedPaper, setSelectedPaper] = useState(null);
+
 
   useEffect(() => {
     const fetchPapers = async () => {
@@ -57,10 +64,12 @@ function AdminPapers() {
     const matchesSearch =
       row.id.toLowerCase().includes(q) ||
       row.title.toLowerCase().includes(q) ||
-      row.authors.toLowerCase().includes(q);
+      (row.team_name && row.team_name.toLowerCase().includes(q)) ||
+      (row.domain_name && row.domain_name.toLowerCase().includes(q)) ||
+      (Array.isArray(row.authors) && row.authors.some(author => author.toLowerCase().includes(q)));
     const matchesStatus = filters.status ? row.status === filters.status : true;
-    const matchesTrack = filters.track ? row.track === filters.track : true;
-    return matchesSearch && matchesStatus && matchesTrack;
+    const matchesTeamName = filters.team_name ? row.team_name === filters.team_name : true;
+    return matchesSearch && matchesStatus && matchesTeamName;
   });
 
   const columns = [
@@ -72,7 +81,7 @@ function AdminPapers() {
     {
       key: "title",
       label: "Paper Title",
-      className: "min-w-[400px] whitespace-nowrap",
+      className: "min-w-[200px] whitespace-nowrap",
     },
     {
       key: "authors",
@@ -82,35 +91,47 @@ function AdminPapers() {
     {
       key: "submittedBy",
       label: "Submitted By",
-      className: "min-w-[300px] whitespace-nowrap",
+      className: "min-w-[100px] whitespace-nowrap",
     },
     {
       key: "date",
       label: "Date",
       className: "whitespace-nowrap",
     },
-    {
-      key: "status",
-      label: "Status",
-      render: (value) => {
-        const colors = {
-          "Under Review": "bg-blue-100 text-blue-700",
-          Pending: "bg-gray-200 text-gray-700",
-          Accepted: "bg-green-100 text-green-700",
-          Rejected: "bg-red-100 text-red-700",
-        };
-        return (
-          <span
-            className={`px-2 py-1 rounded-full text-xs sm:text-sm font-medium ${
-              colors[value] || "bg-gray-100 text-gray-700"
-            }`}
-          >
-            {value}
-          </span>
-        );
-      },
-      className: "whitespace-nowrap",
-    },
+   {
+  key: "status",
+  label: "Status",
+  className: "min-w-[100px] whitespace-nowrap",
+  render: (value) => {
+    const formatStatus = (status) =>
+      status
+        ? status
+            .toLowerCase()
+            .replace(/_/g, " ")
+            .replace(/\b\w/g, (c) => c.toUpperCase())
+        : "Pending";
+
+    const formatted = formatStatus(value);
+
+    const colors = {
+      "Under Review": "bg-blue-100 text-blue-700",
+      Pending: "bg-gray-200 text-gray-700",
+      Accepted: "bg-green-100 text-green-700",
+      Rejected: "bg-red-100 text-red-700",
+    };
+
+    return (
+      <span
+        className={`px-2 py-1 rounded-full text-xs sm:text-sm font-medium ${
+          colors[formatted] || "bg-gray-100 text-gray-700"
+        }`}
+      >
+        {formatted}
+      </span>
+    );
+  },
+},
+
     {
       key: "reviewer",
       label: "Reviewer",
@@ -122,21 +143,33 @@ function AdminPapers() {
         ),
       className: "whitespace-nowrap",
     },
-    {
-      key: "track",
-      label: "Track",
-      className: "whitespace-nowrap",
+    { 
+      key: "team", 
+      label: "Team", 
+      className: "min-w-[200px] text-center", 
+      render: (_, row) => (
+        <div className="flex flex-col items-center text-center w-full">
+          <div className="font-medium text-gray-900">{row.team_name || "-"}</div>
+          <div className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs italic font-small bg-blue-100 text-blue-800 mt-1">
+            {row.domain_name || "-"}
+          </div>
+        </div>
+      )
     },
+
     {
       key: "actions",
       label: "Actions",
       render: (_, row) => (
-        <button
-          onClick={() => alert(`Viewing details for ${row.id}`)}
-          className="p-1 rounded hover:bg-gray-100"
+         <button
+          onClick={() => {
+            setSelectedPaper(row);
+            setOpenPdf(true);
+          }}
+          className="flex items-center gap-1 text-sm border px-3 py-1 rounded hover:bg-gray-100"
           title="View"
         >
-          <Eye size={18} />
+         <Eye size={16} /> View
         </button>
       ),
       className: "whitespace-nowrap",
@@ -163,11 +196,11 @@ function AdminPapers() {
       ],
     },
     {
-      name: "track",
+      name: "Team Name",
       type: "select",
-      value: filters.track,
+      value: filters.team_name,
       options: [
-        { label: "All Tracks", value: "" },
+        { label: "All Teams", value: "" },
         { label: "AI/ML", value: "AI/ML" },
         { label: "Blockchain", value: "Blockchain" },
         { label: "Quantum", value: "Quantum" },
@@ -188,24 +221,7 @@ function AdminPapers() {
           <h1 className="text-xl sm:text-2xl font-bold truncate w-full sm:w-auto">
             Paper Management
           </h1>
-          <div className="flex flex-wrap shrink-0">
-            <CommonButton
-              icon={Download}
-              label="Export CSV"
-              onClick={async () => {
-                const { data } = await axios.get(
-                  `${API_BASE_URL}/papers/${row.id}`,
-                  {
-                    headers: {
-                      Authorization: `Bearer ${localStorage.getItem("token")}`,
-                    },
-                  }
-                );
-                console.log("Paper details:", data);
-              }}
-              className="min-w-[120px]"
-            />
-          </div>
+       
         </div>
 
         <div className="min-w-0">
@@ -225,6 +241,20 @@ function AdminPapers() {
           scrollableBodyHeight="calc(100vh - 250px)" // adjust as needed
         />
       </div>
+     {selectedPaper && (
+  <PdfViewerModal
+    open={openPdf}
+    onClose={() => setOpenPdf(false)}
+    title={selectedPaper.title}
+    pdfUrl={
+      selectedPaper.pdf_path?.startsWith("http")
+        ? selectedPaper.pdf_path
+        : `${API_BASE_URL.replace("/api", "")}${selectedPaper.pdf_path?.startsWith("/") ? selectedPaper.pdf_path : "/" + selectedPaper.pdf_path}`
+    }
+    rawPath={selectedPaper.pdf_path}
+  />
+)}
+
     </div>
   );
 }

@@ -349,7 +349,7 @@ class AssignmentController {
                     proposal_id:
                       item_type === "proposal" ? parseInt(item_id, 10) : null,
                     assigned_date: new Date(),
-                    due_date: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000), // 14 days
+                    due_date: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000), 
                     status: "PENDING", // enum in schema
                   },
                 })
