@@ -1,66 +1,50 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
 
 const AcceptedPaper = () => {
-  const papers = [
-    {
-      title: "Deep Learning for Medical Diagnosis",
-      authors: "Dr. Sarah Johnson, Dr. Michael Chen",
-      department: "Computer Science Department",
-      abstract:
-        "Novel approaches to medical image analysis using deep neural networks...",
-      tags: ["AI", "Medical"],
-    },
-    {
-      title: "Quantum Computing Applications",
-      authors: "Dr. Alex Thompson, Dr. Lisa Park",
-      department: "Physics Department",
-      abstract:
-        "Exploring quantum algorithms for optimization problems...",
-      tags: ["Quantum", "Computing"],
-    },
-    {
-      title: "Robotics in Healthcare",
-      authors: "Dr. Emily Rodriguez, Dr. James Wilson",
-      department: "Engineering Department",
-      abstract:
-        "Development of autonomous robotic systems for surgical assistance...",
-      tags: ["Robotics", "Healthcare"],
-    },
-    {
-      title: "Blockchain in Supply Chain",
-      authors: "Dr. John Carter, Dr. Alice Green",
-      department: "Business Department",
-      abstract:
-        "Improving transparency and efficiency in supply chains using blockchain...",
-      tags: ["Blockchain", "Business"],
-    },
-    {
-      title: "Sustainable Energy Systems",
-      authors: "Dr. Mark Taylor, Dr. Linda White",
-      department: "Engineering Department",
-      abstract:
-        "Designing and implementing renewable energy solutions for modern cities...",
-      tags: ["Energy", "Sustainability"],
-    },
-  ];
-
+  const [papers, setPapers] = useState([]); // start with empty array
+  const [loading, setLoading] = useState(true);
   const [showAll, setShowAll] = useState(false);
   const [selectedDepartment, setSelectedDepartment] = useState("All Departments");
   const [selectedTopic, setSelectedTopic] = useState("All Topics");
 
-  const filteredPapers = papers.filter((paper) => {
+  // Fetch accepted papers from backend API
+  useEffect(() => {
+    const fetchPapers = async () => {
+      try {
+        const res = await axios.get("/admin/papers"); // <-- make sure this matches your backend route
+        setPapers(res.data?.papers || []); // safe fallback if undefined
+      } catch (error) {
+        console.error("Failed to fetch accepted papers:", error);
+        setPapers([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPapers();
+  }, []);
+
+  if (loading) {
+    return (
+      <section className="px-4 sm:px-6 md:px-12 py-8 bg-gray-200 min-h-screen flex justify-center items-center">
+        <p className="text-gray-700 text-lg">Loading papers...</p>
+      </section>
+    );
+  }
+
+  // Filter papers safely
+  const filteredPapers = (papers || []).filter((paper) => {
     const matchesDepartment =
       selectedDepartment === "All Departments" ||
-      paper.department.includes(selectedDepartment);
+      paper.department?.includes(selectedDepartment);
     const matchesTopic =
       selectedTopic === "All Topics" ||
-      paper.tags.includes(selectedTopic);
+      paper.tags?.includes(selectedTopic);
     return matchesDepartment && matchesTopic;
   });
 
-  const displayedPapers = showAll
-    ? filteredPapers
-    : filteredPapers.slice(0, 3);
+  const displayedPapers = showAll ? filteredPapers : filteredPapers.slice(0, 3);
 
   return (
     <section className="px-4 sm:px-6 md:px-12 py-8 bg-gray-200 min-h-screen flex flex-col">
@@ -74,9 +58,10 @@ const AcceptedPaper = () => {
             className="border border-gray-300 rounded px-3 py-1.5 text-sm"
           >
             <option>All Departments</option>
-            <option>Computer Science and Engineering</option>
-            <option> Electrical and electronic Engineering</option>
-        
+            <option>Computer Science Department</option>
+            <option>Physics Department</option>
+            <option>Engineering Department</option>
+            <option>Business Department</option>
           </select>
           <select
             value={selectedTopic}
@@ -99,11 +84,11 @@ const AcceptedPaper = () => {
       </div>
 
       {/* Papers Grid */}
-      <div className="grid gap-4 grid-cols-1  md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
         {displayedPapers.map((paper, idx) => (
           <div
             key={idx}
-            className="bg-white border rounded-lg md:h-5/5 shadow-sm md:p-12  p-6 space-y-3 flex flex-col h-full"
+            className="bg-white border rounded-lg md:h-5/5 shadow-sm md:p-12 p-6 space-y-3 flex flex-col h-full"
           >
             <div>
               <h3 className="text-xl font-bold md:mb-2">{paper.title}</h3>
@@ -114,7 +99,7 @@ const AcceptedPaper = () => {
             </div>
             <p className="text-sm text-gray-800 flex-grow">{paper.abstract}</p>
             <div className="flex flex-wrap gap-1">
-              {paper.tags.map((tag, i) => (
+              {paper.tags?.map((tag, i) => (
                 <span
                   key={i}
                   className="bg-gray-100 text-xs text-gray-800 px-2 py-0.5 rounded"
@@ -137,7 +122,7 @@ const AcceptedPaper = () => {
 
       {/* Toggle Button */}
       {filteredPapers.length > 3 && (
-        <div className="mt-6 flex  justify-center">
+        <div className="mt-6 flex justify-center">
           <button
             onClick={() => setShowAll(!showAll)}
             className="border border-gray-300 px-5 py-1.5 text-white bg-gray-800 rounded text-sm hover:bg-gray-700 w-full sm:w-auto"

@@ -1,18 +1,21 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaUsers, FaFileAlt, FaFileInvoice, FaStickyNote } from "react-icons/fa";
+import axios from "axios";
 
-const getInitials = (name) =>
-  name
-    .split(" ")
-    .map((n) => n[0])
-    .join("")
-    .toUpperCase();
+const getInitials = (name) => name
+  .split(" ")
+  .map((n) => n[0])
+  .join("")
+  .toUpperCase();
 
 const statusColors = {
   Active: "bg-green-100 text-green-800",
   Recruiting: "bg-yellow-100 text-yellow-800",
   Inactive: "bg-gray-100 text-gray-600",
+  ACTIVE: "bg-green-100 text-green-800",
+  RECRUITING: "bg-yellow-100 text-yellow-800", 
+  INACTIVE: "bg-gray-100 text-gray-600",
 };
 
 const categoryColors = {
@@ -23,241 +26,208 @@ const categoryColors = {
   "Cybersecurity": "bg-yellow-100 text-yellow-800",
   "Data Science": "bg-teal-100 text-teal-800",
   "Virtual Reality": "bg-blue-100 text-blue-800",
+  "Machine Learning": "bg-purple-100 text-purple-800",
+  "Web Development": "bg-green-100 text-green-800",
+  "Mobile Development": "bg-blue-100 text-blue-800",
+  "Uncategorized": "bg-gray-200 text-gray-700",
 };
 
-const TeamCard = ({
-  name,
-  desc,
-  category,
-  status,
-  members,
-  files,
-  notes,
-  settings,
-  onClick,
-}) => {
+const TeamCard = ({ team, onClick }) => {
   return (
     <div
       onClick={onClick}
       className="bg-white rounded-lg shadow-md p-6 flex flex-col h-full transition-transform hover:scale-[1.03] hover:shadow-xl cursor-pointer"
     >
       <div className="flex justify-between items-center mb-3">
-        <h3 className="text-xl font-semibold text-gray-900">{name}</h3>
+        <h3 className="text-xl font-semibold text-gray-900">{team.name}</h3>
         <span
           className={`px-3 py-1 rounded-full text-sm font-semibold ${
-            statusColors[status] || "bg-gray-100 text-gray-600"
+            statusColors[team.status] || "bg-gray-100 text-gray-600"
           }`}
         >
-          {status}
+          {team.status}
         </span>
       </div>
-
-      <p className="text-gray-700 mb-4 min-h-[56px]">{desc}</p>
-
+      
+      <p className="text-gray-700 mb-4 min-h-[56px]">
+        {team.desc || "No description available"}
+      </p>
+      
       <span
         className={`inline-block mb-4 px-3 py-1 rounded-full text-sm font-semibold ${
-          categoryColors[category] || "bg-gray-200 text-gray-700"
+          categoryColors[team.category] || "bg-gray-200 text-gray-700"
         }`}
       >
-        {category}
+        {team.category}
       </span>
 
       <div className="flex items-center gap-3 mb-4">
         <FaUsers className="text-gray-500" />
         <div className="flex -space-x-2">
-          {members.map((m) => (
+          {team.firstThreeMembers?.map((member) => (
             <div
-              key={m.id}
-              title={m.name}
+              key={member.id}
+              title={member.name}
               className="w-7 h-7 rounded-full bg-blue-500 text-white flex items-center justify-center text-xs font-semibold border-2 border-white shadow"
             >
-              {getInitials(m.name)}
+              {getInitials(member.name)}
             </div>
           ))}
+          {team.membersCount > 3 && (
+            <div className="w-7 h-7 rounded-full bg-gray-400 text-white flex items-center justify-center text-xs font-semibold border-2 border-white shadow">
+              +{team.membersCount - 3}
+            </div>
+          )}
         </div>
         <span className="text-sm text-gray-600 ml-2">
-          {members.length} member{members.length !== 1 ? "s" : ""}
+          {team.membersCount} member{team.membersCount !== 1 ? "s" : ""}
         </span>
       </div>
 
       <div className="flex flex-col space-y-1 text-gray-500 text-sm mb-4">
-        {files.paper && (
-          <div className="flex items-center gap-2">
-            <FaFileAlt /> <span>{files.paper}</span>
-          </div>
-        )}
-        {files.proposal && (
-          <div className="flex items-center gap-2">
-            <FaFileInvoice /> <span>{files.proposal}</span>
-          </div>
-        )}
-        {notes && (
-          <div className="flex items-center gap-2">
-            <FaStickyNote /> <span>{notes}</span>
-          </div>
-        )}
+        <div className="flex items-center gap-2">
+          <FaFileAlt />
+          <span>Papers: {team.paperCount || 0}</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <FaFileInvoice />
+          <span>Proposals: {team.proposalCount || 0}</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <FaStickyNote />
+          <span>Comments: {team.commentCount || 0}</span>
+        </div>
       </div>
 
       <hr className="my-3 border-gray-200" />
-
+      
       <div className="text-gray-600 text-xs space-y-1 mt-auto">
         <div>
-          <strong>Visibility:</strong> {settings.visibility}
+          <strong>Created:</strong> {new Date(team.createdAt).toLocaleDateString()}
         </div>
         <div>
-          <strong>Max Members:</strong> {settings.maxMembers}
-        </div>
-        <div>
-          <strong>Allow Applications:</strong> {settings.allowApps ? "Yes" : "No"}
+          <strong>Team ID:</strong> {team.id}
         </div>
       </div>
     </div>
   );
 };
 
-const teams = [
-  {
-    id: "team1",
-    name: "AI Research 2025",
-    desc: "Exploring ML in healthcare diagnostics and treatment optimization.",
-    category: "Healthcare AI",
-    status: "Active",
-    members: [
-      { id: "m1", name: "Alice", role: "Lead" },
-      { id: "m2", name: "Bob", role: "Researcher" },
-      { id: "m3", name: "Carol", role: "Data Scientist" },
-    ],
-    files: { paper: "ml_healthcare.pdf", proposal: "proposal_ai.docx" },
-    notes: "Focus on diagnostic algorithms.",
-    settings: { visibility: "public", maxMembers: 10, allowApps: true },
-  },
-  {
-    id: "team2",
-    name: "Quantum Computing Lab",
-    desc: "Quantum algorithms and implementations in cryptography.",
-    category: "Quantum Computing",
-    status: "Recruiting",
-    members: [
-      { id: "m4", name: "Dave", role: "Lead" },
-      { id: "m5", name: "Eve", role: "Researcher" },
-    ],
-    files: { paper: null, proposal: "quantum_proposal.pdf" },
-    notes: "",
-    settings: { visibility: "private", maxMembers: 5, allowApps: false },
-  },
-  {
-    id: "team3",
-    name: "Biotech Innovation",
-    desc: "Biotech for environmental challenges and agriculture.",
-    category: "Biotechnology",
-    status: "Active",
-    members: [
-      { id: "m6", name: "Frank", role: "Lead" },
-      { id: "m7", name: "Grace", role: "Researcher" },
-      { id: "m8", name: "Heidi", role: "Scientist" },
-    ],
-    files: { paper: "biotech_paper.pdf", proposal: null },
-    notes: "Focus on sustainable agriculture.",
-    settings: { visibility: "public", maxMembers: 8, allowApps: true },
-  },
-  {
-    id: "team4",
-    name: "Robotics Division",
-    desc: "Developing autonomous robotic systems.",
-    category: "Robotics",
-    status: "Active",
-    members: [
-      { id: "m9", name: "Ivan", role: "Lead" },
-      { id: "m10", name: "Judy", role: "Engineer" },
-    ],
-    files: { paper: "robotics_paper.pdf", proposal: "robotics_proposal.docx" },
-    notes: "",
-    settings: { visibility: "public", maxMembers: 12, allowApps: true },
-  },
-  {
-    id: "team5",
-    name: "Cybersecurity Experts",
-    desc: "Researching next-gen security protocols.",
-    category: "Cybersecurity",
-    status: "Recruiting",
-    members: [
-      { id: "m11", name: "Mallory", role: "Lead" },
-      { id: "m12", name: "Niaj", role: "Analyst" },
-    ],
-    files: { paper: null, proposal: "security_proposal.pdf" },
-    notes: "Focusing on network security.",
-    settings: { visibility: "private", maxMembers: 6, allowApps: false },
-  },
-  {
-    id: "team6",
-    name: "Data Science Hub",
-    desc: "Big data analytics and visualization.",
-    category: "Data Science",
-    status: "Active",
-    members: [
-      { id: "m13", name: "Olivia", role: "Lead" },
-      { id: "m14", name: "Peggy", role: "Data Analyst" },
-      { id: "m15", name: "Quentin", role: "Engineer" },
-    ],
-    files: { paper: "data_science.pdf", proposal: null },
-    notes: "",
-    settings: { visibility: "public", maxMembers: 15, allowApps: true },
-  },
-  {
-    id: "team7",
-    name: "VR/AR Experience",
-    desc: "Immersive tech development.",
-    category: "Virtual Reality",
-    status: "Active",
-    members: [{ id: "m16", name: "Rupert", role: "Developer" }],
-    files: { paper: null, proposal: null },
-    notes: "",
-    settings: { visibility: "public", maxMembers: 7, allowApps: true },
-  },
-];
-
 const TeamsPage = () => {
   const navigate = useNavigate();
-  const [showCount, setShowCount] = useState(3);
+  const [teams, setTeams] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [showCount, setShowCount] = useState(6);
 
-  const handleClick = () => {
-    setShowCount((prev) => (prev === 3 ? 6 : 3));
+  const BASE_URL = "http://localhost:8000/api";
+  const token = localStorage.getItem("token");
+  const headers = { Authorization: `Bearer ${token}` };
+
+  useEffect(() => {
+    fetchTeams();
+  }, []);
+
+  const fetchTeams = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      
+      const response = await axios.get(`${BASE_URL}/admin/teams`, {
+        headers,
+        withCredentials: true
+      });
+      
+      if (response.data.success) {
+        // Transform the data to match the expected format
+        const transformedTeams = response.data.teams.map(team => ({
+          ...team,
+          paperCount: team.files?.papers?.length || 0,
+          proposalCount: team.files?.proposals?.length || 0,
+          commentCount: team.files?.comments?.length || 0,
+        }));
+        setTeams(transformedTeams);
+      } else {
+        setError('Failed to fetch teams');
+      }
+    } catch (err) {
+      console.error('Error fetching teams:', err);
+      setError(err.response?.data?.message || 'Failed to fetch teams');
+    } finally {
+      setLoading(false);
+    }
   };
+
+  const handleTeamClick = (teamId) => {
+    navigate(`/admin/teams/${teamId}`);
+  };
+
+  const handleToggleView = () => {
+    setShowCount((prev) => (prev === 6 ? teams.length : 6));
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 p-8 flex flex-col items-center justify-center">
+        <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600"></div>
+        <p className="mt-4 text-gray-600">Loading teams...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50 p-8 flex flex-col items-center justify-center">
+        <div className="text-red-600 text-center">
+          <p className="text-xl font-semibold mb-2">Error Loading Teams</p>
+          <p className="mb-4">{error}</p>
+          <button
+            onClick={fetchTeams}
+            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+          >
+            Try Again
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   const displayedTeams = teams.slice(0, showCount);
 
   return (
-    <div className="border rounded-lg min-h-screen bg-gray-50 p-8 flex flex-col items-center">
+    <div className="min-h-screen bg-gray-50 p-8 flex flex-col items-center">
       <h1 className="text-3xl font-extrabold mb-10 text-gray-900">
         Research Teams
       </h1>
-      <div className="w-full max-w-7xl flex flex-wrap gap-8 mb-8 justify-center">
-        {displayedTeams.map((team) => (
-  <div
-    key={team.id}
-    className="w-80"
-    onClick={() => navigate(`/AdminDashboard/teams/${team.id}`)}
-  >
-    <TeamCard
-      name={team.name}
-      desc={team.desc}
-      category={team.category}
-      status={team.status}
-      members={team.members}
-      files={team.files}
-      notes={team.notes}
-      settings={team.settings}
-    />
-  </div>
-))}
 
-      </div>
-      <button
-        onClick={handleClick}
-        className="bg-blue-600 text-white font-semibold px-8 py-3 rounded-full shadow-lg hover:bg-blue-700 transition-transform active:scale-95"
-      >
-        {showCount === 3 ? "View More" : "Show Less"}
-      </button>
+      {teams.length === 0 ? (
+        <div className="text-center text-gray-500">
+          <p className="text-xl mb-4">No teams found</p>
+          <p>Teams will appear here once they are created</p>
+        </div>
+      ) : (
+        <>
+          <div className="w-full max-w-7xl flex flex-wrap gap-8 mb-8 justify-center">
+            {displayedTeams.map((team) => (
+              <div key={team.id} className="w-80">
+                <TeamCard
+                  team={team}
+                  onClick={() => handleTeamClick(team.id)}
+                />
+              </div>
+            ))}
+          </div>
+
+          {teams.length > 6 && (
+            <button
+              onClick={handleToggleView}
+              className="bg-blue-600 text-white font-semibold px-8 py-3 rounded-full shadow-lg hover:bg-blue-700 transition-transform active:scale-95"
+            >
+              {showCount >= teams.length ? "Show Less" : `View All (${teams.length})`}
+            </button>
+          )}
+        </>
+      )}
     </div>
   );
 };

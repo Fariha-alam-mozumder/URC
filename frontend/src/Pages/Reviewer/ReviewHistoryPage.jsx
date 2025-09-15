@@ -1,6 +1,6 @@
 // components/Reviewer/ReviewHistoryPage.jsx
 import React, { useState } from 'react';
-import StatCard from '../../components/Common/statcard';
+import StatCard from '../../components/Common/StatCard';
 import ChartCard from '../../components/Common/ChartCard';
 import FilterBar from '../../components/Common/FilterBar';
 import ReviewTable from '../../components/Common/ReviewTable';
@@ -14,24 +14,6 @@ const stats = [
 ];
 
 const tableData = [
-  {
-    id: 1,
-    title: 'AI-Powered Sentiment Analysis for Social Media',
-    description: 'Innovative approach to real-time sentiment detection...',
-    team: 'Team Alpha',
-    date: 'Jan 15, 2025',
-    status: 'Approved',
-    score: 4.2
-  },
-  {
-    id: 2,
-    title: 'Blockchain Implementation in Healthcare',
-    description: 'Secure patient data management...',
-    team: 'Team Beta',
-    date: 'Jan 12, 2025',
-    status: 'Needs Revision',
-    score: 3.8
-  },
   {
     id: 3,
     title: 'IoT Network Security Framework',
@@ -57,11 +39,8 @@ const ReviewHistoryPage = () => {
   };
 
   const filterConfig = [
-  { type: 'input', name: 'search', placeholder: 'Search by title or team', value: filters.search },
-  { type: 'input', name: 'date', inputType: 'date', placeholder: 'Select date', value: filters.date },
-  { type: 'select', name: 'status', options: ['All Status', 'Approved', 'Needs Revision', 'Rejected'], value: filters.status },
-  { type: 'select', name: 'area', options: ['All Areas', 'AI', 'Healthcare', 'IoT'], value: filters.area },
-  { type: 'select', name: 'sort', options: ['Latest First', 'Oldest First'], value: filters.sort },
+  { type: 'input', name: 'search', placeholder: 'Search by title or team', value: filters.search }, 
+  { type: 'select', name: 'status', options: ['All Status', 'Approved', 'Needs Revision', 'Rejected'], value: filters.status }, 
 ];
 
 

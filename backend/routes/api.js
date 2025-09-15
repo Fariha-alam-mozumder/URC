@@ -20,6 +20,14 @@ import AdminPaperController from "../controllers/admin/AdminPaperController.js";
 import ReviewController from "../controllers/reviewer/ReviewController.js";
 import ReviewerAssignedController from '../controllers/reviewer/AssignedController.js';
 import DepartmentController from "../controllers/admin/DepartmentController.js"
+import DashReviewerAssignedController from "../controllers/reviewer/reviewAssignController.js";
+import RecentSubmissionController from "../controllers/admin/RecentSubmission.js";
+import AdminTeamController from "../controllers/admin/TeamController.js";
+import StatsController from "../controllers/admin/StatsController.js";
+import SubmissionTrendsController from "../controllers/admin/SubmissionTrendsController.js";
+import StatusDistributionController from "../controllers/admin/StatusDistributionController.js";
+import ReviewerWorkloadController from "../controllers/admin/ReviewerWorkloadController.js";
+
 
 const router = Router();
 
@@ -127,6 +135,56 @@ router.get("/reviewers/:id/workload", authMiddleware, ReviewerController.getWork
 // router.get("/reviews/by-item/:code", authMiddleware, ReviewController.listReviewsForItemByCode);
 // router.get("/reviews/:reviewId/attachment", authMiddleware, ReviewController.downloadReviewAttachment);
 
+// Admin-only route to get all recent submissions
+router.get(
+  "/admin/recent-submissions",
+  authMiddleware,
+  adminOnly,
+  RecentSubmissionController.getAllSubmissions
+);
+
+router.get(
+  "/admin/teams",
+  authMiddleware,
+  adminOnly,
+  AdminTeamController.index
+);
+
+router.get(
+  "/admin/teams/:id",
+  authMiddleware,
+  adminOnly,
+  AdminTeamController.show
+);
+
+router.get(
+  "/admin/stats",
+  authMiddleware,
+  adminOnly,
+  StatsController.getDashboardStats
+);
+
+// Admin-only route for submission trends
+router.get(
+  "/admin/submission-trends",
+  authMiddleware,
+  adminOnly,
+  SubmissionTrendsController.getTrends
+);
+
+router.get(
+  "/admin/status-distribution",
+  authMiddleware,
+  adminOnly,
+  StatusDistributionController.getDistribution
+);
+
+router.get(
+  "/admin/reviewer-workload",
+  authMiddleware,
+  adminOnly,
+  ReviewerWorkloadController.getReviewerWorkload
+);
 
 
 //! Assignment Routes (Admin only)
@@ -182,6 +240,7 @@ router.get(
   AdminPaperController.getAllPapers
 );
 
+
 //!reviewer Routes
 router.get(
   "/reviewer/assigned-papers",
@@ -223,6 +282,14 @@ router.post(
   reviewerOnly,
   ReviewController.submitReviewByCode
 );
+
+// Reviewer assigned papers (new route)
+router.get(
+  "/reviewer/assigned-papers2",
+  authMiddleware,
+  DashReviewerAssignedController.getAssignedPapers
+);
+
 
 
 
