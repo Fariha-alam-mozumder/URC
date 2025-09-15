@@ -38,9 +38,10 @@ Prerequisites:
 
 Installation:
 
+   ```bash
    # Clone repository
    git clone https://github.com/Fariha-alam-mozumder/URC/
-   cd urcms
+   cd urc
 
    # Backend setup
    cd backend
