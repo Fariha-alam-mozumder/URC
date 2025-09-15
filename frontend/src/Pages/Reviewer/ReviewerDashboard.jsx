@@ -7,7 +7,7 @@ import {
 } from 'react-icons/fa';
 
 import AssignedPapersTable from '../../components/Reviewer/AssignedPapersTable';
-import StatCard from '../../components/Common/StatCard';
+import statCard from '../../components/Common/statcard';
 
 const ReviewerDashboard = () => {
   return (

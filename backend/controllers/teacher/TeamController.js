@@ -310,6 +310,7 @@ class TeamController {
     const students = await db.student.findMany({
       where: { department_id: deptId, ...domainFilter },
       include: {
+        department: { select: { department_name: true } },
         user: {
           select: {
             user_id: true,
@@ -338,6 +339,7 @@ class TeamController {
         ...domainFilter,
       },
       include: {
+        department: { select: { department_name: true } },
         user: {
           select: {
             user_id: true,
@@ -375,6 +377,7 @@ class TeamController {
       name: userRecord.user.name,
       email: userRecord.user.email,
       role: userRecord.user.role,
+      department: userRecord.department?.department_name || "N/A", 
       domains: userRecord.user.userdomain.map((ud) => ud.domain.domain_name),
       matchingDomains: getMatchingDomains(userRecord.user.userdomain),
     });

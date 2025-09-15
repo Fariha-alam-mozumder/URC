@@ -17,6 +17,7 @@ const MemberList = ({
   const [allMembers, setAllMembers] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [selected, setSelected] = useState([]);
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     if (!departmentId && !creatorUserId) return;
@@ -62,11 +63,23 @@ const MemberList = ({
     else setMembers((prev) => [...prev, ...selectedMembers]);
     setSelected([]);
     setShowModal(false);
+    setSearch("");
   };
 
   const headerCount = pickerMode ? "" : ` (${members.length})`;
 
-  // Component to display domain tags
+const filteredMembers = allMembers.filter((member) => {
+  const q = search.toLowerCase();
+  return (
+    member.name.toLowerCase().includes(q) ||
+    member.email.toLowerCase().includes(q) ||
+    (member.department || "").toLowerCase().includes(q) ||
+    (member.domains || []).some((d) =>
+      (d.domain_name || "").toLowerCase().includes(q)
+    )
+  );
+});
+
   const DomainTags = ({ domains, matchingDomains, isCompact = false }) => {
     if (!domains || domains.length === 0) return null;
 
@@ -83,9 +96,7 @@ const MemberList = ({
                   ? "bg-green-100 text-green-800 border border-green-200"
                   : "bg-gray-100 text-gray-600 border border-gray-200"
               }`}
-              title={
-                isMatching ? "Matching domain with creator" : "User domain"
-              }
+              title={isMatching ? "Matching domain with creator" : "User domain"}
             >
               {domain}
             </span>
@@ -95,7 +106,7 @@ const MemberList = ({
     );
   };
 
-  // If in picker mode, just render the button
+  // Picker mode rendering
   if (pickerMode) {
     return (
       <>
@@ -110,12 +121,20 @@ const MemberList = ({
           <div className="fixed inset-0 bg-black bg-opacity-40 z-50 flex justify-center items-center">
             <div className="bg-white p-6 rounded shadow-md w-[600px] max-w-[90vw]">
               <h4 className="text-lg font-bold mb-4">Select Members</h4>
+
+              <input
+                type="text"
+                placeholder="Search by name, email, department, or domain"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="w-full border rounded px-3 py-2 mb-3 text-sm"
+              />
+
               <div className="space-y-3 max-h-96 overflow-y-auto mb-4">
-                {allMembers.length > 0 ? (
-                  allMembers.map((member) => {
+                {filteredMembers.length > 0 ? (
+                  filteredMembers.map((member) => {
                     const disabled = existing.includes(member.user_id);
-                    const checked =
-                      selected.includes(member.user_id) || disabled;
+                    const checked = selected.includes(member.user_id) || disabled;
                     return (
                       <label
                         key={member.user_id}
@@ -143,9 +162,13 @@ const MemberList = ({
                             )}
                           </div>
 
-                          <div className="flex items-center gap-1 text-sm text-gray-600 mt-1">
+                          <div className="flex items-center gap-2 text-sm text-gray-600 mt-1">
                             <FaEnvelope className="text-xs" />
                             <span>{member.email}</span>
+                            <span className="text-gray-400">|</span>
+                            <span className="italic text-gray-500 text-xs">
+                              {member.department || "N/A"}
+                            </span>
                           </div>
 
                           <DomainTags
@@ -159,10 +182,9 @@ const MemberList = ({
                               <div className="text-xs text-green-600 mt-1 flex items-center gap-1">
                                 <FaTags className="text-xs" />
                                 <span>
-                                  {member.matchingDomains.length} matching
-                                  domain
-                                  {member.matchingDomains.length > 1 ? "s" : ""}{" "}
-                                  with creator
+                                  {member.matchingDomains.length} matching domain
+                                  {member.matchingDomains.length > 1 ? "s" : ""} with
+                                  creator
                                 </span>
                               </div>
                             )}
@@ -174,6 +196,7 @@ const MemberList = ({
                   <p className="text-sm text-gray-500">No members found.</p>
                 )}
               </div>
+
               <div className="flex justify-end gap-3">
                 <button
                   onClick={() => setShowModal(false)}
@@ -200,7 +223,7 @@ const MemberList = ({
     );
   }
 
-  // Original component for non-picker mode
+  // Non-picker mode rendering
   return (
     <div className="bg-white p-4 rounded shadow h-fit">
       <div className="flex justify-between items-center mb-4">
@@ -218,26 +241,22 @@ const MemberList = ({
 
       <ul className="space-y-4">
         {members.map((member) => (
-          <li
-            key={member.user_id}
-            className="flex items-start gap-3 p-3 border border-gray-200 rounded-lg"
-          >
+          <li key={member.user_id} className="flex items-start gap-3 p-3 border border-gray-200 rounded-lg">
             <FaUserCircle className="text-2xl text-gray-500 mt-1" />
             <div className="flex-1">
               <div className="flex items-center gap-2">
                 <p className="font-medium text-lg">{member.name}</p>
                 <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
-                  {member.role}
+                  {member.role_in_team}
                 </span>
               </div>
-              <div className="flex items-center gap-1 text-sm text-gray-600 mt-1">
+              <div className="flex items-center gap-2 text-sm text-gray-600 mt-1">
                 <FaEnvelope className="text-xs" />
                 <span>{member.email}</span>
+                <span className="text-gray-400">|</span>
+                <span className="italic text-gray-500 text-xs">{member.department || "N/A"}</span>
               </div>
-              <DomainTags
-                domains={member.domains}
-                matchingDomains={member.matchingDomains}
-              />
+              <DomainTags domains={member.domains} matchingDomains={member.matchingDomains} />
             </div>
           </li>
         ))}
@@ -247,9 +266,18 @@ const MemberList = ({
         <div className="fixed inset-0 bg-black bg-opacity-40 z-50 flex justify-center items-center">
           <div className="bg-white p-6 rounded shadow-md w-[600px] max-w-[90vw]">
             <h4 className="text-lg font-bold mb-4">Select Members</h4>
+
+            <input
+              type="text"
+              placeholder="Search by name, email, department, or domain"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full border rounded px-3 py-2 mb-3 text-sm"
+            />
+
             <div className="space-y-3 max-h-96 overflow-y-auto mb-4">
-              {allMembers.length > 0 ? (
-                allMembers.map((member) => {
+              {filteredMembers.length > 0 ? (
+                filteredMembers.map((member) => {
                   const disabled = existing.includes(member.user_id);
                   const checked = selected.includes(member.user_id) || disabled;
                   return (
@@ -279,9 +307,11 @@ const MemberList = ({
                           )}
                         </div>
 
-                        <div className="flex items-center gap-1 text-sm text-gray-600 mt-1">
+                        <div className="flex items-center gap-2 text-sm text-gray-600 mt-1">
                           <FaEnvelope className="text-xs" />
                           <span>{member.email}</span>
+                          <span className="text-gray-400">|</span>
+                          <span className="italic text-gray-500 text-xs">{member.department || "N/A"}</span>
                         </div>
 
                         <DomainTags
@@ -296,8 +326,7 @@ const MemberList = ({
                               <FaTags className="text-xs" />
                               <span>
                                 {member.matchingDomains.length} matching domain
-                                {member.matchingDomains.length > 1 ? "s" : ""}{" "}
-                                with creator
+                                {member.matchingDomains.length > 1 ? "s" : ""} with creator
                               </span>
                             </div>
                           )}
@@ -309,6 +338,7 @@ const MemberList = ({
                 <p className="text-sm text-gray-500">No members found.</p>
               )}
             </div>
+
             <div className="flex justify-end gap-3">
               <button
                 onClick={() => setShowModal(false)}

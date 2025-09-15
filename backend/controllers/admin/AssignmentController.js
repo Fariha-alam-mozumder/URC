@@ -1,6 +1,7 @@
+// controllers/admin/AssignmentController.js
 import prisma from "../../DB/db.config.js";
 import logger from "../../config/logger.js";
-import { Vine, errors } from "@vinejs/vine";
+import { Vine } from "@vinejs/vine";
 import { getDocumentUrl } from "../../utils/helper.js";
 import {
   assignReviewersSchema,
@@ -9,35 +10,76 @@ import {
 
 const vine = new Vine();
 
+/**
+ * Helper: load context for a paper/proposal:
+ * - domain_id
+ * - submitting teacher (teacher_id & user_id)
+ * - team_user_ids (all authors/members' user_id)
+ */
+async function getItemContext(prismaClient, item_type, item_id) {
+  if (String(item_type) === "paper") {
+    const p = await prismaClient.paper.findUnique({
+      where: { paper_id: parseInt(item_id, 10) },
+      include: {
+        teacher: { select: { teacher_id: true, user_id: true } },
+        team: {
+          select: {
+            team_id: true,
+            domain: { select: { domain_id: true } },
+            teammember: { select: { user_id: true } },
+          },
+        },
+      },
+    });
+    if (!p) return null;
+    return {
+      domain_id: p.team?.domain?.domain_id ?? null,
+      submitting_teacher_id: p.teacher?.teacher_id ?? null,
+      submitting_teacher_user_id: p.teacher?.user_id ?? null,
+      team_user_ids: (p.team?.teammember || []).map((m) => Number(m.user_id)),
+      team_id: p.team?.team_id ?? null,
+      raw: p,
+    };
+  } else {
+    const pr = await prismaClient.proposal.findUnique({
+      where: { proposal_id: parseInt(item_id, 10) },
+      include: {
+        teacher: { select: { teacher_id: true, user_id: true } },
+        team: {
+          select: {
+            team_id: true,
+            domain: { select: { domain_id: true } },
+            teammember: { select: { user_id: true } },
+          },
+        },
+      },
+    });
+    if (!pr) return null;
+    return {
+      domain_id: pr.team?.domain?.domain_id ?? null,
+      submitting_teacher_id: pr.teacher?.teacher_id ?? null,
+      submitting_teacher_user_id: pr.teacher?.user_id ?? null,
+      team_user_ids: (pr.team?.teammember || []).map((m) => Number(m.user_id)),
+      team_id: pr.team?.team_id ?? null,
+      raw: pr,
+    };
+  }
+}
+
 class AssignmentController {
   // GET /api/assignments/waiting - Get papers/proposals waiting for reviewer assignment
   static async getWaitingAssignments(req, res) {
     try {
-      // Get papers without assigned reviewers
+      // Papers with no reviewerassignment
       const papersWaiting = await prisma.paper.findMany({
-        where: {
-          reviewerassignment: {
-            none: {},
-          },
-        },
+        where: { reviewerassignment: { none: {} } },
         include: {
           team: {
             include: {
-              domain: {
-                select: {
-                  domain_id: true,
-                  domain_name: true
-                }
-              }, // team’s domain
+              domain: { select: { domain_id: true, domain_name: true } },
               teammember: {
                 include: {
-                  user: {
-                    select: {
-                      user_id: true,
-                      name: true,
-                      email: true
-                    }
-                  },
+                  user: { select: { user_id: true, name: true, email: true } },
                 },
               },
             },
@@ -46,33 +88,16 @@ class AssignmentController {
         orderBy: { created_at: "desc" },
       });
 
-
-
-      // Get proposals without assigned reviewers
+      // Proposals with no reviewerassignment
       const proposalsWaiting = await prisma.proposal.findMany({
-        where: {
-          reviewerassignment: {
-            none: {},
-          },
-        },
+        where: { reviewerassignment: { none: {} } },
         include: {
           team: {
             include: {
-              domain: {
-                select: {
-                  domain_id: true,
-                  domain_name: true
-                }
-              }, // team’s domain
+              domain: { select: { domain_id: true, domain_name: true } },
               teammember: {
                 include: {
-                  user: {
-                    select: {
-                      user_id: true,
-                      name: true,
-                      email: true
-                    }
-                  },
+                  user: { select: { user_id: true, name: true, email: true } },
                 },
               },
             },
@@ -81,11 +106,8 @@ class AssignmentController {
         orderBy: { created_at: "desc" },
       });
 
-      // Transform papers to match frontend format
       const transformedPapers = papersWaiting.map((paper) => {
         const members = paper.team?.teammember ?? [];
-
-        // Only team members; remove duplicates by user_id
         const seen = new Set();
         const authors = members
           .filter((m) => {
@@ -94,7 +116,6 @@ class AssignmentController {
             seen.add(key);
             return true;
           })
-
           .map((m) => ({
             name: m.user?.name || "Member",
             email: m.user?.email || null,
@@ -106,9 +127,9 @@ class AssignmentController {
           type: "paper",
           title: paper.title || "Untitled Paper",
           abstract: paper.abstract || "No abstract available",
-          author: authors.map((a) => a.name).join(", "), // legacy string
-          authors, // structured list (names+emails only)
-          authorEmail: null, // optional now
+          author: authors.map((a) => a.name).join(", "),
+          authors,
+          authorEmail: null,
           status: paper.status || "Pending",
           submissionDate: new Date(paper.created_at).toLocaleDateString(),
           domain: paper.team?.domain?.domain_name || "Unknown",
@@ -119,11 +140,8 @@ class AssignmentController {
         };
       });
 
-      // Transform proposals to match frontend format
       const transformedProposals = proposalsWaiting.map((proposal) => {
         const members = proposal.team?.teammember ?? [];
-
-        // Only team members; remove duplicates by user_id
         const seen = new Set();
         const authors = members
           .filter((m) => {
@@ -132,7 +150,6 @@ class AssignmentController {
             seen.add(key);
             return true;
           })
-
           .map((m) => ({
             name: m.user?.name || "Member",
             email: m.user?.email || null,
@@ -144,9 +161,9 @@ class AssignmentController {
           type: "proposal",
           title: proposal.title || "Untitled proposal",
           abstract: proposal.abstract || "No abstract available",
-          author: authors.map((a) => a.name).join(", "), // legacy string
-          authors, // structured list (names+emails only)
-          authorEmail: null, // optional now
+          author: authors.map((a) => a.name).join(", "),
+          authors,
+          authorEmail: null,
           status: proposal.status || "Pending",
           submissionDate: new Date(proposal.created_at).toLocaleDateString(),
           domain: proposal.team?.domain?.domain_name || "Unknown",
@@ -157,14 +174,10 @@ class AssignmentController {
         };
       });
 
-      // Combine both papers and proposals
       const waitingItems = [...transformedPapers, ...transformedProposals];
 
-      // Get stats
       const availableReviewers = await prisma.reviewer.count({
-        where: {
-          status: "ACTIVE",
-        },
+        where: { status: "ACTIVE" },
       });
 
       const autoMatchAvailable = waitingItems.filter(
@@ -173,14 +186,14 @@ class AssignmentController {
 
       const stats = {
         awaitingAssignment: waitingItems.length,
-        availableReviewers: availableReviewers,
-        autoMatchAvailable: autoMatchAvailable,
+        availableReviewers,
+        autoMatchAvailable,
       };
 
       return res.status(200).json({
         success: true,
-        waitingItems: waitingItems,
-        stats: stats,
+        waitingItems,
+        stats,
         message: `Found ${waitingItems.length} items awaiting assignment`,
       });
     } catch (error) {
@@ -193,24 +206,29 @@ class AssignmentController {
     }
   }
 
-  // GET /api/assignments/reviewers - Get available reviewers
+  // GET /api/assignments/reviewers - Get available reviewers (excludes conflicts)
   static async getAvailableReviewers(req, res) {
     try {
       const { domain_id, item_type, item_id } = req.query;
 
-      // Base query for active reviewers
-      let whereCondition = {
-        status: "ACTIVE",
-      };
+      // Load context (if provided) to exclude conflicts
+      let ctx = null;
+      if (item_type && item_id) {
+        ctx = await getItemContext(prisma, String(item_type), parseInt(item_id, 10));
+        if (!ctx) {
+          return res
+            .status(404)
+            .json({ success: false, message: "Item not found" });
+        }
+      }
 
-      // If domain_id is provided, filter by domain expertise through teacher->user->userdomain
+      // Base query: ACTIVE reviewers (+ optional domain filtering)
+      let whereCondition = { status: "ACTIVE" };
       if (domain_id) {
         whereCondition.teacher = {
           user: {
             userdomain: {
-              some: {
-                domain_id: parseInt(domain_id, 10),
-              },
+              some: { domain_id: parseInt(domain_id, 10) },
             },
           },
         };
@@ -222,44 +240,51 @@ class AssignmentController {
           teacher: {
             select: {
               teacher_id: true,
+              user_id: true, // for direct compare when present in schema
               designation: true,
               user: {
                 select: {
+                  user_id: true, // ensure available for team-member check
                   name: true,
                   email: true,
-                  // Include user's domain preferences for expertise matching
                   userdomain: {
                     include: {
-                      domain: {
-                        select: {
-                          domain_id: true,
-                          domain_name: true,
-                        },
-                      },
+                      domain: { select: { domain_id: true, domain_name: true } },
                     },
                   },
                 },
               },
-              department: {
-                select: {
-                  department_name: true,
-                },
-              },
+              department: { select: { department_name: true } },
             },
           },
-          // Get current assignment count for workload balancing
           reviewerassignment: {
-            where: {
-              status: {
-                in: ["PENDING", "IN_PROGRESS"],
-              },
-            },
+            where: { status: { in: ["PENDING", "IN_PROGRESS"] } },
           },
         },
       });
 
+      // === Exclude conflicts: submitting teacher + any team member/author ===
+      const teamUserSet = new Set(ctx?.team_user_ids || []);
+      const submittingTeacherId = ctx?.submitting_teacher_id ?? null;
+
+      const filtered = reviewers.filter((rev) => {
+        // exclude submitting teacher
+        if (submittingTeacherId && rev.teacher?.teacher_id === submittingTeacherId) {
+          return false;
+        }
+        // exclude team members (by underlying user_id)
+        const uid =
+          Number(rev.teacher?.user?.user_id) ||
+          Number(rev.teacher?.user_id) ||
+          null;
+        if (uid && teamUserSet.has(uid)) {
+          return false;
+        }
+        return true;
+      });
+
       // Transform for frontend
-      const availableReviewers = reviewers.map((reviewer) => ({
+      const availableReviewers = filtered.map((reviewer) => ({
         id: reviewer.reviewer_id,
         name: reviewer.teacher?.user?.name || "Unknown Reviewer",
         email: reviewer.teacher?.user?.email || "Unknown",
@@ -267,7 +292,6 @@ class AssignmentController {
         department: reviewer.teacher?.department?.department_name || "Unknown",
         currentWorkload: reviewer.reviewerassignment?.length || 0,
         status: reviewer.status,
-        // Include reviewer's domain expertise from userdomain
         expertise:
           reviewer.teacher?.user?.userdomain?.map(
             (ud) => ud.domain.domain_name
@@ -278,20 +302,16 @@ class AssignmentController {
           ) || [],
         matchScore: domain_id
           ? reviewer.teacher?.user?.userdomain?.some(
-            (ud) => ud.domain_id === parseInt(domain_id, 10)
-          )
+              (ud) => ud.domain_id === parseInt(domain_id, 10)
+            )
             ? 1
             : 0
           : 0,
       }));
 
-      // Sort by match score first, then by workload (ascending) for balanced assignment
+      // Sort: domain match desc, then workload asc
       availableReviewers.sort((a, b) => {
-        // First prioritize domain match
-        if (a.matchScore !== b.matchScore) {
-          return b.matchScore - a.matchScore;
-        }
-        // Then by workload (lower workload first)
+        if (a.matchScore !== b.matchScore) return b.matchScore - a.matchScore;
         return a.currentWorkload - b.currentWorkload;
       });
 
@@ -310,7 +330,7 @@ class AssignmentController {
     }
   }
 
-  // POST /api/assignments/assign - Assign reviewers to papers/proposals
+  // POST /api/assignments/assign - Assign reviewers to papers/proposals (blocks conflicts)
   static async assignReviewers(req, res) {
     try {
       // Validate input
@@ -349,10 +369,69 @@ class AssignmentController {
           continue;
         }
 
+        // Load context for conflict checks
+        const ctx = await getItemContext(prisma, String(item_type), parseInt(item_id, 10));
+        if (!ctx) {
+          results.push({ item_id, success: false, message: "Item not found" });
+          continue;
+        }
+        const teamUserSet = new Set(ctx.team_user_ids || []);
+        const submittingTeacherId = ctx.submitting_teacher_id;
+
+        // Load selected reviewers quickly
+        const selectedReviewers = await prisma.reviewer.findMany({
+          where: { reviewer_id: { in: reviewer_ids.map((r) => parseInt(r, 10)) } },
+          select: {
+            reviewer_id: true,
+            teacher: {
+              select: {
+                teacher_id: true,
+                user_id: true,
+                user: { select: { user_id: true, name: true } },
+              },
+            },
+          },
+        });
+
+        // Conflict detection
+        const conflicts = [];
+        for (const r of selectedReviewers) {
+          const tid = r.teacher?.teacher_id;
+          const uid =
+            Number(r.teacher?.user?.user_id) ||
+            Number(r.teacher?.user_id) ||
+            null;
+          const name = r.teacher?.user?.name || `Reviewer#${r.reviewer_id}`;
+
+          if (submittingTeacherId && tid === submittingTeacherId) {
+            conflicts.push({
+              reviewer_id: r.reviewer_id,
+              reason: `${name} is the submitting teacher.`,
+            });
+            continue;
+          }
+          if (uid && teamUserSet.has(uid)) {
+            conflicts.push({
+              reviewer_id: r.reviewer_id,
+              reason: `${name} is a member/author of this team.`,
+            });
+          }
+        }
+
+        if (conflicts.length > 0) {
+          results.push({
+            item_id,
+            success: false,
+            message:
+              "Conflict of interest detected:\n" +
+              conflicts.map((c) => `- ${c.reason}`).join("\n"),
+          });
+          continue; // do not create assignments for this item
+        }
+
+        // Create assignments
         try {
-          // Create reviewer assignments
           await prisma.$transaction(async (tx) => {
-            //  Create all reviewer assignments
             await Promise.all(
               reviewer_ids.map((reviewer_id) =>
                 tx.reviewerassignment.create({
@@ -364,13 +443,13 @@ class AssignmentController {
                       item_type === "proposal" ? parseInt(item_id, 10) : null,
                     assigned_date: new Date(),
                     due_date: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000),
-                    status: "PENDING", // enum in schema
+                    status: "PENDING",
                   },
                 })
               )
             );
 
-            //  Update parent item's status to UNDER_REVIEW
+            // Update parent status to UNDER_REVIEW
             if (item_type === "paper") {
               await tx.paper.update({
                 where: { paper_id: parseInt(item_id, 10) },
@@ -383,6 +462,7 @@ class AssignmentController {
               });
             }
           });
+
           results.push({
             item_id,
             success: true,
@@ -407,7 +487,7 @@ class AssignmentController {
       return res.status(200).json({
         success: successCount > 0,
         message: `Successfully processed ${successCount}/${totalCount} assignments`,
-        results: results,
+        results,
       });
     } catch (error) {
       logger.error("Error in assignReviewers:", error);
@@ -419,72 +499,37 @@ class AssignmentController {
     }
   }
 
-  // POST /api/assignments/auto-match - Auto-match reviewers based on expertise/workload
+  // POST /api/assignments/auto-match - Auto-match reviewers (excludes conflicts)
   static async autoMatchReviewers(req, res) {
     try {
       // Validate input
       const validator = vine.compile(autoMatchSchema);
       const payload = await validator.validate(req.body);
-
       const { item_id, item_type } = payload;
 
-      // Get the item details
-      let item;
-      if (item_type === "paper") {
-        item = await prisma.paper.findUnique({
-          where: { paper_id: parseInt(item_id) },
-          include: {
-            team: {
-              include: {
-                domain: true,
-              },
-            },
-            teacher: {
-              include: {
-                user: true,
-              },
-            },
-          },
-        });
-      } else {
-        item = await prisma.proposal.findUnique({
-          where: { proposal_id: parseInt(item_id) },
-          include: {
-            team: {
-              include: {
-                domain: true,
-              },
-            },
-            teacher: {
-              include: {
-                user: true,
-              },
-            },
-          },
-        });
+      // Load item + context
+      const ctx = await getItemContext(prisma, String(item_type), parseInt(item_id, 10));
+      if (!ctx) {
+        return res.status(404).json({ success: false, message: "Item not found" });
       }
 
-      if (!item) {
-        return res.status(404).json({
-          success: false,
-          message: "Item not found",
-        });
-      }
+      const item =
+        item_type === "paper"
+          ? ctx.raw
+          : ctx.raw; // already loaded by getItemContext
 
-      // Get available reviewers (excluding the author if they're a reviewer)
-      const availableReviewers = await prisma.reviewer.findMany({
+      const itemDomainId = ctx.domain_id || 0;
+      const teamUserSet = new Set(ctx.team_user_ids || []);
+
+      // Fetch ACTIVE reviewers with domain expertise; exclude submitting teacher here
+      const availableReviewersRaw = await prisma.reviewer.findMany({
         where: {
           status: "ACTIVE",
-          teacher_id: {
-            not: item.teacher_id, // Exclude the author
-          },
-          // Only get reviewers who have expertise in the item's domain through userdomain
+          teacher_id: { not: item.teacher_id }, // exclude author teacher
           teacher: {
             user: {
               userdomain: {
-                some: {
-                  domain_id: item.team?.domain?.domain_id || 0,
-                },
+                some: { domain_id: itemDomainId },
               },
             },
           },
@@ -494,15 +539,9 @@ class AssignmentController {
             include: {
               user: {
                 include: {
-                  // Include user's domain preferences for better matching
                   userdomain: {
                     include: {
-                      domain: {
-                        select: {
-                          domain_id: true,
-                          domain_name: true,
-                        },
-                      },
+                      domain: { select: { domain_id: true, domain_name: true } },
                     },
                   },
                 },
@@ -511,41 +550,36 @@ class AssignmentController {
             },
           },
           reviewerassignment: {
-            where: {
-              status: {
-                in: ["PENDING", "IN_PROGRESS"],
-              },
-            },
+            where: { status: { in: ["PENDING", "IN_PROGRESS"] } },
           },
         },
       });
 
-      // Enhanced matching algorithm based on domain expertise and workload
+      // Exclude any reviewer whose underlying user_id is a team member/author
+      const availableReviewers = availableReviewersRaw.filter((rev) => {
+        const uid =
+          Number(rev.teacher?.user?.user_id) ||
+          Number(rev.teacher?.user_id) ||
+          null;
+        if (uid && teamUserSet.has(uid)) return false;
+        return true;
+      });
+
+      // Score by domain expertise (already guaranteed) + workload (lower is better)
       const reviewersWithScore = availableReviewers.map((reviewer) => {
         const currentWorkload = reviewer.reviewerassignment?.length || 0;
-        const maxWorkload = 5; // Assume max 5 concurrent reviews
+        const maxWorkload = 5;
+        const workloadScore = Math.max(0, (maxWorkload - currentWorkload) / maxWorkload);
 
-        // Workload scoring: prefer reviewers with lower workload
-        const workloadScore = Math.max(
-          0,
-          (maxWorkload - currentWorkload) / maxWorkload
-        );
+        // Domain score is 1.0 (they match); keep formula for extensibility
+        const domainScore = 1.0;
 
-        // Domain expertise scoring: check if reviewer has expertise in the item's domain through userdomain
-        const itemDomainId = item.team?.domain?.domain_id;
-        const hasExpertise = reviewer.teacher?.user?.userdomain?.some(
-          (ud) => ud.domain_id === itemDomainId
-        );
-        const domainScore = hasExpertise ? 1.0 : 0.0;
-
-        // Calculate total score (domain expertise is more important)
         const totalScore = domainScore * 0.7 + workloadScore * 0.3;
 
         return {
           ...reviewer,
           score: totalScore,
           workload: currentWorkload,
-          hasExpertise: hasExpertise,
           expertise:
             reviewer.teacher?.user?.userdomain?.map(
               (ud) => ud.domain.domain_name
@@ -553,7 +587,7 @@ class AssignmentController {
         };
       });
 
-      // Sort by score (descending) and take top 2-3 reviewers
+      // Pick top N (3)
       const recommendedReviewers = reviewersWithScore
         .sort((a, b) => b.score - a.score)
         .slice(0, 3)
@@ -561,11 +595,10 @@ class AssignmentController {
           id: reviewer.reviewer_id,
           name: reviewer.teacher?.user?.name || "Unknown",
           email: reviewer.teacher?.user?.email || "Unknown",
-          department:
-            reviewer.teacher?.department?.department_name || "Unknown",
+          department: reviewer.teacher?.department?.department_name || "Unknown",
           workload: reviewer.workload,
           score: reviewer.score,
-          hasExpertise: reviewer.hasExpertise,
+          hasExpertise: true,
           expertise: reviewer.expertise,
         }));
 
@@ -580,8 +613,8 @@ class AssignmentController {
         success: true,
         message: `Found ${recommendedReviewers.length} recommended reviewers`,
         recommendations: recommendedReviewers,
-        item_id: item_id,
-        item_type: item_type,
+        item_id,
+        item_type,
       });
     } catch (error) {
       logger.error("Error in auto-match reviewers:", error);

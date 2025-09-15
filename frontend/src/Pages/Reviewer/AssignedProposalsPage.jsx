@@ -284,7 +284,7 @@ export default function AssignedProposalsPage() {
             <button
               onClick={() => handleReview(row.id)}
               className="flex items-center gap-1 text-xs border px-2 py-1 rounded hover:bg-gray-100 bg-gray-50 text-gray-700"
-              disabled={row.assignmentStatus === "COMPLETED"}
+              disabled={row.assignmentStatus === "COMPLETED" || row.assignmentStatus === "PENDING"}
               title="Review Proposal"
             >
               <FileText size={12} /> Review Proposal

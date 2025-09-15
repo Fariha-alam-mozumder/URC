@@ -49,6 +49,7 @@ enum TeamRole {
 enum PaperStatus {
   PENDING
   UNDER_REVIEW
+  COMPLETED
 }
 
 enum ReviewerStatus {
