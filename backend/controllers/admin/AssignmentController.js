@@ -2,7 +2,6 @@ import prisma from "../../DB/db.config.js";
 import logger from "../../config/logger.js";
 import { Vine, errors } from "@vinejs/vine";
 import { getDocumentUrl } from "../../utils/helper.js";
-
 import {
   assignReviewersSchema,
   autoMatchSchema,
@@ -24,19 +23,21 @@ class AssignmentController {
         include: {
           team: {
             include: {
-              domain: { 
-                select: { 
-                  domain_id: true, 
-                  domain_name: true 
-                } }, // team’s domain
+              domain: {
+                select: {
+                  domain_id: true,
+                  domain_name: true
+                }
+              }, // team’s domain
               teammember: {
                 include: {
-                  user: { 
-                    select: { 
-                      user_id: true, 
-                      name: true, 
-                      email: true 
-                    } },
+                  user: {
+                    select: {
+                      user_id: true,
+                      name: true,
+                      email: true
+                    }
+                  },
                 },
               },
             },
@@ -45,7 +46,7 @@ class AssignmentController {
         orderBy: { created_at: "desc" },
       });
 
-      
+
 
       // Get proposals without assigned reviewers
       const proposalsWaiting = await prisma.proposal.findMany({
@@ -55,21 +56,23 @@ class AssignmentController {
           },
         },
         include: {
-         team: {
+          team: {
             include: {
-              domain: { 
-                select: { 
-                  domain_id: true, 
-                  domain_name: true 
-                } }, // team’s domain
+              domain: {
+                select: {
+                  domain_id: true,
+                  domain_name: true
+                }
+              }, // team’s domain
               teammember: {
                 include: {
-                  user: { 
-                    select: { 
-                      user_id: true, 
-                      name: true, 
-                      email: true 
-                    } },
+                  user: {
+                    select: {
+                      user_id: true,
+                      name: true,
+                      email: true
+                    }
+                  },
                 },
               },
             },
@@ -117,7 +120,7 @@ class AssignmentController {
       });
 
       // Transform proposals to match frontend format
-            const transformedProposals = proposalsWaiting.map((proposal) => {
+      const transformedProposals = proposalsWaiting.map((proposal) => {
         const members = proposal.team?.teammember ?? [];
 
         // Only team members; remove duplicates by user_id
@@ -135,7 +138,7 @@ class AssignmentController {
             email: m.user?.email || null,
           }));
 
-    return {
+        return {
           id: `PR${String(proposal.proposal_id).padStart(3, "0")}`,
           actual_id: proposal.proposal_id,
           type: "proposal",
@@ -275,8 +278,8 @@ class AssignmentController {
           ) || [],
         matchScore: domain_id
           ? reviewer.teacher?.user?.userdomain?.some(
-              (ud) => ud.domain_id === parseInt(domain_id, 10)
-            )
+            (ud) => ud.domain_id === parseInt(domain_id, 10)
+          )
             ? 1
             : 0
           : 0,
@@ -315,6 +318,17 @@ class AssignmentController {
       const payload = await validator.validate(req.body);
       const { assignments } = payload;
 
+      const minRequired = 3;
+      for (const a of assignments || []) {
+        const ids = Array.isArray(a.reviewer_ids) ? a.reviewer_ids : [];
+        if (ids.length < minRequired) {
+          return res.status(400).json({
+            success: false,
+            message: `At least ${minRequired} reviewers are required for each ${a.item_type || "item"}.`,
+          });
+        }
+      }
+
       const results = [];
 
       // Process each assignment
@@ -349,7 +363,7 @@ class AssignmentController {
                     proposal_id:
                       item_type === "proposal" ? parseInt(item_id, 10) : null,
                     assigned_date: new Date(),
-                    due_date: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000), 
+                    due_date: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000),
                     status: "PENDING", // enum in schema
                   },
                 })
@@ -542,7 +556,7 @@ class AssignmentController {
       // Sort by score (descending) and take top 2-3 reviewers
       const recommendedReviewers = reviewersWithScore
         .sort((a, b) => b.score - a.score)
-        .slice(0, 2)
+        .slice(0, 3)
         .map((reviewer) => ({
           id: reviewer.reviewer_id,
           name: reviewer.teacher?.user?.name || "Unknown",

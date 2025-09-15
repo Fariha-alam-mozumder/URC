@@ -10,8 +10,8 @@ const TeamCard = ({
   members,
   clickable = true,
   createdBy,
-  to, 
-  onCardClick, 
+  to,
+  onCardClick,
 }) => {
   const navigate = useNavigate();
 
@@ -41,6 +41,10 @@ const TeamCard = ({
 
   // Calculate members count safely
   const membersCount = Array.isArray(members) ? members.length : members;
+  const formatStatus = (s) =>
+    typeof s === "string" && s.length > 0
+      ? s.charAt(0).toUpperCase() + s.slice(1).toLowerCase()
+      : s;
 
   return (
     <div
@@ -86,10 +90,12 @@ const TeamCard = ({
               ? "bg-green-100 text-green-700"
               : status === "RECRUITING"
               ? "bg-yellow-100 text-yellow-700"
+              : status === "INACTIVE"
+              ? "bg-red-100 text-red-700"
               : "bg-gray-100 text-gray-700"
           }`}
         >
-          {status || "Status Unknown"}
+          {formatStatus(status) || "Status Unknown"}
         </span>
 
         <div className="flex items-center gap-1">

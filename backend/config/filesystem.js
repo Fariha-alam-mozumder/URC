@@ -5,12 +5,7 @@ export const supportedDocumentMimes = [
 ];
 
 export const DOCUMENT_UPLOAD_PATH = "documents"; // folder inside /public
-export const MAX_DOCUMENT_SIZE_MB = 5;
-
-
-
-
-
+export const MAX_DOCUMENT_SIZE_MB = 50;
 
 export const supportedMimes = [
     "image/png", 

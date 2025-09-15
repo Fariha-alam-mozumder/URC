@@ -1,4 +1,4 @@
-import { supportedMimes } from "../config/filesystem.js";
+import { supportedMimes, supportedDocumentMimes } from "../config/filesystem.js";
 import { v4 as uuidv4 } from "uuid";
 import fs from "fs";
 import path from "path";
@@ -7,19 +7,30 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+export const MAX_DOCUMENT_SIZE_MB = 50;
 // Validate only PDFs (maxSize in MB)
-export const fileValidator = (maxSize, mimeType) => {
-  if (mimeType !== 'application/pdf') {
-    throw new Error('Only PDF files are allowed')
+export const fileValidator = (file, {
+  maxSizeMB = MAX_DOCUMENT_SIZE_MB,
+  allowedMimes = supportedDocumentMimes,
+} = {}) => {
+  if (!file) return;
+
+  const mime = file.mimetype || "";
+  const name = String(file.name || "");
+  const ext = path.extname(name).toLowerCase();
+
+  const okByMime = allowedMimes.includes(mime);
+  const okByExtWhenOctet = mime === "application/octet-stream" && /\.(pdf|doc|docx)$/i.test(name);
+
+  if (!okByMime && !okByExtWhenOctet) {
+    throw new Error(`Unsupported file type. Allowed: PDF/DOC/DOCX`);
   }
-  // For express-fileupload, size is in bytes
-  return (file) => {
-    const sizeMB = file.size / (1024 * 1024)
-    if (sizeMB > maxSize) {
-      throw new Error(`File size must be less than ${maxSize}MB`)
-    }
+
+  const sizeMB = file.size / (1024 * 1024);
+  if (sizeMB > maxSizeMB) {
+    throw new Error(`File size must be less than ${maxSizeMB}MB`);
   }
-}
+};
 
 // Upload PDF file to the correct directory that will be served by Express
 export const uploadFile = async (file, isFile = true, type = 'pdf') => {

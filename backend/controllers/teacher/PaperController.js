@@ -10,23 +10,24 @@ class PaperController {
 
     try {
       // Validate paper metadata (title, abstract, team_id)
-      // Convert team_id to number before validation
       const payload = await paperValidator.validate({
         ...req.body,
         team_id: Number(req.body.team_id),
       });
 
-      // Validate that a PDF file is uploaded
+      // Validate that a file is uploaded
       const file = req.files?.paper;
       if (!file) {
         return res
           .status(400)
-          .json({ errors: { paper: "Paper PDF file is required" } });
+          .json({ errors: { paper: "Paper file is required" } });
       }
 
-      // Validate file size and mimetype (max 100MB, PDF only)
+      // ✅ NEW SIGNATURE: validate file (100MB cap, default allowed: PDF/DOC/DOCX)
       try {
-        fileValidator(100, file.mimetype)(file);
+        fileValidator(file, { maxSizeMB: 100 });
+        // If you want PDF-only, use:
+        // fileValidator(file, { maxSizeMB: 100, allowedMimes: ["application/pdf"] });
       } catch (e) {
         return res.status(400).json({ errors: { paper: e.message } });
       }
@@ -40,7 +41,7 @@ class PaperController {
         return res.status(400).json({ error: "User is not a teacher" });
       }
 
-      // Upload PDF file to disk
+      // Upload file to disk (stored under public/documents)
       const pdf_path = await uploadFile(file, true, "pdf");
 
       // Save paper record linked to team
@@ -133,9 +134,9 @@ class PaperController {
       // Optionally delete the physical file
       if (paper.pdf_path) {
         try {
-          const fs = require('fs');
-          const path = require('path');
-          const filePath = path.join(process.cwd(), 'public', paper.pdf_path);
+          const fs = await import("fs");
+          const path = await import("path");
+          const filePath = path.join(process.cwd(), "public", paper.pdf_path);
           if (fs.existsSync(filePath)) {
             fs.unlinkSync(filePath);
           }
@@ -150,7 +151,6 @@ class PaperController {
       return res.status(500).json({ error: "Internal Server Error" });
     }
   }
-  
 }
 
 export default PaperController;

@@ -7,7 +7,7 @@ const assignReviewersSchema = vine.object({
         vine.object({
             item_id: vine.number().positive(),
             item_type: vine.enum(['paper', 'proposal']),
-            reviewer_ids: vine.array(vine.number().positive()).minLength(1).maxLength(5)
+            reviewer_ids: vine.array(vine.number().positive()).minLength(3).maxLength(5)
         })
     ).minLength(1)
 });

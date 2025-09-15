@@ -1,6 +1,6 @@
 // src/components/Common/PaperCard.jsx
 import React from "react";
-import { FaEdit, FaDownload, FaEye } from "react-icons/fa";
+import { FaEdit, FaDownload, FaClipboard } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
@@ -154,7 +154,21 @@ const PaperCard = ({ paper, onView, onDownload }) => {
               <FaDownload /> No File
             </span>
           )}
+          {paper.fileUrl ? (
+            <button
+              onClick={handleDownload}
+              className="flex items-center gap-1 text-sm px-3 py-1 border rounded hover:bg-gray-50"
+              title={`Download ${paper.title}`}
+            >
+              <FaClipboard /> Feedback Report
+            </button>
+          ) : (
+            <span className="flex items-center gap-1 text-sm px-3 py-1 border rounded bg-gray-100 text-gray-500">
+              <FaClipboard /> No File
+            </span>
+          )}
         </div>
+        
       </div>
     </div>
   );

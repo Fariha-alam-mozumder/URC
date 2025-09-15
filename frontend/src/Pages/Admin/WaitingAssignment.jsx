@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
-import StatCard from "../../components/Common/statCard";
+import StatCard from "../../components/Common/statcard";
 import PaperCard from "../../components/Admin/PaperCard";
 import AddReviewerModal from "../../components/Admin/AddReviewerModal";
 import {

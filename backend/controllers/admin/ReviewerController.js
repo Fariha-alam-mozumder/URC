@@ -4,7 +4,7 @@ import { emailQueue, emailQueueName } from "../../jobs/SendEmailJob.js";
 import logger from "../../config/logger.js";
 import {
   inviteReviewersSchema,
-  addReviewerSchema,
+  // addReviewerSchema,
   updateReviewerStatusSchema
 } from "../../validations/admin/reviewerValidation.js";
 
@@ -316,145 +316,6 @@ class ReviewerController {
       });
     }
   }
-
-
-  // // POST /api/reviewers/add - Add a reviewer manually (domain_ids removed from payload)
-  // static async addReviewer(req, res) {
-  //   try {
-  //     const validator = vine.compile(addReviewerSchema);
-  //     const payload = await validator.validate(req.body);
-
-  //     // Check if teacher exists and is verified
-  //     const teacher = await prisma.teacher.findUnique({
-  //       where: { teacher_id: payload.teacher_id },
-  //       include: {
-  //         user: {
-  //           select: {
-  //             user_id: true,
-  //             name: true,
-  //             email: true,
-  //             isVerified: true,
-  //             role: true
-  //           }
-  //         }
-  //       }
-  //     });
-
-  //     if (!teacher) {
-  //       return res.status(404).json({
-  //         error: "Teacher not found"
-  //       });
-  //     }
-
-  //     if (!teacher.user?.isVerified) {
-  //       return res.status(400).json({
-  //         error: "Teacher's email is not verified"
-  //       });
-  //     }
-
-  //     if (teacher.user?.role !== 'TEACHER') {
-  //       return res.status(400).json({
-  //         error: "User must have TEACHER role"
-  //       });
-  //     }
-
-  //     // Check if already a reviewer (idempotent approach)
-  //     const existingReviewer = await prisma.reviewer.findUnique({
-  //       where: { teacher_id: payload.teacher_id }
-  //     });
-
-  //     if (existingReviewer) {
-  //       return res.json({
-  //         message: "Teacher is already a reviewer",
-  //         reviewer_id: existingReviewer.reviewer_id
-  //       });
-  //     }
-
-  //     // Use transaction to add reviewer and update teacher status
-  //     const result = await prisma.$transaction(async (tx) => {
-  //       // Update teacher to mark as reviewer
-  //       await tx.teacher.update({
-  //         where: { teacher_id: payload.teacher_id },
-  //         data: { isReviewer: true }
-  //       });
-
-  //       // Create reviewer record
-  //       const newReviewer = await tx.reviewer.create({
-  //         data: {
-  //           teacher_id: payload.teacher_id,
-  //           status: 'ACTIVE'
-  //         }
-  //       });
-
-  //       return newReviewer;
-  //     });
-
-  //     // Send welcome email if email is available
-  //     if (teacher.user?.email) {
-  //       const welcomeEmail = {
-  //         toEmail: teacher.user.email,
-  //         subject: "Welcome to the Review Committee",
-  //         body: `
-  //           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-  //             <h2 style="color: #16a34a;">Welcome to the Review Committee!</h2>
-              
-  //             <p>Dear ${teacher.user.name || 'Professor'},</p>
-              
-  //             <p>Congratulations! You have been successfully added to our review committee.</p>
-              
-  //             <p>You can now:</p>
-  //             <ul>
-  //               <li>Review assigned papers and proposals</li>
-  //               <li>Access the reviewer dashboard</li>
-  //               <li>Manage your review preferences</li>
-  //             </ul>
-              
-  //             <div style="margin: 30px 0;">
-  //               <a href="${process.env.UI_URL || 'http://localhost:5173'}/login" 
-  //                  style="background-color: #16a34a; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; display: inline-block;">
-  //                 Access Reviewer Dashboard
-  //               </a>
-  //             </div>
-              
-  //             <p>Thank you for joining our review committee!</p>
-              
-  //             <p>Best regards,<br>The Review Committee Team</p>
-  //           </div>
-  //         `
-  //       };
-
-  //       try {
-  //         await emailQueue.add(emailQueueName, [welcomeEmail]);
-  //       } catch (emailError) {
-  //         logger.error("Error sending welcome email:", emailError);
-  //       }
-  //     }
-
-  //     logger.info(`New reviewer added: ${teacher.user?.name} (ID: ${result.reviewer_id})`);
-
-  //     return res.status(201).json({
-  //       message: "Reviewer added successfully",
-  //       reviewer_id: result.reviewer_id
-  //     });
-
-  //   } catch (error) {
-  //     console.error("Error adding reviewer:", error);
-  //     logger.error("Add reviewer error:", error);
-
-  //     if (error instanceof errors.E_VALIDATION_ERROR) {
-  //       return res.status(400).json({
-  //         errors: error.messages
-  //       });
-  //     }
-
-  //     const isDevelopment = process.env.NODE_ENV === 'development';
-  //     return res.status(500).json({
-  //       error: "Failed to add reviewer",
-  //       ...(isDevelopment && { details: error.message })
-  //     });
-  //   }
-  // }
-
   // PUT /api/reviewers/:id - Update reviewer status
   static async update(req, res) {
     try {
@@ -781,3 +642,4 @@ class ReviewerController {
 }
 
 export default ReviewerController;
+

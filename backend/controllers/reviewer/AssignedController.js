@@ -1,6 +1,7 @@
 // controllers/reviewer/AssignedController.js
 import prisma from "../../DB/db.config.js";
 import logger from "../../config/logger.js";
+import { finalizeIfCompleted } from "../../utils/finalizeIfCompleted.js";
 
 /**
  * Resolve reviewer id from various possible req.user shapes.
@@ -92,15 +93,15 @@ class ReviewerAssignedController {
                     department: { select: { department_name: true } },
                   },
                 },
-                team: { 
-                  include: { 
+                team: {
+                  include: {
                     domain: { select: { domain_name: true } },
                     teammember: {
                       include: {
                         user: { select: { user_id: true, name: true, email: true } }
                       }
                     }
-                  } 
+                  }
                 },
               },
             },
@@ -114,7 +115,7 @@ class ReviewerAssignedController {
       const data = assignments.map((a) => {
         const p = a.paper;
         const dueDate = a.due_date ? new Date(a.due_date) : null;
-        
+
         // Get all team members' info (following the pattern from AssignmentController.js)
         const members = p?.team?.teammember ?? [];
 
@@ -133,7 +134,7 @@ class ReviewerAssignedController {
           }));
 
         // Create display string for backward compatibility
-        const authorsDisplay = authors.length > 0 
+        const authorsDisplay = authors.length > 0
           ? authors.map(a => a.name).join(', ')
           : (p?.teacher?.user?.name || 'Unknown');
 
@@ -203,15 +204,15 @@ class ReviewerAssignedController {
                     department: { select: { department_name: true } },
                   },
                 },
-                team: { 
-                  include: { 
+                team: {
+                  include: {
                     domain: { select: { domain_name: true } },
                     teammember: {
                       include: {
                         user: { select: { user_id: true, name: true, email: true } }
                       }
                     }
-                  } 
+                  }
                 },
               },
             },
@@ -225,7 +226,7 @@ class ReviewerAssignedController {
       const data = assignments.map((a) => {
         const pr = a.proposal;
         const dueDate = a.due_date ? new Date(a.due_date) : null;
-        
+
         // Get all team members' info (following the pattern from AssignmentController.js)
         const members = pr?.team?.teammember ?? [];
 
@@ -244,7 +245,7 @@ class ReviewerAssignedController {
           }));
 
         // Create display string for backward compatibility
-        const authorsDisplay = authors.length > 0 
+        const authorsDisplay = authors.length > 0
           ? authors.map(a => a.name).join(', ')
           : (pr?.teacher?.user?.name || 'Unknown');
 
@@ -296,31 +297,67 @@ class ReviewerAssignedController {
         return res.status(400).json({ success: false, message: "Invalid assignment id" });
       }
 
-      const { status } = req.body;
+      const { status: newStatus } = req.body;
       const allowedStatuses = ["PENDING", "IN_PROGRESS", "COMPLETED", "OVERDUE"];
-      if (!status || !allowedStatuses.includes(status)) {
+      if (!newStatus || !allowedStatuses.includes(newStatus)) {
         return res.status(400).json({ success: false, message: `Invalid status. Allowed: ${allowedStatuses.join(", ")}` });
       }
 
+      // pull current assignment including timestamps & linkage
       const assignment = await prisma.reviewerassignment.findUnique({
         where: { assignment_id: assignmentId },
-        select: { assignment_id: true, reviewer_id: true, status: true, paper_id: true, proposal_id: true },
+        select: {
+          assignment_id: true,
+          reviewer_id: true,
+          status: true,
+          started_at: true,
+          completed_at: true,
+          due_date: true,
+          paper_id: true,
+          proposal_id: true,
+        },
       });
 
       if (!assignment) return res.status(404).json({ success: false, message: "Assignment not found" });
       if (assignment.reviewer_id !== reviewer_id) return res.status(403).json({ success: false, message: "Not authorized" });
 
       // Prevent changing from COMPLETED back to other states
-      if (assignment.status === "COMPLETED" && status !== "COMPLETED") {
+      if (assignment.status === "COMPLETED" && newStatus !== "COMPLETED") {
         return res.status(400).json({ success: false, message: "Cannot change status after COMPLETED" });
       }
 
+      // Optional safety: block manual COMPLETED if no review exists yet
+      if (newStatus === "COMPLETED") {
+        const hasReview = await prisma.review.findFirst({
+          where: assignment.paper_id
+            ? { reviewer_id, paper_id: assignment.paper_id }
+            : { reviewer_id, proposal_id: assignment.proposal_id },
+          select: { review_id: true },
+        });
+        if (!hasReview) {
+          return res.status(400).json({
+            success: false,
+            message: "You must submit a review before marking as COMPLETED.",
+          });
+        }
+      }
+
+      // Prepare patch with timestamps
+      const now = new Date();
+      const data = { status: newStatus };
+      if (newStatus === "IN_PROGRESS" && !assignment.started_at) data.started_at = now;
+      if (newStatus === "COMPLETED") data.completed_at = now;
+
       const updated = await prisma.reviewerassignment.update({
         where: { assignment_id: assignmentId },
-        data: { status },
+        data,
       });
 
-      // Fetch brief info to return
+      // Try to finalize the parent item (paper/proposal) per the admin rules
+      if (assignment.paper_id) await finalizeIfCompleted("paper", assignment.paper_id);
+      if (assignment.proposal_id) await finalizeIfCompleted("proposal", assignment.proposal_id);
+
+      // Return brief info
       const full = await prisma.reviewerassignment.findUnique({
         where: { assignment_id: assignmentId },
         include: {
@@ -338,6 +375,8 @@ class ReviewerAssignedController {
           paperId: full.paper?.paper_id ?? null,
           proposalId: full.proposal?.proposal_id ?? null,
           status: updated.status,
+          started_at: updated.started_at ?? null,
+          completed_at: updated.completed_at ?? null,
         },
       });
     } catch (error) {

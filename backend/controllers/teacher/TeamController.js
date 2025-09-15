@@ -115,13 +115,13 @@ class TeamController {
 
       let team;
       try {
-        // FIXED: Create team with proper field mapping
+        // Create team with proper field mapping
         team = await db.team.create({
           data: {
             team_name: payload.team_name,
             team_description: payload.team_description || "",
             domain_id: payload.domain_id ?? null,
-            // FIXED: Ensure these match Prisma enum values exactly
+            // Ensure these match Prisma enum values exactly
             status: payload.status || "RECRUITING", // TeamStatus enum
             visibility: payload.visibility || "PUBLIC", // TeamVisibility enum
             max_members: payload.max_members ?? null,
@@ -191,7 +191,9 @@ class TeamController {
         }
 
         try {
-          fileValidator(10, file.mimetype)(file);
+          // ✅ FIX: validate using the new helper signature
+          // Validates type (PDF/DOC/DOCX) and size (default 50MB)
+          fileValidator(file);
         } catch (e) {
           return res.status(400).json({ errors: { proposal: e.message } });
         }
@@ -220,7 +222,6 @@ class TeamController {
             // created_at is auto-generated
           },
         });
-
       }
 
       // Invalidate caches
@@ -251,13 +252,17 @@ class TeamController {
       console.error("Team creation error:", err);
 
       // More specific error handling
-      if (err.code === 'P2002') {
-        return res.status(400).json({ error: "Duplicate entry - team name or constraint violation" });
+      if (err.code === "P2002") {
+        return res
+          .status(400)
+          .json({ error: "Duplicate entry - team name or constraint violation" });
       }
-      if (err.code === 'P2003') {
-        return res.status(400).json({ error: "Foreign key constraint violation" });
+      if (err.code === "P2003") {
+        return res
+          .status(400)
+          .json({ error: "Foreign key constraint violation" });
       }
-      if (err.code === 'P2025') {
+      if (err.code === "P2025") {
         return res.status(400).json({ error: "Record not found" });
       }
 
@@ -388,9 +393,9 @@ class TeamController {
       const domainIdsParam = req.query.domainIds;
       const domainIds = domainIdsParam
         ? String(domainIdsParam)
-          .split(",")
-          .map((s) => Number(s.trim()))
-          .filter((n) => !Number.isNaN(n))
+            .split(",")
+            .map((s) => Number(s.trim()))
+            .filter((n) => !Number.isNaN(n))
         : [];
 
       if (Number.isNaN(departmentId))
@@ -412,7 +417,7 @@ class TeamController {
         domainIds,
       });
 
-      // Cache for 30 minutes
+      // Cache for 30 minutes (currently 60s – adjust if needed)
       await redis.setex(key, 60, JSON.stringify(members)); // cache 60s
       return res.json({ data: members, fromCache: false });
     } catch (e) {
@@ -422,6 +427,7 @@ class TeamController {
       return res.status(status).json({ error: message });
     }
   }
+  
 }
 
 export default TeamController;

@@ -13,17 +13,17 @@ const EditButton = () => {
   };
 
   return (
-    <div className="flex flex-row justify-end mt-20 w-full md:-ml-20 gap-4">
+    <div className="flex flex-col md:flex-row gap-4 mt-1 w-full">
       <button
         onClick={handleEditClick}
-        className="bg-gray-700 hover:bg-gray-500 text-white w-48 font-medium px-2 py-2 rounded-lg"
+        className="flex-1 bg-gray-700 hover:bg-gray-500 text-white font-medium px-4 py-3 rounded-lg"
       >
-         Edit Profile
+        Edit Profile
       </button>
 
       <button
         onClick={handleBackClick}
-        className="bg-gray-400 hover:bg-gray-500 text-black w-32 font-medium px-2 py-2 rounded-lg"
+        className="flex-1 bg-gray-400 hover:bg-gray-500 text-black font-medium px-4 py-3 rounded-lg"
       >
         Back
       </button>

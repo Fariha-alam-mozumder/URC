@@ -1,3 +1,4 @@
+// frontend/src/Pages/Admin/AdminProposals.jsx
 import React, { useState, useEffect } from "react";
 import { Eye } from "lucide-react";
 import CommonSubmissionTable from "../../components/Common/CommonSubmissionTable";
@@ -11,10 +12,12 @@ function AdminProposals() {
   const [filters, setFilters] = useState({
     search: "",
     status: "",
-    team_name: "",
+    assignment_status: "",
+    department_name: "",
   });
 
   const [submissions, setSubmissions] = useState([]);
+  const [departments, setDepartments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -22,6 +25,7 @@ function AdminProposals() {
   const [openPdf, setOpenPdf] = useState(false);
   const [selectedProposal, setSelectedProposal] = useState(null);
 
+  // Fetch proposals
   useEffect(() => {
     const fetchProposals = async () => {
       try {
@@ -36,8 +40,26 @@ function AdminProposals() {
         setLoading(false);
       }
     };
-
     fetchProposals();
+  }, []);
+
+  // Fetch department options
+  useEffect(() => {
+    const fetchDepartments = async () => {
+      try {
+        const { data } = await axios.get(`${API_BASE_URL}/admin/departments`, {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        });
+        const opts = (data?.departments || [])
+          .filter((d) => d?.department_name)
+          .map((d) => ({ label: d.department_name, value: d.department_name }));
+        setDepartments([{ label: "All Departments", value: "" }, ...opts]);
+      } catch (err) {
+        console.error("Error fetching departments:", err);
+        setDepartments([{ label: "All Departments", value: "" }]);
+      }
+    };
+    fetchDepartments();
   }, []);
 
   if (loading) {
@@ -58,16 +80,41 @@ function AdminProposals() {
 
   const filteredData = submissions.filter((row) => {
     const q = filters.search.toLowerCase();
+
+    // Search across relevant fields
     const matchesSearch =
-      row.id.toLowerCase().includes(q) ||
-      row.title.toLowerCase().includes(q) ||
-      (row.team_name && row.team_name.toLowerCase().includes(q)) ||
-      (row.domain_name && row.domain_name.toLowerCase().includes(q)) ||
-      (Array.isArray(row.authors) &&
-        row.authors.some((author) => author.toLowerCase().includes(q)));
-    const matchesStatus = filters.status ? row.status === filters.status : true;
-    const matchesTeamName = filters.team_name ? row.team_name === filters.team_name : true;
-    return matchesSearch && matchesStatus && matchesTeamName;
+      (row.id || "").toLowerCase().includes(q) ||
+      (row.title || "").toLowerCase().includes(q) ||
+      (row.team_name || "").toLowerCase().includes(q) ||
+      (row.domain_name || "").toLowerCase().includes(q) ||
+      (Array.isArray(row.authors)
+        ? row.authors.some((a) => (a || "").toLowerCase().includes(q))
+        : (row.authors || "").toLowerCase().includes(q)) ||
+      (row.department_name || "").toLowerCase().includes(q);
+
+    // We now receive a pretty, human-readable status from the API:
+    // "Accepted" | "Rejected" | "Major Review" | "Minor Review" | "Under Review"
+    const itemState = row.status || "Under Review";
+
+    // Filter: Item State
+    const matchesItemState = filters.status ? itemState === filters.status : true;
+
+    // Filter: Admin rollup (PENDING, IN_PROGRESS, COMPLETED, OVERDUE)
+    const matchesAssignment = filters.assignment_status
+      ? row.admin_assignment_status === filters.assignment_status
+      : true;
+
+    // Filter: Department name
+    const matchesDepartment = filters.department_name
+      ? (row.department_name || "") === filters.department_name
+      : true;
+
+    return (
+      matchesSearch &&
+      matchesItemState &&
+      matchesAssignment &&
+      matchesDepartment
+    );
   });
 
   const columns = [
@@ -92,43 +139,71 @@ function AdminProposals() {
       className: "min-w-[100px] whitespace-nowrap",
     },
     {
+      key: "department_name",
+      label: "Department",
+      className: "min-w-[160px] whitespace-nowrap",
+      render: (v) => v || "-",
+    },
+    {
       key: "date",
       label: "Date",
       className: "whitespace-nowrap",
     },
     {
       key: "status",
-      label: "Status",
-      className: "min-w-[100px] whitespace-nowrap",
-      render: (value) => {
-        const formatStatus = (status) =>
-          status
-            ? status
-                .toLowerCase()
-                .replace(/_/g, " ")
-                .replace(/\b\w/g, (c) => c.toUpperCase())
-            : "Pending";
-
-        const formatted = formatStatus(value);
+      label: "Proposal Status",
+      className: "min-w-[120px] whitespace-nowrap",
+      render: (v) => {
+        const pretty = v || "Under Review";
 
         const colors = {
-          "Under Review": "bg-blue-100 text-blue-700",
-          Pending: "bg-gray-200 text-gray-700",
+          "Major Review": "bg-blue-100 text-blue-700",
+          "Minor Review": "bg-yellow-100 text-yellow-700",
           Accepted: "bg-green-100 text-green-700",
           Rejected: "bg-red-100 text-red-700",
+          "Under Review": "bg-gray-100 text-gray-700",
         };
 
         return (
           <span
             className={`px-2 py-1 rounded-full text-xs sm:text-sm font-medium ${
-              colors[formatted] || "bg-gray-100 text-gray-700"
+              colors[pretty] || "bg-gray-100 text-gray-700"
             }`}
           >
-            {formatted}
+            {pretty}
           </span>
         );
       },
     },
+    {
+      key: "admin_assignment_status",
+      label: "Assignment Status",
+      className: "min-w-[140px] whitespace-nowrap",
+      render: (value) => {
+        const pretty = (value || "PENDING")
+          .replace(/_/g, " ")
+          .toLowerCase()
+          .replace(/\b\w/g, (c) => c.toUpperCase());
+
+        const colors = {
+          Pending: "bg-yellow-100 text-yellow-700",
+          "In Progress": "bg-blue-100 text-blue-700",
+          Completed: "bg-green-100 text-green-700",
+          Overdue: "bg-red-100 text-red-700",
+        };
+
+        return (
+          <span
+            className={`px-2 py-1 rounded-full text-xs sm:text-sm font-medium ${
+              colors[pretty] || "bg-gray-100 text-gray-700"
+            }`}
+          >
+            {pretty}
+          </span>
+        );
+      },
+    },
+
     {
       key: "reviewer",
       label: "Reviewer",
@@ -146,7 +221,9 @@ function AdminProposals() {
       className: "min-w-[200px] text-center",
       render: (_, row) => (
         <div className="flex flex-col items-center text-center w-full">
-          <div className="font-medium text-gray-900">{row.team_name || "-"}</div>
+          <div className="font-medium text-gray-900">
+            {row.team_name || "-"}
+          </div>
           <div className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs italic font-small bg-blue-100 text-blue-800 mt-1">
             {row.domain_name || "-"}
           </div>
@@ -176,9 +253,24 @@ function AdminProposals() {
     {
       name: "search",
       type: "input",
-      placeholder: "Search proposals by title, authors, or ID...",
+      placeholder:
+        "Search proposals by title, authors, ID, domain, or department...",
       value: filters.search,
     },
+    // assignment status (admin rollup)
+    {
+      name: "assignment_status",
+      type: "select",
+      value: filters.assignment_status,
+      options: [
+        { label: "All Assignment Statuses", value: "" },
+        { label: "Pending", value: "PENDING" },
+        { label: "In Progress", value: "IN_PROGRESS" },
+        { label: "Completed", value: "COMPLETED" },
+        { label: "Overdue", value: "OVERDUE" },
+      ],
+    },
+    // Item state filter (now based on aggregated_decision pretty value)
     {
       name: "status",
       type: "select",
@@ -186,22 +278,20 @@ function AdminProposals() {
       options: [
         { label: "All Statuses", value: "" },
         { label: "Under Review", value: "Under Review" },
-        { label: "Pending", value: "Pending" },
+        { label: "Major Review", value: "Major Review" },
+        { label: "Minor Review", value: "Minor Review" },
         { label: "Accepted", value: "Accepted" },
         { label: "Rejected", value: "Rejected" },
       ],
     },
+    // Department (from DB)
     {
-      name: "Team Name",
+      name: "department_name",
       type: "select",
-      value: filters.team_name,
-      options: [
-        { label: "All Teams", value: "" },
-        { label: "AI/ML", value: "AI/ML" },
-        { label: "Blockchain", value: "Blockchain" },
-        { label: "Quantum", value: "Quantum" },
-        { label: "Security", value: "Security" },
-      ],
+      value: filters.department_name,
+      options: departments.length
+        ? departments
+        : [{ label: "All Departments", value: "" }],
     },
   ];
 
@@ -225,7 +315,7 @@ function AdminProposals() {
         </div>
       </div>
 
-      {/* Table container with horizontal and vertical scroll */}
+      {/* Table */}
       <div className="flex-1 min-w-0 overflow-auto">
         <CommonSubmissionTable
           title="Proposal Submissions"

@@ -35,7 +35,6 @@ const CreateTeam = () => {
   const [proposalAbstract, setProposalAbstract] = useState("");
   const [proposalFile, setProposalFile] = useState(null);
 
-
   // Settings
   const [visibility, setVisibility] = useState("public");
   const [maxMembers, setMaxMembers] = useState(10);
@@ -70,11 +69,15 @@ const CreateTeam = () => {
           err.response?.data || err.message
         );
       });
-  }, []); 
+  }, []);
 
   // Upload modal submit handler
   const handleUploadSubmit = ({ title, abstract, file }) => {
-    console.log("Create Team UploadSubmit received:", { title, abstract, file });
+    console.log("Create Team UploadSubmit received:", {
+      title,
+      abstract,
+      file,
+    });
     setProposalTitle(title);
     setProposalAbstract(abstract);
     setProposalFile(file);
@@ -115,7 +118,7 @@ const CreateTeam = () => {
       // Proposal info
       formData.append("proposal_title", proposalTitle || `${name} Proposal`);
       formData.append("proposal_abstract", proposalAbstract || "");
-      
+
       const formattedMembers = members.map((m) => ({
         user_id: Number(m.user_id ?? m.id ?? m.userId),
         role_in_team: m.role_in_team || m.role || "RESEARCHER",
@@ -180,15 +183,14 @@ const CreateTeam = () => {
       />
 
       {creatorDeptId && (
-  <MemberManager
-    members={members}
-    onChange={setMembers}
-    creatorUserId={user?.user_id ?? user?.id}
-    departmentId={creatorDeptId}
-    domainIds={creatorDomainIds}
-  />
-)}
-
+        <MemberManager
+          members={members}
+          onChange={setMembers}
+          creatorUserId={user?.user_id ?? user?.id}
+          departmentId={creatorDeptId}
+          domainIds={creatorDomainIds}
+        />
+      )}
 
       <DocumentUploader
         proposalFile={proposalFile}

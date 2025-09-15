@@ -153,7 +153,7 @@ const TeamManagement = () => {
       )}
 
       {/* Pending Applications */}
-      <PendingApplications applications={pendingApplications} />
+      {/* <PendingApplications applications={pendingApplications} /> */}
     </div>
   );
 };

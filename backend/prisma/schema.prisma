@@ -27,6 +27,13 @@ enum TeamVisibility {
   PRIVATE
 }
 
+enum ReviewDecision {
+  ACCEPT 
+  REJECT 
+  MINOR_REVISIONS 
+  MAJOR_REVISIONS 
+}
+
 enum ApplicationStatus {
   PENDING
   APPROVED
@@ -41,16 +48,12 @@ enum TeamRole {
 
 enum PaperStatus {
   PENDING
-  ACCEPTED
-  REJECTED
   UNDER_REVIEW
 }
 
 enum ReviewerStatus {
   ACTIVE
   INACTIVE
-  SUSPENDED
-  PENDING
 }
 
 enum AssignmentStatus {
@@ -163,9 +166,9 @@ model teacher {
 }
 
 model reviewer {
-  reviewer_id Int             @id @default(autoincrement())
-  teacher_id  Int?            @unique
-  status      ReviewerStatus? @default(ACTIVE)
+  reviewer_id     Int             @id @default(autoincrement())
+  teacher_id      Int?            @unique
+  status          ReviewerStatus? @default(ACTIVE)
 
   // Relations
   teacher teacher? @relation(fields: [teacher_id], references: [teacher_id])
@@ -246,6 +249,9 @@ model paper {
   file_size    Int?
   created_at   DateTime     @default(now())
 
+  aggregated_decision   ReviewDecision?
+  aggregated_decided_at DateTime?
+
   // Relations
   team    team?    @relation(fields: [team_id], references: [team_id])
   teacher teacher? @relation(fields: [submitted_by], references: [teacher_id])
@@ -265,6 +271,9 @@ model proposal {
   file_size    Int?
   created_at   DateTime     @default(now())
 
+  aggregated_decision   ReviewDecision?
+  aggregated_decided_at DateTime?
+
   // Relations
   team    team?    @relation(fields: [team_id], references: [team_id])
   teacher teacher? @relation(fields: [submitted_by], references: [teacher_id])
@@ -274,16 +283,16 @@ model proposal {
 }
 
 model review {
-  review_id   Int      @id @default(autoincrement())
-  reviewer_id Int?
-  proposal_id Int?
-  paper_id    Int?
-  comments    String?
-  score       Int?
-  decision    String?
-  reviewed_at DateTime @default(now())
+  review_id       Int             @id @default(autoincrement())
+  reviewer_id     Int?
+  proposal_id     Int?
+  paper_id        Int?
+  comments        String?
+  score           Int?
+  decision        ReviewDecision? // <-- change from String? to enum
+  attachment_path String? // <-- NEW: store file path directly
+  reviewed_at     DateTime        @default(now())
 
-  // Relations
   reviewer reviewer? @relation(fields: [reviewer_id], references: [reviewer_id])
   proposal proposal? @relation(fields: [proposal_id], references: [proposal_id])
   paper    paper?    @relation(fields: [paper_id], references: [paper_id])
@@ -297,6 +306,9 @@ model reviewerassignment {
   assigned_date DateTime         @default(now())
   due_date      DateTime
   status        AssignmentStatus @default(PENDING)
+
+  started_at   DateTime?
+  completed_at DateTime?
 
   // Relations
   reviewer reviewer? @relation(fields: [reviewer_id], references: [reviewer_id])

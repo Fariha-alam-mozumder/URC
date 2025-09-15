@@ -7,7 +7,10 @@ import CommonButton from "../Common/CommonButton";
  * 1) Inviting teachers to become reviewers (items look like { id: teacher_id, domains: [{id,name}], ... })
  * 2) Assigning active reviewers (items look like { id: reviewer_id, expertise: ["AI","ML"], ... })
  *
- * It now reads tags from EITHER `domains[].name` OR `expertise[]`.
+ * It reads tags from EITHER `domains[].name` OR `expertise[]`.
+ *
+ * NEW:
+ * - `minSelected` prop enforces a minimum number of selections (default: 1).
  */
 const AddReviewerModal = ({
   show,
@@ -16,6 +19,7 @@ const AddReviewerModal = ({
   onSubmit, // single callback
   buttonLabel = "Confirm",
   title = "Select Reviewers",
+  minSelected = 1, // <-- NEW: set 3 when assigning reviewers
 }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedIds, setSelectedIds] = useState([]);
@@ -46,13 +50,12 @@ const AddReviewerModal = ({
   if (!show) return null;
 
   const toggleSelect = (id) =>
-    setSelectedIds((prev) =>
-      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
-    );
+    setSelectedIds((prev) => (prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]));
 
   const handlePrimary = async () => {
-    if (selectedIds.length === 0) {
-      alert("Please select at least one person.");
+    if (selectedIds.length < minSelected) {
+      const needed = minSelected - selectedIds.length;
+      alert(`Please select at least ${minSelected} reviewer${minSelected > 1 ? "s" : ""}. You need ${needed} more.`);
       return;
     }
     if (onSubmit) {
@@ -63,6 +66,9 @@ const AddReviewerModal = ({
     setSelectedIds([]);
     setSearchTerm("");
   };
+
+  const notEnough = selectedIds.length < minSelected;
+  const needed = Math.max(0, minSelected - selectedIds.length);
 
   return (
     <div
@@ -94,36 +100,48 @@ const AddReviewerModal = ({
           onChange={(e) => setSearchTerm(e.target.value)}
         />
 
+        {/* Minimum requirement hint */}
+        {minSelected > 1 && (
+          <div className="text-sm mb-2">
+            <span className="font-medium">Minimum required:</span>{" "}
+            {minSelected} reviewer{minSelected > 1 ? "s" : ""}.{" "}
+            {notEnough ? (
+              <span className="text-red-600">
+                You need {needed} more selection{needed > 1 ? "s" : ""}.
+              </span>
+            ) : (
+              <span className="text-green-700">Good to go!</span>
+            )}
+          </div>
+        )}
+
         {/* List */}
         <div className="overflow-auto flex-1 mb-16">
           {filteredReviewers.length > 0 ? (
             filteredReviewers.map((r) => {
+              const id = r?.id ?? r?.user_id; // support both shapes
               const tags = getTagNames(r);
               return (
                 <label
-                  key={reviewer.id}
+                  key={id}
                   className="flex items-center border rounded p-3 mb-2 cursor-pointer hover:bg-gray-100"
                 >
                   <input
                     type="checkbox"
-                    checked={selectedIds.includes(reviewer.id)}
-                    onChange={() => toggleSelect(reviewer.id)}
+                    checked={selectedIds.includes(id)}
+                    onChange={() => toggleSelect(id)}
                     className="mr-4"
                   />
                   <div className="flex-1">
-                    <div className="font-semibold">{reviewer.name}</div>
-                    <div className="text-gray-500 text-sm">
-                      {reviewer.email}
-                    </div>
-                    <div className="text-sm text-gray-600">
-                      {reviewer.department}
-                    </div>
+                    <div className="font-semibold">{r?.name || "Unnamed"}</div>
+                    <div className="text-gray-500 text-sm">{r?.email || "No email"}</div>
+                    <div className="text-sm text-gray-600">{r?.department || "No department"}</div>
 
                     {tags.length > 0 ? (
                       <div className="flex flex-wrap gap-1 mt-2">
                         {tags.map((t, idx) => (
                           <span
-                            key={idx}
+                            key={`${id}-tag-${idx}`}
                             className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
                           >
                             {t}
@@ -133,13 +151,6 @@ const AddReviewerModal = ({
                     ) : (
                       <div className="text-xs text-gray-400 mt-1">
                         No expertise/domains specified
-                      </div>
-                    )}
-
-                    {/* Show message if no domains */}
-                    {domainNames.length === 0 && (
-                      <div className="text-xs text-gray-400 mt-1">
-                        No expertise domains specified
                       </div>
                     )}
                   </div>
@@ -158,11 +169,13 @@ const AddReviewerModal = ({
         {/* Action button */}
         <div className="absolute bottom-6 left-6 right-6">
           <CommonButton
-            label={`${buttonLabel} (${selectedIds.length} selected)`}
+            label={`${buttonLabel} (${selectedIds.length} selected)${
+              notEnough ? ` — need ${needed} more` : ""
+            }`}
             onClick={handlePrimary}
-            disabled={selectedIds.length === 0}
+            disabled={notEnough}
             className={`w-full flex items-center justify-center gap-1 text-sm px-3 py-2 rounded ${
-              selectedIds.length === 0
+              notEnough
                 ? "bg-gray-300 text-gray-500 cursor-not-allowed"
                 : "bg-blue-700 text-white hover:bg-blue-900"
             }`}
@@ -174,3 +187,4 @@ const AddReviewerModal = ({
 };
 
 export default AddReviewerModal;
+
