@@ -265,49 +265,41 @@ class TeamDetails {
         }
     }
 
+    // GET /api/teacher/my-teams/papers
     static async getAllTeamPapers(req, res) {
         try {
-            // consistent user id extraction
             const userId = Number(req.user?.user_id ?? req.user?.id);
             if (!userId) return res.status(400).json({ message: "Missing user id" });
 
-            // define teacher (you referenced it before without defining)
             const teacher = await db.teacher.findFirst({
                 where: { user_id: userId },
                 select: { teacher_id: true },
             });
 
-            // build OR clause safely
             const orClause = [
-                {
-                    team: {
-                        teammember: { some: { user_id: userId } },
-                    },
-                },
-                {
-                    team: { created_by_user_id: userId },
-                },
+                { team: { teammember: { some: { user_id: userId } } } },
+                { team: { created_by_user_id: userId } },
             ];
-            if (teacher) {
-                orClause.push({ submitted_by: teacher.teacher_id });
-            }
+            if (teacher) orClause.push({ submitted_by: teacher.teacher_id });
 
             const papers = await db.paper.findMany({
                 where: { OR: orClause },
-                include: {
+                select: {
+                    paper_id: true,
+                    title: true,
+                    pdf_path: true,
+                    created_at: true,
+                    file_size: true,
+                    status: true,
+                    aggregated_decision: true,
+                    aggregated_decided_at: true,
                     team: {
                         select: {
                             team_id: true,
                             team_name: true,
-                            domain: {
-                                select: {
-                                    domain_name: true
-
-                                }
-                            }
-                        }
+                            domain: { select: { domain_name: true } },
+                        },
                     },
-                    // FIX: use select for scalars; include only relations
                     teacher: {
                         select: {
                             teacher_id: true,
@@ -318,22 +310,20 @@ class TeamDetails {
                 orderBy: { created_at: "desc" },
             });
 
-            // robust file URL
             const base = process.env.APP_URL || "http://localhost:8000";
-            const papersWithUrls = papers.map((p) => ({
+            const data = papers.map((p) => ({
                 ...p,
                 download_url: p.pdf_path ? `${base}/${p.pdf_path}` : null,
             }));
 
-            return res.status(200).json({ data: papersWithUrls });
+            return res.status(200).json({ data });
         } catch (error) {
             console.error("Error fetching team papers:", error);
-            return res
-                .status(500)
-                .json({ message: "Server error", error: error.message });
+            return res.status(500).json({ message: "Server error", error: error.message });
         }
     }
 
+    // GET /api/teacher/my-teams/proposals
     static async getAllTeamProposals(req, res) {
         try {
             const userId = Number(req.user?.user_id ?? req.user?.id);
@@ -348,24 +338,25 @@ class TeamDetails {
                 { team: { teammember: { some: { user_id: userId } } } },
                 { team: { created_by_user_id: userId } },
             ];
-            if (teacher) {
-                orClause.push({ submitted_by: teacher.teacher_id });
-            }
+            if (teacher) orClause.push({ submitted_by: teacher.teacher_id });
 
             const proposals = await db.proposal.findMany({
                 where: { OR: orClause },
-                include: {
+                select: {
+                    proposal_id: true,
+                    title: true,
+                    pdf_path: true,
+                    created_at: true,
+                    file_size: true,
+                    status: true,
+                    aggregated_decision: true,
+                    aggregated_decided_at: true,
                     team: {
                         select: {
                             team_id: true,
                             team_name: true,
-                            domain: {
-                                select: {
-                                    domain_name: true
-
-                                }
-                            }
-                        }
+                            domain: { select: { domain_name: true } },
+                        },
                     },
                     teacher: {
                         select: {
@@ -378,19 +369,18 @@ class TeamDetails {
             });
 
             const base = process.env.APP_URL || "http://localhost:8000";
-            const proposalsWithUrls = proposals.map((p) => ({
+            const data = proposals.map((p) => ({
                 ...p,
                 download_url: p.pdf_path ? `${base}/${p.pdf_path}` : null,
             }));
 
-            return res.status(200).json({ data: proposalsWithUrls });
+            return res.status(200).json({ data });
         } catch (error) {
             console.error("Error fetching team proposals:", error);
-            return res
-                .status(500)
-                .json({ message: "Server error", error: error.message });
+            return res.status(500).json({ message: "Server error", error: error.message });
         }
     }
+
 
     // Team (authors) view: anonymized reviews for a PAPER
     static async getPublicReviewsForPaper(req, res) {

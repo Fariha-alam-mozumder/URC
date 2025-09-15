@@ -1,15 +1,19 @@
-
-import AcceptedPaper from '../../components/home/AcceptedPaper';
-import Conferences from '../../components/home/Conferences';
-import Header from '../../components/home/header'; 
-
+import AcceptedPaper from "../../components/home/AcceptedPaper";
+import Header from "../../components/home/header";
+import { useAuth } from "../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 function Homepage() {
+  const { user, token } = useAuth();
+  const navigate = useNavigate();
   return (
-    <div className='mt-0'>
-       <Header />
-       <AcceptedPaper/>
-       <Conferences/>
+    <div className="mt-0">
+      <Header />
+      <AcceptedPaper
+        user={user}
+        token={token}
+        onNavigateToLogin={() => navigate("/login")}
+      />
     </div>
   );
 }

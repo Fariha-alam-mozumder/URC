@@ -6,13 +6,12 @@ import logger from "../../config/logger.js";
 import { Vine } from "@vinejs/vine";
 import { reviewSchema } from "../../validations/reviewer/reviewValidation.js";
 import redis from "../../DB/redis.client.js";
-import { teamDetailsKey, userTeamsKey } from "../../utils/cacheKeys.js";
+import { teamDetailsKey } from "../../utils/cacheKeys.js";
 import { finalizeIfCompleted } from "../../utils/finalizeIfCompleted.js";
 import {
   fileValidator,
   uploadFile,
   getDocumentUrl,
-  MAX_DOCUMENT_SIZE_MB
 } from "../../utils/helper.js";
 
 const vine = new Vine();
@@ -25,19 +24,6 @@ const parseCode = (rawCode) => {
   if (!id || id <= 0) return { isProposal: null, id: null };
   const isProposal = lettersOnly.startsWith("PR");
   return { isProposal, id };
-};
-
-const mapDecisionToStatus = (decision) => {
-  switch (decision) {
-    case "ACCEPT":
-      return "ACCEPTED";
-    case "REJECT":
-      return "REJECTED";
-    case "MINOR_REVISIONS":
-    case "MAJOR_REVISIONS":
-    default:
-      return "UNDER_REVIEW";
-  }
 };
 
 class ReviewController {
@@ -93,7 +79,7 @@ class ReviewController {
         email: item.teacher?.user?.email || "",
         submittedAt: item.created_at,
         track: item.team?.domain?.domain_name || "Unknown",
-        teamName: item.team?.team_name || null, // <-- add for UI
+        teamName: item.team?.team_name || null, 
         pdf_path: item.pdf_path || null,
         pdf_url: item.pdf_path ? getDocumentUrl(item.pdf_path) : null,
         file_size: item.file_size || null,
@@ -194,9 +180,9 @@ class ReviewController {
       let attachmentPath = null;
       const file = req.files?.review_file;
       if (file) {
-        // Validate size + mime (PDF/DOC/DOCX)
-        fileValidator(file); // (20MB + supportedDocumentMimes)
-        attachmentPath = await uploadFile(file, true, "pdf"); // stored under public/documents
+        // Validate size and mime type 
+        fileValidator(file); 
+        attachmentPath = await uploadFile(file, true, "pdf");
       }
 
       // ---- Create review ----
@@ -235,7 +221,6 @@ class ReviewController {
         data: {
           status: "COMPLETED",
           completed_at: now,
-          // if reviewer never hit "Start", ensure we still have a start stamp for analytics
           started_at: assignment.started_at ?? now,
         },
       });
@@ -261,7 +246,6 @@ class ReviewController {
         success: true,
         message: "Review submitted",
         review_id: review.review_id,
-        // admin-facing aggregate lifecycle
         admin_assignment_status: adminStatus,
         aggregated_decision: finalized ? aggregated : null,
         attachment: attachmentPath ? getDocumentUrl(attachmentPath) : null,

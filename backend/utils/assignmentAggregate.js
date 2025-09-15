@@ -16,7 +16,7 @@ export async function computeAdminAssignmentStatus(kind, id) {
     select: { status: true, started_at: true, completed_at: true, due_date: true }
   });
 
-  if (!assignments.length) return "PENDING"; // no reviewers yet
+  if (!assignments.length) return "PENDING"; 
 
   // All assignments share the same due_date in your UI; take max just in case.
   const due = assignments.reduce((acc, a) => {

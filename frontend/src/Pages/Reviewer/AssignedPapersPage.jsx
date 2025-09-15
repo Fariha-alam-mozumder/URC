@@ -314,7 +314,6 @@ export default function AssignedPapersPage() {
               <Eye size={12} /> View Paper
             </button>
           </div>
-
           {/* Second line: Start and Complete buttons */}
           <div className="flex gap-1">
             <button
@@ -342,17 +341,36 @@ export default function AssignedPapersPage() {
               Complete
             </button>
           </div>
-
           {/* Third line: Review Paper button */}
+          
           <div className="flex">
-            <button
-              onClick={() => handleReview(row.id)}
-              className="flex items-center gap-1 text-xs border px-2 py-1 rounded hover:bg-gray-100 bg-gray-50 text-gray-700"
-              disabled={row.assignmentStatus === "COMPLETED"}
-              title="Review Paper"
-            >
-              <FileText size={12} /> Review Paper
-            </button>
+            {(() => {
+              const canReview = row.assignmentStatus === "IN_PROGRESS";
+              const btnClasses = `flex items-center gap-1 text-xs border px-2 py-1 rounded ${
+                canReview
+                  ? "hover:bg-gray-100 bg-gray-50 text-gray-700"
+                  : "bg-gray-100 text-gray-400 cursor-not-allowed"
+              }`;
+
+              return (
+                <button
+                  onClick={() => {
+                    if (!canReview) {
+                      alert("Click Start first to begin reviewing.");
+                      return;
+                    }
+                    handleReview(row.id);
+                  }}
+                  className={btnClasses}
+                  disabled={!canReview}
+                  title={
+                    canReview ? "Review Paper" : "Start the assignment first"
+                  }
+                >
+                  <FileText size={12} /> Review Paper
+                </button>
+              );
+            })()}
           </div>
         </div>
       ),

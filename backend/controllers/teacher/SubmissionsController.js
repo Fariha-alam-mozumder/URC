@@ -8,16 +8,6 @@ function pad3(num) {
     return String(num).padStart(3, '0');
 }
 
-function formatStatusForFilter(status) {
-    const statusMap = {
-        'PENDING': 'Pending',
-        'ACCEPTED': 'Accepted',
-        'REJECTED': 'Rejected',
-        'UNDER_REVIEW': 'Under Review'
-    };
-    return statusMap[status] || status;
-}
-
 class SubmissionsController {
     // GET /api/submissions?domain_id=&status=&q=&sort=title|field|submitted|status&order=asc|desc
     static async list(req, res) {
@@ -35,7 +25,7 @@ class SubmissionsController {
                 select: { teacher_id: true },
             });
 
-            // Visibility: any team you created, you're a member of, or (if teacher) items you submitted
+            // Visibility: any team a user created, user is also a member of, or (if teacher) items you submitted
             const teamScope = [
                 { team: { created_by_user_id: userId } },
                 { team: { teammember: { some: { user_id: userId } } } },
@@ -52,6 +42,7 @@ class SubmissionsController {
             // Filters
             const { domain_id, status, q } = req.query;
             const domainFilter = domain_id ? { team: { domain_id: Number(domain_id) } } : {};
+            const decisionFilter = status ? { aggregated_decision: status } : {};
             const statusFilter = status ? { status } : {};
             const searchFilter = q
                 ? {
@@ -65,8 +56,16 @@ class SubmissionsController {
 
             // Fetch papers
             const papers = await db.paper.findMany({
-                where: { AND: [searchFilter, statusFilter, domainFilter, { OR: paperOr }] },
-                include: {
+                where: {
+                    AND: [searchFilter, decisionFilter, domainFilter, { OR: paperOr }],
+                },
+                select: {
+                    paper_id: true,
+                    title: true,
+                    pdf_path: true,
+                    created_at: true,
+                    file_size: true,
+                    aggregated_decision: true,
                     team: {
                         select: {
                             team_id: true,
@@ -82,8 +81,16 @@ class SubmissionsController {
 
             // Fetch proposals
             const proposals = await db.proposal.findMany({
-                where: { AND: [searchFilter, statusFilter, domainFilter, { OR: proposalOr }] },
-                include: {
+                where: {
+                    AND: [searchFilter, decisionFilter, domainFilter, { OR: proposalOr }],
+                },
+                select: {
+                    proposal_id: true,
+                    title: true,
+                    pdf_path: true,
+                    created_at: true,
+                    file_size: true,
+                    aggregated_decision: true,
                     team: {
                         select: {
                             team_id: true,
@@ -108,19 +115,19 @@ class SubmissionsController {
                     field: p.team?.domain?.domain_name || "—",
                     field_id: p.team?.domain?.domain_id || null,
                     submitted: p.created_at,
-                    status: p.status,
+                    status: p.aggregated_decision || null,
                     download_url: p.pdf_path ? `${fileBase}/${p.pdf_path}` : null,
                 })),
                 ...proposals.map((p) => ({
                     id: `proposal-${p.proposal_id}`,
-                    type: "proposal", 
+                    type: "proposal",
                     code: `PR${pad3(p.proposal_id)}`,
                     title: p.title || "Untitled Proposal",
                     authors: p.team?._count?.teammember || 0,
                     field: p.team?.domain?.domain_name || "—",
                     field_id: p.team?.domain?.domain_id || null,
                     submitted: p.created_at,
-                    status: p.status,
+                    status: p.aggregated_decision || null,
                     download_url: p.pdf_path ? `${fileBase}/${p.pdf_path}` : null,
                 })),
             ];
@@ -128,7 +135,7 @@ class SubmissionsController {
             // Simple sorting
             const sort = String(req.query.sort || "").toLowerCase();
             const order = (String(req.query.order || "desc").toLowerCase() === "asc") ? 1 : -1;
-            
+
             if (sort === "title") {
                 items.sort((a, b) => a.title.localeCompare(b.title) * order);
             } else if (sort === "field") {
@@ -140,9 +147,12 @@ class SubmissionsController {
                     return (dateA - dateB) * order;
                 });
             } else if (sort === "status") {
-                items.sort((a, b) => a.status.localeCompare(b.status) * order);
+                items.sort((a, b) => {
+                    const A = a.status || "~";
+                    const B = b.status || "~";
+                    return A.localeCompare(B) * order;
+                });
             } else {
-                // Default: newest first
                 items.sort((a, b) => new Date(b.submitted) - new Date(a.submitted));
             }
 
@@ -186,8 +196,12 @@ class SubmissionsController {
             }
 
             // Return raw status options for frontend formatting
-            const statusOptions = ["PENDING", "ACCEPTED", "REJECTED", "UNDER_REVIEW"];
-
+            const statusOptions = [
+                "ACCEPT",
+                "REJECT",
+                "MINOR_REVISIONS",
+                "MAJOR_REVISIONS",
+            ];
             return res.status(200).json({ data: { domains, statusOptions } });
         } catch (err) {
             console.error("SubmissionController.filters error:", err);

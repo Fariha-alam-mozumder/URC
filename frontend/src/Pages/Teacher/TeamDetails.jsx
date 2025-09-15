@@ -266,19 +266,6 @@ const TeamDetails = () => {
               />
             </div>
           </div>
-          
-          <div className="bg-white rounded-xl shadow-sm border">
-            <div className="h-80 overflow-hidden">
-              <PendingApplications
-                teamId={id}
-                onApplicationProcessed={handleApplicationProcessed}
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* Documents and Comments */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="bg-white rounded-xl shadow-sm border">
             <div className="h-96 overflow-hidden">
               <DocumentList
@@ -292,6 +279,18 @@ const TeamDetails = () => {
             </div>
           </div>
           
+          {/* <div className="bg-white rounded-xl shadow-sm border">
+            <div className="h-80 overflow-hidden">
+              <PendingApplications
+                teamId={id}
+                onApplicationProcessed={handleApplicationProcessed}
+              />
+            </div>
+          </div> */}
+        </div>
+
+        {/* Documents and Comments */}
+        <div className="grid grid-cols-1 md:grid-cols-1 gap-6">
           <div className="bg-white rounded-xl shadow-sm border">
             <div className="h-96 overflow-hidden">
               <Comments teamId={id} />

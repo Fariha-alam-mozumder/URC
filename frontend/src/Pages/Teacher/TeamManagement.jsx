@@ -1,76 +1,92 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import {
-  FaClipboard,
-  FaCheckCircle,
-  FaClock,
-  FaExclamationTriangle,
+  FaUsers,          // Total Teams
+  FaClipboard,      // Total Submissions
+  FaClock,          // Under Review
+  FaCheckCircle,    // Completed
 } from "react-icons/fa";
-// import { useNavigate } from 'react-router-dom';
-// import StatCard from '../../components/common/statcard';
-// import PendingApplications from '../../components/teacher/TeamManagement/PendingApplication';
-// import TeamCard from '../../components/teacher/TeamManagement/TeamCard';
-import StatCard from "../../components/Common/statcard";
-import PendingApplications from "../../components/Teacher/TeamManagement/PendingApplication";
+import StatCard from "../../components/Common/StatCard";
 import TeamCard from "../../components/Common/TeamCard";
 import axios from "axios";
 
+const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:8000/api";
+
 const TeamManagement = () => {
   const navigate = useNavigate();
+
   const [teams, setTeams] = useState([]);
+  const [papers, setPapers] = useState([]);
+  const [proposals, setProposals] = useState([]);
+
   const [showAllTeams, setShowAllTeams] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const statData = [
-    { title: "Total Papers", value: 24, icon: <FaClipboard /> },
-    { title: "Submitted", value: 18, icon: <FaCheckCircle /> },
-    { title: "Under Review", value: 4, icon: <FaClock /> },
-    { title: "Pending", value: 2, icon: <FaExclamationTriangle /> },
-  ];
-
-  const pendingApplications = [
-    { name: "Sarah Johnson", team: "AI Research 2025", timeAgo: "2 hours ago" },
-    {
-      name: "Michael Chen",
-      team: "Quantum Computing Lab",
-      timeAgo: "5 hours ago",
-    },
-    { name: "Emily Zhang", team: "Biotech Innovation", timeAgo: "1 day ago" },
-  ];
-
+  // Fetch teams + submissions in parallel
   useEffect(() => {
-    const fetchTeams = async () => {
+    const fetchAll = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(
-          "http://localhost:8000/api/teacher/my-teams",
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
-        );
-        setTeams(response.data.data || []);
+        setError(null);
+
+        const headers = { Authorization: `Bearer ${localStorage.getItem("token")}` };
+        const cfg = { headers, withCredentials: true };
+
+        const [teamsRes, papersRes, proposalsRes] = await Promise.all([
+          axios.get(`${API_BASE}/teacher/my-teams`, cfg),
+          axios.get(`${API_BASE}/teacher/my-teams/papers`, cfg),
+          axios.get(`${API_BASE}/teacher/my-teams/proposals`, cfg),
+        ]);
+
+        setTeams(teamsRes.data?.data || []);
+        setPapers(papersRes.data?.data || []);
+        setProposals(proposalsRes.data?.data || []);
       } catch (err) {
-        setError(err.response?.data?.message || "Failed to fetch teams");
+        console.error("TeamManagement fetch error:", err);
+        setError(err?.response?.data?.message || "Failed to fetch data");
       } finally {
         setLoading(false);
       }
     };
 
-    fetchTeams();
+    fetchAll();
   }, []);
+
+  // Compute the 4 metrics
+  const stats = useMemo(() => {
+    const all = [...papers, ...proposals];
+
+    let underReview = 0;
+    let completed = 0;
+
+    for (const item of all) {
+      const s = String(item.status || "").toUpperCase();
+
+      // Treat legacy final states as completed for backward compatibility
+      const isCompleted = s === "COMPLETED" || s === "ACCEPTED" || s === "REJECTED";
+      if (s === "UNDER_REVIEW") underReview++;
+      if (isCompleted) completed++;
+    }
+
+    return {
+      totalTeams: teams.length,
+      totalSubmissions: all.length,
+      underReview,
+      completed,
+    };
+  }, [teams, papers, proposals]);
 
   if (loading) {
     return (
       <div className="p-6 text-center">
         <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600 mx-auto"></div>
-        <p className="mt-4">Loading proposals...</p>
+        <p className="mt-4">Loading your teams & submissions...</p>
       </div>
     );
   }
-  if (error) return <p className="text-red-600">Error: {error}</p>;
+
+  if (error) return <p className="p-6 text-red-600">Error: {error}</p>;
 
   const visibleTeams = showAllTeams ? teams : teams.slice(0, 3);
 
@@ -86,52 +102,52 @@ const TeamManagement = () => {
         </button>
       </div>
 
+      {/* Stat cards: the 4 you requested */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
-          title="Total Papers"
-          value={24}
-          icon={<FaClipboard className="text-green-500 text-xl" />}
+          title="Total Teams"
+          value={stats.totalTeams}
+          icon={<FaUsers className="text-indigo-600 text-xl" />}
         />
         <StatCard
-          title="Submitted"
-          value={18}
-          icon={<FaCheckCircle className="text-blue-500 text-xl" />}
+          title="Total Submissions"
+          value={stats.totalSubmissions}
+          icon={<FaClipboard className="text-blue-600 text-xl" />}
         />
         <StatCard
           title="Under Review"
-          value={4}
+          value={stats.underReview}
           icon={<FaClock className="text-yellow-500 text-xl" />}
         />
         <StatCard
-          title="Pending"
-          value={2}
-          icon={<FaExclamationTriangle className="text-purple-500 text-xl" />}
+          title="Review Completed"
+          value={stats.completed}
+          icon={<FaCheckCircle className="text-green-600 text-xl" />}
         />
       </div>
 
-      {/* Team Cards */}
+      {/* Team list */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-4">
         {visibleTeams.length === 0 ? (
           <p>No teams found.</p>
         ) : (
           visibleTeams.map((team) => {
-            const formattedDate = new Date(team.created_at).toLocaleDateString(
-              "en-GB",
-              {
-                day: "2-digit",
-                month: "short",
-                year: "numeric",
-              }
-            );
+            const formattedDate = team.created_at
+              ? new Date(team.created_at).toLocaleDateString("en-GB", {
+                  day: "2-digit",
+                  month: "short",
+                  year: "numeric",
+                })
+              : "—";
 
             return (
               <TeamCard
                 key={team.team_id}
                 id={team.team_id}
-                title={team.team_name}
+                title={team.team_name ?? "Untitled Team"}
                 created={`Created at ${formattedDate}`}
-                description={team.team_description}
-                status={team.status}
+                description={team.team_description ?? ""}
+                status={team.status ?? "UNKNOWN"}
                 members={team._count?.teammember ?? 0}
                 to={`/teacher/team/${team.team_id}`}
               />
@@ -140,7 +156,6 @@ const TeamManagement = () => {
         )}
       </div>
 
-      {/* View All Button */}
       {teams.length > 3 && (
         <div className="flex justify-center mb-6">
           <button
@@ -151,9 +166,6 @@ const TeamManagement = () => {
           </button>
         </div>
       )}
-
-      {/* Pending Applications */}
-      {/* <PendingApplications applications={pendingApplications} /> */}
     </div>
   );
 };

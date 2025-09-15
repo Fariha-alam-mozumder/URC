@@ -13887,3 +13887,1884 @@ Invalid `prisma.review.findMany()` invocation:
 
 Argument `not` must not be null.
 2025-09-15T09:23:55.539Z [right meow!] info: Email job completed successfully
+2025-09-15T11:06:12.263Z [right meow!] error: Error calculating review time for reviewer 6: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 6,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-15T11:06:12.309Z [right meow!] error: Error calculating review time for reviewer 7: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 7,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-15T11:06:12.315Z [right meow!] error: Error calculating review time for reviewer 2: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 2,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-15T11:06:12.329Z [right meow!] error: Error calculating review time for reviewer 1: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 1,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-15T11:06:12.333Z [right meow!] error: Error calculating review time for reviewer 5: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 5,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-15T11:06:12.366Z [right meow!] error: Error calculating review time for reviewer 2: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 2,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-15T11:06:12.368Z [right meow!] error: Error calculating review time for reviewer 7: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 7,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-15T11:06:12.370Z [right meow!] error: Error calculating review time for reviewer 5: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 5,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-15T11:06:12.373Z [right meow!] error: Error calculating review time for reviewer 6: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 6,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-15T11:06:12.375Z [right meow!] error: Error calculating review time for reviewer 1: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 1,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-15T11:06:18.147Z [right meow!] info: Email job completed successfully
+2025-09-15T11:06:18.424Z [right meow!] error: Error calculating review time for reviewer 2: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 2,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-15T11:06:18.425Z [right meow!] error: Error calculating review time for reviewer 5: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 5,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-15T11:06:18.427Z [right meow!] error: Error calculating review time for reviewer 6: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 6,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-15T11:06:18.428Z [right meow!] error: Error calculating review time for reviewer 7: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 7,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-15T11:06:18.429Z [right meow!] error: Error calculating review time for reviewer 8: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 8,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-15T11:06:18.430Z [right meow!] error: Error calculating review time for reviewer 1: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 1,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-15T11:06:22.748Z [right meow!] info: Reviewer removed: Dr. Elmah (ID: 8)
+2025-09-15T11:06:23.926Z [right meow!] error: Error calculating review time for reviewer 2: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 2,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-15T11:06:23.928Z [right meow!] error: Error calculating review time for reviewer 5: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 5,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-15T11:06:23.929Z [right meow!] error: Error calculating review time for reviewer 7: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 7,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-15T11:06:23.931Z [right meow!] error: Error calculating review time for reviewer 1: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 1,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-15T11:06:23.932Z [right meow!] error: Error calculating review time for reviewer 6: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 6,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-15T11:06:24.098Z [right meow!] info: Email job completed successfully
+2025-09-15T12:44:31.662Z [right meow!] error: Error calculating review time for reviewer 6: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 6,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-15T12:44:31.666Z [right meow!] error: Error calculating review time for reviewer 7: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 7,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-15T12:44:31.686Z [right meow!] error: Error calculating review time for reviewer 2: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 2,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-15T12:44:31.693Z [right meow!] error: Error calculating review time for reviewer 1: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 1,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-15T12:44:31.701Z [right meow!] error: Error calculating review time for reviewer 5: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 5,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-15T12:44:31.734Z [right meow!] error: Error calculating review time for reviewer 2: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 2,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-15T12:44:31.736Z [right meow!] error: Error calculating review time for reviewer 7: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 7,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-15T12:44:31.738Z [right meow!] error: Error calculating review time for reviewer 1: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 1,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-15T12:44:31.740Z [right meow!] error: Error calculating review time for reviewer 6: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 6,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-15T12:44:31.743Z [right meow!] error: Error calculating review time for reviewer 5: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 5,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-15T12:44:36.799Z [right meow!] info: Email job completed successfully
+2025-09-15T12:44:37.203Z [right meow!] error: Error calculating review time for reviewer 1: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 1,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-15T12:44:37.204Z [right meow!] error: Error calculating review time for reviewer 7: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 7,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-15T12:44:37.206Z [right meow!] error: Error calculating review time for reviewer 6: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 6,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-15T12:44:37.207Z [right meow!] error: Error calculating review time for reviewer 5: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 5,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-15T12:44:37.209Z [right meow!] error: Error calculating review time for reviewer 2: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 2,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-15T12:44:37.211Z [right meow!] error: Error calculating review time for reviewer 9: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 9,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-15T13:05:24.381Z [right meow!] error: Error in assignReviewers: Validation failure
+2025-09-15T13:15:57.365Z [right meow!] error: Error calculating review time for reviewer 5: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 5,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-15T13:15:57.407Z [right meow!] error: Error calculating review time for reviewer 2: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 2,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-15T13:15:57.421Z [right meow!] error: Error calculating review time for reviewer 7: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 7,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-15T13:15:57.425Z [right meow!] error: Error calculating review time for reviewer 6: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 6,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-15T13:15:57.436Z [right meow!] error: Error calculating review time for reviewer 9: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 9,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-15T13:15:57.438Z [right meow!] error: Error calculating review time for reviewer 1: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 1,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-15T13:15:57.468Z [right meow!] error: Error calculating review time for reviewer 5: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 5,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-15T13:15:57.472Z [right meow!] error: Error calculating review time for reviewer 6: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 6,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-15T13:15:57.475Z [right meow!] error: Error calculating review time for reviewer 2: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 2,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-15T13:15:57.480Z [right meow!] error: Error calculating review time for reviewer 7: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 7,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-15T13:15:57.483Z [right meow!] error: Error calculating review time for reviewer 1: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 1,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-15T13:15:57.488Z [right meow!] error: Error calculating review time for reviewer 9: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 9,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-15T13:44:19.875Z [right meow!] error: Error calculating review time for reviewer 2: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 2,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-15T13:44:19.889Z [right meow!] error: Error calculating review time for reviewer 6: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 6,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-15T13:44:19.894Z [right meow!] error: Error calculating review time for reviewer 5: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 5,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-15T13:44:19.898Z [right meow!] error: Error calculating review time for reviewer 1: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 1,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-15T13:44:19.902Z [right meow!] error: Error calculating review time for reviewer 7: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 7,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-15T13:44:19.913Z [right meow!] error: Error calculating review time for reviewer 9: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 9,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-15T13:44:19.951Z [right meow!] error: Error calculating review time for reviewer 9: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 9,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-15T13:44:19.963Z [right meow!] error: Error calculating review time for reviewer 5: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 5,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-15T13:44:19.967Z [right meow!] error: Error calculating review time for reviewer 7: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 7,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-15T13:44:19.973Z [right meow!] error: Error calculating review time for reviewer 2: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 2,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-15T13:44:19.977Z [right meow!] error: Error calculating review time for reviewer 1: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 1,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-15T13:44:19.981Z [right meow!] error: Error calculating review time for reviewer 6: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 6,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-15T13:44:36.006Z [right meow!] error: Error calculating review time for reviewer 5: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 5,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-15T13:44:36.008Z [right meow!] error: Error calculating review time for reviewer 2: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 2,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-15T13:44:36.012Z [right meow!] error: Error calculating review time for reviewer 9: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 9,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-15T13:44:36.018Z [right meow!] error: Error calculating review time for reviewer 1: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 1,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-15T13:44:36.023Z [right meow!] error: Error calculating review time for reviewer 6: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 6,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.
+2025-09-15T13:44:36.057Z [right meow!] error: Error calculating review time for reviewer 7: 
+Invalid `prisma.review.findMany()` invocation:
+
+{
+  where: {
+    reviewer_id: 7,
+    decision: {
+      not: null
+    },
+    reviewed_at: {
++     not: DateTime
+    }
+  },
+  include: {
+    paper: {
+      select: {
+        created_at: true
+      }
+    },
+    proposal: {
+      select: {
+        created_at: true
+      }
+    }
+  }
+}
+
+Argument `not` must not be null.

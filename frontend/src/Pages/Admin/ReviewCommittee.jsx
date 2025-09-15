@@ -132,7 +132,7 @@ const ReviewerCommittee = () => {
   }
 
   return (
-    <div className="">
+    <div className="p-6">
       <h1 className="mb-6 text-xl sm:text-2xl font-bold truncate w-full sm:w-auto">Review Committee</h1>
 
       {error && (

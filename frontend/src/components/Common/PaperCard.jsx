@@ -1,40 +1,63 @@
 // src/components/Common/PaperCard.jsx
-import React from "react";
-import { FaEdit, FaDownload, FaClipboard } from "react-icons/fa";
+import React, { useState } from "react";
+import { FaDownload, FaClipboard } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+
+const DECISION_LABELS = {
+  ACCEPT: "Accepted",
+  REJECT: "Rejected",
+  MINOR_REVISIONS: "Minor Revisions",
+  MAJOR_REVISIONS: "Major Revisions",
+};
+
+const STATUS_LABELS = {
+  PENDING: "Pending",
+  UNDER_REVIEW: "Under Review",
+  COMPLETED: "Completed",
+};
+
+function getBadge(aggregatedDecision, status) {
+  // Prefer the aggregated decision badge if available
+  const d = (aggregatedDecision || "").toUpperCase();
+  const s = (status || "").toUpperCase();
+
+  if (d) {
+    switch (d) {
+      case "ACCEPT":
+        return { text: DECISION_LABELS[d], classes: "bg-green-100 text-green-700 border-green-200" };
+      case "REJECT":
+        return { text: DECISION_LABELS[d], classes: "bg-red-100 text-red-700 border-red-200" };
+      case "MINOR_REVISIONS":
+        return { text: DECISION_LABELS[d], classes: "bg-yellow-100 text-yellow-700 border-yellow-200" };
+      case "MAJOR_REVISIONS":
+        return { text: DECISION_LABELS[d], classes: "bg-orange-100 text-orange-700 border-orange-200" };
+      default:
+        return { text: d, classes: "bg-gray-100 text-gray-700 border-gray-200" };
+    }
+  }
+
+  // Fallback to workflow status if no aggregate decision yet
+  switch (s) {
+    case "PENDING":
+      return { text: STATUS_LABELS[s], classes: "bg-yellow-100 text-yellow-700 border-yellow-200" };
+    case "UNDER_REVIEW":
+      return { text: STATUS_LABELS[s], classes: "bg-blue-100 text-blue-700 border-blue-200" };
+    case "COMPLETED":
+      return { text: STATUS_LABELS[s], classes: "bg-gray-100 text-gray-700 border-gray-200" };
+    default:
+      return { text: "Unknown", classes: "bg-gray-100 text-gray-700 border-gray-200" };
+  }
+}
 
 const PaperCard = ({ paper, onView, onDownload }) => {
   const navigate = useNavigate();
+  const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
 
-  let formattedStatus = paper.status.replace(/_/g, " ");
-  formattedStatus =
-    formattedStatus.charAt(0).toUpperCase() +
-    formattedStatus.slice(1).toLowerCase();
-  // const resolvedBasePath =
-  //   basePath || (role === "student" ? "/student" : "/teacher");
-  // const allowEdit = typeof canEdit === "boolean" ? canEdit : role === "teacher";
-
-  const handleView = () => {
-    if (onView) return onView(paper);
-    navigate(`${resolvedBasePath}/papers/${encodeURIComponent(paper.id)}`);
-  };
-
-  // const handleEdit = () => {
-  //   if (!allowEdit) return;
-  //   if (onEdit) return onEdit(paper);
-  //   navigate(`${resolvedBasePath}/papers/${encodeURIComponent(paper.id)}/edit`);
-  // };
+  const badge = getBadge(paper.aggregatedDecision, paper.status);
 
   const handleDownload = async (e) => {
     e.preventDefault();
-
-    if (onDownload) {
-      return onDownload(paper);
-    }
-
-    console.log("Download attempt for paper:", paper.title);
-    console.log("File URL:", paper.fileUrl);
+    if (onDownload) return onDownload(paper);
 
     if (!paper.fileUrl) {
       alert("No file available for download");
@@ -42,20 +65,14 @@ const PaperCard = ({ paper, onView, onDownload }) => {
     }
 
     try {
-      // FIXED: Simple download approach that works with static files
-      // Create a temporary link and click it
       const link = document.createElement("a");
       link.href = paper.fileUrl;
-      link.download = `${paper.title.replace(/[^a-z0-9]/gi, "_")}.pdf`; // Clean filename
+      link.download = `${paper.title.replace(/[^a-z0-9]/gi, "_")}.pdf`;
       link.target = "_blank";
       link.rel = "noopener noreferrer";
-
-      // Append to body, click, then remove
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-
-      console.log("Download initiated");
     } catch (error) {
       console.error("Download failed:", error);
       alert(`Failed to download: ${error.message}`);
@@ -63,114 +80,73 @@ const PaperCard = ({ paper, onView, onDownload }) => {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-4 space-y-3">
-      {/* Top Info */}
-      <div className="flex justify-between items-start gap-4">
-        <div className="flex-1 min-w-0">
-          {/* Badges row (creates space above the title) */}
-          <div className="flex flex-wrap items-center gap-2 mb-2">
-            {paper.idTag && (
-              <span className="px-2 py-1 rounded-full text-sm bg-indigo-100 text-indigo-800 font-mono border border-indigo-200">
-                {paper.idTag}
-              </span>
-            )}
-            {paper.domainName && (
-              <span className="px-2 py-1 rounded-full text-sm bg-gray-100 text-gray-800 border border-gray-200">
-                {paper.domainName}
-              </span>
+    <>
+      <div className="bg-white rounded-lg shadow-md p-4 space-y-3">
+        {/* Top Info */}
+        <div className="flex justify-between items-start gap-4">
+          <div className="flex-1 min-w-0">
+            {/* Badges row (optional) */}
+            <div className="flex flex-wrap items-center gap-2 mb-2">
+              {paper.idTag && (
+                <span className="px-2 py-1 rounded-full text-sm bg-indigo-100 text-indigo-800 font-mono border border-indigo-200">
+                  {paper.idTag}
+                </span>
+              )}
+              {paper.domainName && (
+                <span className="px-2 py-1 rounded-full text-sm bg-gray-100 text-gray-800 border border-gray-200">
+                  {paper.domainName}
+                </span>
+              )}
+            </div>
+
+            {/* Title */}
+            <h3 className="font-bold text-lg leading-snug mb-1">{paper.title}</h3>
+
+            {/* Meta */}
+            <p className="text-sm text-gray-500">
+              {paper.team} | {paper.date}
+            </p>
+            <p className="text-xs text-gray-400">Uploaded by {paper.lastEditor}</p>
+
+            {/* Abstract */}
+            {paper.abstract && (
+              <div className="mt-3 rounded-xl border border-gray-200 bg-gradient-to-br from-gray-50 to-white p-3 shadow-sm">
+                <h4 className="font-semibold mb-1">Abstract</h4>
+                <p className="text-sm leading-relaxed text-gray-700">{paper.abstract}</p>
+              </div>
             )}
           </div>
 
-          {/* Title */}
-          <h3 className="font-bold text-lg leading-snug mb-1">{paper.title}</h3>
-
-          {/* Meta */}
-          <p className="text-sm text-gray-500">
-            {paper.team} | {paper.date}
-          </p>
-          <p className="text-xs text-gray-400">
-            Uploaded by {paper.lastEditor}
-          </p>
-
-          {/* Abstract in a pretty box */}
-          {paper.abstract && (
-            <div className="mt-3 rounded-xl border border-gray-200 bg-gradient-to-br from-gray-50 to-white p-3 shadow-sm">
-              <h4 className="font-semibold mb-1">Abstract</h4>
-              <p className="text-sm leading-relaxed text-gray-700">
-                {paper.abstract}
-              </p>
-            </div>
-          )}
+          {/* Status/Decision pill (top-right) */}
+          <div className="text-xs text-right shrink-0">
+            <span className={`inline-block px-2 py-1 rounded-full text-sm border ${badge.classes}`}>
+              {badge.text}
+            </span>
+          </div>
         </div>
 
-        {/* Status pill */}
-        <div className="text-xs text-right shrink-0">
-          <span
-            className={`px-2 py-1 rounded-full mr-2 text-sm ${
-              paper.status === "ACCEPTED"
-                ? "bg-green-100 text-green-700 border-green-200"
-                : paper.status === "REJECTED"
-                ? "bg-red-100 text-red-700 border-red-200"
-                : paper.status === "PENDING"
-                ? "bg-yellow-100 text-yellow-700 border-yellow-200"
-                : paper.status === "UNDER_REVIEW"
-                ? "bg-blue-100 text-blue-700 border-blue-200"
-                : "bg-gray-200 text-gray-700 border-gray-200"
-            }`}
-          >
-            {formattedStatus || "Unknown Status"}
-          </span>
+        {/* Actions */}
+        <div className="flex items-center justify-between">
+          <div className="flex gap-3">
+            {paper.fileUrl ? (
+              <button
+                onClick={handleDownload}
+                className="flex items-center gap-1 text-sm px-3 py-1 border rounded hover:bg-gray-50"
+                title={`Download ${paper.title}`}
+              >
+                <FaDownload /> Download
+              </button>
+            ) : (
+              <span className="flex items-center gap-1 text-sm px-3 py-1 border rounded bg-gray-100 text-gray-500">
+                <FaDownload /> No File
+              </span>
+            )}
+          </div>
         </div>
       </div>
 
-      {/* Reviewers */}
-      {!!paper.reviewers?.length && (
-        <div className="flex flex-wrap gap-2">
-          <span className="text-sm font-medium">Reviewer(s):</span>
-          {paper.reviewers.map((r, i) => (
-            <span
-              key={i}
-              className="bg-gray-100 text-sm px-2 py-1 rounded-full text-gray-700"
-            >
-              {r}
-            </span>
-          ))}
-        </div>
-      )}
-
-      {/* Actions */}
-      <div className="flex items-center justify-between">
-        <div className="flex gap-3">
-          {paper.fileUrl ? (
-            <button
-              onClick={handleDownload}
-              className="flex items-center gap-1 text-sm px-3 py-1 border rounded hover:bg-gray-50"
-              title={`Download ${paper.title}`}
-            >
-              <FaDownload /> Download
-            </button>
-          ) : (
-            <span className="flex items-center gap-1 text-sm px-3 py-1 border rounded bg-gray-100 text-gray-500">
-              <FaDownload /> No File
-            </span>
-          )}
-          {paper.fileUrl ? (
-            <button
-              onClick={handleDownload}
-              className="flex items-center gap-1 text-sm px-3 py-1 border rounded hover:bg-gray-50"
-              title={`Download ${paper.title}`}
-            >
-              <FaClipboard /> Feedback Report
-            </button>
-          ) : (
-            <span className="flex items-center gap-1 text-sm px-3 py-1 border rounded bg-gray-100 text-gray-500">
-              <FaClipboard /> No File
-            </span>
-          )}
-        </div>
-        
-      </div>
-    </div>
+    
+    </>
   );
 };
 

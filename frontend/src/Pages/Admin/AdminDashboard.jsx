@@ -103,7 +103,7 @@ const AdminDashboard = () => {
         />
 
         {/* Main content with scroll and min-w-0 */}
-        <main className="flex-1 overflow-auto p-6 bg-gray-50 min-w-0">
+        <main className="flex-1 overflow-auto bg-gray-50 min-w-0">
           <Outlet context={{ toggleSidebar: () => setIsSidebarOpen(true) }} />
         </main>
 

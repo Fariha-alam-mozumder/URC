@@ -132,5 +132,5 @@ SELECT pg_catalog.setval('public.proposal_proposal_id_seq', 2, TRUE);
 -- 13) Reviewers
 -- =========================================
 INSERT INTO public.reviewer (reviewer_id, teacher_id, status) VALUES
-(3,3,'PENDING'),
-(4,4,'ACTIVE');
+(1,3,'PENDING'),
+(2,4,'ACTIVE');

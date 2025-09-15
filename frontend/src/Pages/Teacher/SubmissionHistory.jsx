@@ -1,19 +1,16 @@
-// src/pages/Teacher/SubmissionHistory.jsx
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import FilterBar from "../../components/Common/FilterBar";
 import SubmissionTable from "../../components/Teacher/SubmissionTable";
 
-const API_BASE = "http://localhost:8000"; // adjust if needed
+const API_BASE = "http://localhost:8000"; 
 
-// Recognize P001 / PR001 and map to numeric IDs (1, etc.)
 const parseSearchCode = (raw) => {
   if (!raw) return null;
   const s = String(raw).trim().toUpperCase();
-  // Matches "P001", "P1", "PR001", "PR1"
   const m = /^(PR|P)0*(\d+)$/.exec(s);
   if (!m) return null;
-  const kind = m[1]; // "P" or "PR"
+  const kind = m[1]; 
   const idNum = parseInt(m[2], 10);
   if (Number.isNaN(idNum)) return null;
   return { kind, id: idNum, code: s };
@@ -26,7 +23,7 @@ export default function SubmissionHistory() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Fetch filters (domains + status)
+  // Fetch filters (domains + ReviewDecision)
   useEffect(() => {
     const fetchFilters = async () => {
       try {
@@ -54,16 +51,17 @@ export default function SubmissionHistory() {
             value: "All Time",
           },
           {
+            // This now filters by aggregated decision
             name: "status",
             type: "select",
             options: [
               "All Status",
               ...statusOptions.map((s) => {
                 const map = {
-                  PENDING: "Pending",
-                  ACCEPTED: "Accepted",
-                  REJECTED: "Rejected",
-                  UNDER_REVIEW: "Under Review",
+                  ACCEPT: "Accepted",
+                  REJECT: "Rejected",
+                  MINOR_REVISIONS: "Minor Revisions",
+                  MAJOR_REVISIONS: "Major Revisions",
                 };
                 return map[s] || s;
               }),
@@ -96,33 +94,26 @@ export default function SubmissionHistory() {
       setError(null);
 
       try {
-        const f = Object.fromEntries(
-          filters.map(({ name, value }) => [name, value])
-        );
+        const f = Object.fromEntries(filters.map(({ name, value }) => [name, value]));
         const fieldFilter = filters.find((f) => f.name === "field");
         const domains = fieldFilter?.domains || [];
 
         const params = new URLSearchParams();
 
-        // For code searches, we'll handle filtering on frontend
-        // For text searches, send to backend
+        // Text search goes server-side; code search stays client-side
         if (f.search?.trim()) {
           const searchTerm = f.search.trim();
           const parsedCode = parseSearchCode(searchTerm);
-          
-          if (!parsedCode) {
-            // Only send regular text searches to backend
-            params.append("q", searchTerm);
-          }
-          // Code searches will be handled by frontend filtering below
+          if (!parsedCode) params.append("q", searchTerm);
         }
 
+        // Map human label -> backend ReviewDecision
         if (f.status && f.status !== "All Status") {
           const statusMap = {
-            Pending: "PENDING",
-            Accepted: "ACCEPTED",
-            Rejected: "REJECTED",
-            "Under Review": "UNDER_REVIEW",
+            "Accepted": "ACCEPT",
+            "Rejected": "REJECT",
+            "Minor Revisions": "MINOR_REVISIONS",
+            "Major Revisions": "MAJOR_REVISIONS",
           };
           const backendStatus = statusMap[f.status];
           if (backendStatus) params.append("status", backendStatus);
@@ -147,22 +138,16 @@ export default function SubmissionHistory() {
 
         let results = res.data.data || [];
 
-        // Apply frontend filtering for code searches
+        // Client-side filter for code searches
         const searchTerm = f.search?.trim();
         if (searchTerm) {
           const parsedCode = parseSearchCode(searchTerm);
           if (parsedCode) {
-            // Filter by code: match against the actual database IDs
-            results = results.filter(item => {
-              // The backend generates codes like P001, P002 for papers and PR001, PR002 for proposals
-              // parsedCode.kind is "P" or "PR", parsedCode.id is the numeric ID
-              
+            results = results.filter((item) => {
               if (parsedCode.kind === "P" && item.type === "paper") {
-                // For papers, extract the numeric ID from the composite ID "paper-1"
                 const numericId = parseInt(item.id.split("-")[1]);
                 return numericId === parsedCode.id;
               } else if (parsedCode.kind === "PR" && item.type === "proposal") {
-                // For proposals, extract the numeric ID from the composite ID "proposal-1"  
                 const numericId = parseInt(item.id.split("-")[1]);
                 return numericId === parsedCode.id;
               }
@@ -185,16 +170,12 @@ export default function SubmissionHistory() {
   }, [filters, sort]);
 
   const onFilterChange = (name, value) => {
-    setFilters((prev) =>
-      prev.map((f) => (f.name === name ? { ...f, value } : f))
-    );
+    setFilters((prev) => prev.map((f) => (f.name === name ? { ...f, value } : f)));
   };
 
   const handleSort = (key) => {
     setSort((s) =>
-      s.key === key
-        ? { key, dir: s.dir === "asc" ? "desc" : "asc" }
-        : { key, dir: "asc" }
+      s.key === key ? { key, dir: s.dir === "asc" ? "desc" : "asc" } : { key, dir: "asc" }
     );
   };
 

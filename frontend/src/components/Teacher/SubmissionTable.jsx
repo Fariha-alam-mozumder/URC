@@ -1,4 +1,3 @@
-// SubmissionTable Component
 import React from "react";
 import { FaSort, FaRegEye, FaRegCopy, FaDownload } from "react-icons/fa";
 
@@ -7,22 +6,25 @@ const formatDate = (dateString) => {
   if (!dateString) return "—";
   const date = new Date(dateString);
   if (isNaN(date.getTime())) return "—";
-  
+
   const day = String(date.getDate()).padStart(2, "0");
   const month = String(date.getMonth() + 1).padStart(2, "0");
   const year = date.getFullYear();
-  
+
   return `${day}/${month}/${year}`;
 };
 
+// Map ReviewDecision -> display label
 const formatStatus = (status) => {
-  const statusMap = {
-    PENDING: "Pending",
-    ACCEPTED: "Accepted",
-    REJECTED: "Rejected",
-    UNDER_REVIEW: "Under Review",
+  if (!status) return "—";
+  const map = {
+    ACCEPT: "Accepted",
+    REJECT: "Rejected",
+    MINOR_REVISIONS: "Minor Revisions",
+    MAJOR_REVISIONS: "Major Revisions",
   };
-  return statusMap[status] || status;
+  const key = String(status).toUpperCase();
+  return map[key] || status;
 };
 
 const formatAuthors = (count) => {
@@ -31,40 +33,41 @@ const formatAuthors = (count) => {
   return `${count} Authors`;
 };
 
-// Status color classes
+// Status color classes for aggregated decisions
 const getStatusColor = (status) => {
-  const formattedStatus = formatStatus(status);
+  const label = formatStatus(status);
   const colors = {
-    Accepted: "bg-green-100 text-green-700 border-green-200",
-    "Under Review": "bg-blue-100 text-blue-700 border-blue-200",
-    Pending: "bg-yellow-100 text-yellow-700 border-yellow-200",
-    Rejected: "bg-red-100 text-red-700 border-red-200",
+    "Accepted": "bg-green-100 text-green-700 border-green-200",
+    "Rejected": "bg-red-100 text-red-700 border-red-200",
+    "Minor Revisions": "bg-orange-100 text-orange-700 border-orange-200",
+    "Major Revisions": "bg-purple-100 text-purple-700 border-purple-200",
+    "—": "bg-gray-100 text-gray-700 border-gray-200",
   };
-  return colors[formattedStatus] || "bg-gray-100 text-gray-700 border-gray-200";
+  return colors[label] || "bg-gray-100 text-gray-700 border-gray-200";
 };
 
 const SubmissionTable = ({ items = [], onSort }) => {
-  // CSV Export function
+  // CSV Export
   const exportToCSV = () => {
     if (items.length === 0) {
       alert("No data to export");
       return;
     }
 
-    const cols = [
-      "Code",
-      "Type",
-      "Title",
-      "Authors",
-      "Field",
-      "Submitted Date",
-      "Status",
-    ];
+    const cols = ["Code", "Type", "Title", "Authors", "Field", "Submitted Date", "Status"];
 
     const header = cols.join(",");
     const lines = items.map((r) =>
-      cols
-        .map((c) => `"${String(r[c] ?? "").replace(/"/g, '""')}"`)
+      [
+        r.code,
+        r.type,
+        r.title,
+        formatAuthors(r.authors),
+        r.field,
+        formatDate(r.submitted),
+        formatStatus(r.status),
+      ]
+        .map((v) => `"${String(v ?? "").replace(/"/g, '""')}"`)
         .join(",")
     );
 
@@ -141,9 +144,7 @@ const SubmissionTable = ({ items = [], onSort }) => {
 
         {/* Table Body */}
         {items.length === 0 ? (
-          <div className="px-4 py-8 text-center text-gray-500">
-            No submissions found
-          </div>
+          <div className="px-4 py-8 text-center text-gray-500">No submissions found</div>
         ) : (
           <div className="divide-y divide-gray-200">
             {items.map((item) => (
@@ -173,7 +174,7 @@ const SubmissionTable = ({ items = [], onSort }) => {
                   {formatDate(item.submitted)}
                 </div>
 
-                {/* Status - Centered */}
+                {/* Status - Centered (aggregated decision) */}
                 <div className="col-span-2 lg:col-span-2 flex justify-center px-1">
                   <span
                     className={`inline-flex items-center px-1.5 md:px-2 py-1 rounded-full text-xs font-semibold border truncate max-w-full ${getStatusColor(
@@ -220,9 +221,7 @@ const SubmissionTable = ({ items = [], onSort }) => {
       {/* Mobile Card View */}
       <div className="md:hidden">
         {items.length === 0 ? (
-          <div className="px-4 py-8 text-center text-gray-500">
-            No submissions found
-          </div>
+          <div className="px-4 py-8 text-center text-gray-500">No submissions found</div>
         ) : (
           <div className="divide-y divide-gray-200">
             {items.map((item) => (
@@ -231,34 +230,28 @@ const SubmissionTable = ({ items = [], onSort }) => {
                 <div className="font-medium text-gray-900 mb-2 text-sm leading-tight">
                   {item.title}
                 </div>
-                
+
                 {/* Code and Authors */}
                 <div className="text-xs text-gray-500 mb-3">
                   {item.code} • {formatAuthors(item.authors)}
                 </div>
 
-                {/* Details - 2 columns on mobile */}
+                {/* Details */}
                 <div className="grid grid-cols-2 gap-3 mb-3">
-                  {/* Field */}
                   <div className="text-center">
                     <div className="text-xs text-gray-500 mb-1">Field</div>
                     <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-indigo-100 text-indigo-700 border border-indigo-200">
                       {item.field}
                     </span>
                   </div>
-
-                  {/* Submitted Date */}
                   <div className="text-center">
                     <div className="text-xs text-gray-500 mb-1">Submitted</div>
-                    <div className="text-sm text-gray-700">
-                      {formatDate(item.submitted)}
-                    </div>
+                    <div className="text-sm text-gray-700">{formatDate(item.submitted)}</div>
                   </div>
                 </div>
 
-                {/* Status and Actions Row */}
+                {/* Status & Actions */}
                 <div className="flex items-center justify-between">
-                  {/* Status - Centered */}
                   <div className="flex-1 text-center">
                     <div className="text-xs text-gray-500 mb-1">Status</div>
                     <span
@@ -270,7 +263,6 @@ const SubmissionTable = ({ items = [], onSort }) => {
                     </span>
                   </div>
 
-                  {/* Actions */}
                   <div className="flex items-center gap-2 ml-4">
                     <button
                       className="p-2 rounded-md hover:bg-gray-100 transition-colors"

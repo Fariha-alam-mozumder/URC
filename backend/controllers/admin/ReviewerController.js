@@ -93,7 +93,7 @@ class ReviewerController {
               completed: completedReviews,
               workload: Math.round(workloadPercentage),
               avgTime: avgReviewTime,
-              status: reviewer.status || "PENDING",
+              status: reviewer.status || "ACTIVE",
             };
           } catch (err) {
             logger.error(`Error processing reviewer ${reviewer.reviewer_id}:`, err);
@@ -253,7 +253,7 @@ class ReviewerController {
 
           const existing = await tx.reviewer.findUnique({ where: { teacher_id: t.teacher_id } });
           if (!existing) {
-            await tx.reviewer.create({ data: { teacher_id: t.teacher_id, status: "PENDING" } });
+            await tx.reviewer.create({ data: { teacher_id: t.teacher_id, status: "ACTIVE" } });
             createdCount++;
           }
         }
@@ -600,7 +600,7 @@ class ReviewerController {
         reviewer: {
           id: reviewer.reviewer_id,
           name: reviewer.teacher?.user?.name || 'N/A',
-          status: reviewer.status || 'PENDING'
+          status: reviewer.status || 'ACTIVE'
         },
         assignments: {
           total: assignments.length,

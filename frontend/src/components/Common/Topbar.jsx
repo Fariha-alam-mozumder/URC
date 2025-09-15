@@ -74,11 +74,6 @@ const Topbar = ({ onMenuClick, onLogout }) => {
 
       {/* Right icons */}
       <div className="flex items-center gap-4 text-gray-600">
-        {/* Notification bell */}
-        <div className="relative">
-          <FaBell className="text-xl cursor-pointer" />
-          <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full" />
-        </div>
 
         {/* Avatar → Profile */}
         {avatarUrl ? (

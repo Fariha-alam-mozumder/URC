@@ -224,7 +224,7 @@ const WaitingAssignment = () => {
   }
 
   return (
-    <div className="max-w-full">
+    <div className="max-w-full p-6">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-2xl font-bold">Waiting Assignment</h2>
         <button

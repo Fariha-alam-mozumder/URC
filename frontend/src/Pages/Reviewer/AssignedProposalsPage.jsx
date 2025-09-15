@@ -280,15 +280,35 @@ export default function AssignedProposalsPage() {
           </div>
 
           {/* Third line: Review Proposal button */}
+
           <div className="flex">
-            <button
-              onClick={() => handleReview(row.id)}
-              className="flex items-center gap-1 text-xs border px-2 py-1 rounded hover:bg-gray-100 bg-gray-50 text-gray-700"
-              disabled={row.assignmentStatus === "COMPLETED"}
-              title="Review Proposal"
-            >
-              <FileText size={12} /> Review Proposal
-            </button>
+            {(() => {
+              const canReview = row.assignmentStatus === "IN_PROGRESS";
+              const btnClasses = `flex items-center gap-1 text-xs border px-2 py-1 rounded ${
+                canReview
+                  ? "hover:bg-gray-100 bg-gray-50 text-gray-700"
+                  : "bg-gray-100 text-gray-400 cursor-not-allowed"
+              }`;
+
+              return (
+                <button
+                  onClick={() => {
+                    if (!canReview) {
+                      alert("Click Start first to begin reviewing.");
+                      return;
+                    }
+                    handleReview(row.id);
+                  }}
+                  className={btnClasses}
+                  disabled={!canReview}
+                  title={
+                    canReview ? "Review Proposal" : "Start the assignment first"
+                  }
+                >
+                  <FileText size={12} /> Review Proposal
+                </button>
+              );
+            })()}
           </div>
         </div>
       ),

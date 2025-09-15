@@ -27,9 +27,16 @@ import StatsController from "../controllers/admin/StatsController.js";
 import SubmissionTrendsController from "../controllers/admin/SubmissionTrendsController.js";
 import StatusDistributionController from "../controllers/admin/StatusDistributionController.js";
 import ReviewerWorkloadController from "../controllers/admin/ReviewerWorkloadController.js";
-
-
+import { getAcceptedPapers, getPublicFilters } from "../controllers/common/AcceptedPapersController.js"
+import ReviewerDashboardController from "../controllers/reviewer/ReviewDashboardController.js";
+import ReviewHistoryController from "../controllers/reviewer/ReviewHistoryController.js";
 const router = Router();
+
+
+// Public endpoints (no auth)
+router.get("/public/accepted-papers", getAcceptedPapers);
+router.get("/public/filters", getPublicFilters);
+
 
 router.post("/auth/register", AuthController.register);
 router.post("/auth/login", AuthController.login);
@@ -290,7 +297,24 @@ router.get(
   DashReviewerAssignedController.getAssignedPapers
 );
 
+router.get(
+  "/reviewer/assignment-stats",
+  authMiddleware,
+  reviewerOnly,
+  ReviewerDashboardController.getAssignmentStats
+);
 
+router.get(
+  "/reviewer/assignments",
+  authMiddleware,
+  reviewerOnly,
+  ReviewerDashboardController.getMyAssignments
+);
 
+router.get(
+  "/reviewer/review-history",
+  authMiddleware,
+  ReviewHistoryController.getReviewHistory
+);
 
 export default router;

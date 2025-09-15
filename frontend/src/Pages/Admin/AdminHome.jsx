@@ -135,7 +135,7 @@ const AdminHome = () => {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 p-6">
       <h2 className="text-2xl font-bold">Dashboard</h2>
 
       {/* Stat cards */}
