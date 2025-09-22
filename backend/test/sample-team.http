@@ -1,0 +1,50 @@
+### Get all reviewers with stats
+GET http://localhost:8000/api/reviewers
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywibmFtZSI6IkFwdW4gaGFpbiBUdXNoYXIiLCJlbWFpbCI6ImFwdW4udHVzaGFyMTIzQGdtYWlsLmNvbSIsInByb2ZpbGUiOm51bGwsImlhdCI6MTc1Mzk1OTg2NiwiZXhwIjoxNzg1NDk1ODY2fQ.TQ_zUJBdvd4nnO68oOGqdYiiuyWAk_h4AEObfPhJl_Y
+
+
+### Get potential reviewers (teachers who can become reviewers)
+GET http://localhost:8000/api/reviewers/potential
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywibmFtZSI6IkFwdW4gaGFpbiBUdXNoYXIiLCJlbWFpbCI6ImFwdW4udHVzaGFyMTIzQGdtYWlsLmNvbSIsInByb2ZpbGUiOm51bGwsImlhdCI6MTc1Mzk1OTg2NiwiZXhwIjoxNzg1NDk1ODY2fQ.TQ_zUJBdvd4nnO68oOGqdYiiuyWAk_h4AEObfPhJl_Y
+
+
+### Send invitations to potential reviewers
+POST http://localhost:8000/api/reviewers/invite
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywibmFtZSI6IkFwdW4gaGFpbiBUdXNoYXIiLCJlbWFpbCI6ImFwdW4udHVzaGFyMTIzQGdtYWlsLmNvbSIsInByb2ZpbGUiOm51bGwsImlhdCI6MTc1Mzk1OTg2NiwiZXhwIjoxNzg1NDk1ODY2fQ.TQ_zUJBdvd4nnO68oOGqdYiiuyWAk_h4AEObfPhJl_Y
+
+Content-Type: application/json
+
+{
+  "reviewer_ids": [1, 2, 3],
+  "custom_message": "We would love to have you join our review committee. Your expertise in your field would be invaluable."
+}
+
+### Add a reviewer manually
+POST http://localhost:8000/api/reviewers/add
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywibmFtZSI6IkFwdW4gaGFpbiBUdXNoYXIiLCJlbWFpbCI6ImFwdW4udHVzaGFyMTIzQGdtYWlsLmNvbSIsInByb2ZpbGUiOm51bGwsImlhdCI6MTc1Mzk1OTg2NiwiZXhwIjoxNzg1NDk1ODY2fQ.TQ_zUJBdvd4nnO68oOGqdYiiuyWAk_h4AEObfPhJl_Y
+
+Content-Type: application/json
+
+{
+  "teacher_id": 1,
+  "domain_ids": [1, 2]
+}
+
+### Update reviewer status
+PUT http://localhost:8000/api/reviewers/1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywibmFtZSI6IkFwdW4gaGFpbiBUdXNoYXIiLCJlbWFpbCI6ImFwdW4udHVzaGFyMTIzQGdtYWlsLmNvbSIsInByb2ZpbGUiOm51bGwsImlhdCI6MTc1Mzk1OTg2NiwiZXhwIjoxNzg1NDk1ODY2fQ.TQ_zUJBdvd4nnO68oOGqdYiiuyWAk_h4AEObfPhJl_Y
+
+Content-Type: application/json
+
+{
+  "status": "ACTIVE"
+}
+
+### Get reviewer workload details
+GET http://localhost:8000/api/reviewers/1/workload
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywibmFtZSI6IkFwdW4gaGFpbiBUdXNoYXIiLCJlbWFpbCI6ImFwdW4udHVzaGFyMTIzQGdtYWlsLmNvbSIsInByb2ZpbGUiOm51bGwsImlhdCI6MTc1Mzk1OTg2NiwiZXhwIjoxNzg1NDk1ODY2fQ.TQ_zUJBdvd4nnO68oOGqdYiiuyWAk_h4AEObfPhJl_Y
+
+
+### Remove reviewer (DELETE)
+DELETE http://localhost:8000/api/reviewers/1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywibmFtZSI6IkFwdW4gaGFpbiBUdXNoYXIiLCJlbWFpbCI6ImFwdW4udHVzaGFyMTIzQGdtYWlsLmNvbSIsInByb2ZpbGUiOm51bGwsImlhdCI6MTc1Mzk1OTg2NiwiZXhwIjoxNzg1NDk1ODY2fQ.TQ_zUJBdvd4nnO68oOGqdYiiuyWAk_h4AEObfPhJl_Y
