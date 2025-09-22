@@ -6,6 +6,9 @@ import axios from "axios";
 import PdfViewerModal from "../../components/Common/PdfViewerModal";
 import { resolveApiUrl } from "../../config/api";
 
+const API_BASE_URL = import.meta.env.APP_URL || "http://localhost:8000/api";
+
+
 function AdminPapers() {
   const [filters, setFilters] = useState({
     search: "",
