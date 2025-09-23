@@ -1,4 +1,3 @@
-// middleware/reviewerOnly.js
 import prisma from "../DB/db.config.js";
 
 const reviewerOnly = async (req, res, next) => {
