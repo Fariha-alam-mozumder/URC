@@ -51,18 +51,18 @@ router.get('/user/profile/:userId', authMiddleware, ProfileController.getUserPro
 router.get('/user/preferences/:userId', authMiddleware, ProfileController.getUserPreferences);
 router.put('/user/preferences/:userId', authMiddleware, ProfileController.updateUserPreferences);
 
-//! Avatar upload route (separate endpoint for cleaner handling)
+//! Avatar upload route 
 router.post('/user/avatar/:userId', authMiddleware, ProfileController.uploadAvatar);
 
 //! Department domain routes
 router.get('/department/:departmentId/domains', authMiddleware, ProfileController.getDomainsByDepartment);
 
-//! Data routes (for dropdowns and selections)
+//! Data routes
 router.get('/departments', authMiddleware, ProfileController.getDepartments);
 router.get('/domains', authMiddleware, ProfileController.getDomains);
 
 //! Teacher Routes
-//! Team Routes (Protected)
+//! Team Routes 
 // Create a team
 router.post("/teams", authMiddleware, TeamController.store);
 router.get("/teacher/my-teams", authMiddleware, TeamDetails.index);
@@ -82,7 +82,7 @@ router.get("/teams/:teamId/proposals", authMiddleware, ProposalController.getTea
 // Paper routes  
 router.post("/papers/upload", authMiddleware, PaperController.upload);
 router.get("/teams/:teamId/papers", authMiddleware, PaperController.getTeamPapers);
-// Team-facing anonymized review views
+
 router.get(
   "/team/papers/:paperId/public-reviews",
   authMiddleware,
@@ -95,7 +95,7 @@ router.get(
   TeamDetails.getPublicReviewsForProposal
 );
 
-//! Member routes (existing)
+//! Member routes
 router.get("/members", authMiddleware, TeamController.listMembers);
 router.get("/me/context", authMiddleware, TeamController.creatorContext);
 
@@ -215,10 +215,9 @@ router.post(
   "/assignments/auto-match",
   authMiddleware,
   AssignmentController.autoMatchReviewers
-); // Auto-match reviewers
+); 
 
-// ====================== Admin Proposals Routes ======================
-// backend/routes/index.js (where your other admin routes live)
+
 router.get(
   "/admin/departments",
   authMiddleware,
@@ -254,7 +253,7 @@ router.get(
   ReviewerAssignedController.getAssignedProposals
 );
 
-// Update assignment status (only reviewer who is assigned can update)
+// Update assignment status 
 router.patch(
   "/reviewer/assignments/:id/status",
   authMiddleware,
@@ -283,7 +282,7 @@ router.post(
   ReviewController.submitReviewByCode
 );
 
-// Reviewer assigned papers (new route)
+// Reviewer assigned papers 
 router.get(
   "/reviewer/assigned-papers2",
   authMiddleware,
