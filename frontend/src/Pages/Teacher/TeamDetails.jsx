@@ -170,18 +170,25 @@ const TeamDetails = () => {
 
   const getStatusColor = (status) => {
     switch (status?.toLowerCase()) {
-      case 'active':
-        return 'bg-green-100 text-green-800 border-green-200';
-      case 'recruiting':
-        return 'bg-yellow-100 text-yellow-800 border-yellow-200';
-      case 'inactive':
-        return 'bg-red-100 text-red-800 border-red-200';
+      case "active":
+        return "bg-green-100 text-green-800 border-green-200";
+      case "recruiting":
+        return "bg-yellow-100 text-yellow-800 border-yellow-200";
+      case "inactive":
+        return "bg-red-100 text-red-800 border-red-200";
       default:
-        return 'bg-gray-100 text-gray-800 border-gray-200';
+        return "bg-gray-100 text-gray-800 border-gray-200";
     }
   };
 
-  if (loading) return <p>Loading team details...</p>;
+  if (loading) {
+    return (
+      <div className="p-6 text-center">
+        <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600 mx-auto"></div>
+        <p className="mt-4">Loading team details...</p>
+      </div>
+    );
+  }
   if (error) return <p className="text-red-500">{error}</p>;
   if (!team) return <p>Team not found</p>;
 
@@ -200,8 +207,12 @@ const TeamDetails = () => {
                 <FaArrowLeft />
               </button>
               <div>
-                <h1 className="text-2xl font-bold text-gray-900">Team Overview</h1>
-                <p className="text-gray-600 mt-1">Manage team settings and monitor progress</p>
+                <h1 className="text-2xl font-bold text-gray-900">
+                  Team Overview
+                </h1>
+                <p className="text-gray-600 mt-1">
+                  Manage team settings and monitor progress
+                </p>
               </div>
             </div>
 
@@ -217,7 +228,9 @@ const TeamDetails = () => {
                   value={team.status || "RECRUITING"}
                   onChange={handleStatusChange}
                   disabled={updatingStatus}
-                  className={`appearance-none border-0 px-4 py-2 pr-10 text-sm font-semibold rounded-full cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all ${getStatusColor(team.status)}`}
+                  className={`appearance-none border-0 px-4 py-2 pr-10 text-sm font-semibold rounded-full cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all ${getStatusColor(
+                    team.status
+                  )}`}
                 >
                   <option value="ACTIVE"> Active</option>
                   <option value="RECRUITING"> Recruiting</option>
@@ -227,8 +240,18 @@ const TeamDetails = () => {
                   {updatingStatus ? (
                     <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
                   ) : (
-                    <svg className="w-4 h-4 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    <svg
+                      className="w-4 h-4 text-current"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M19 9l-7 7-7-7"
+                      />
                     </svg>
                   )}
                 </div>
@@ -279,7 +302,7 @@ const TeamDetails = () => {
               />
             </div>
           </div>
-          
+
           {/* <div className="bg-white rounded-xl shadow-sm border">
             <div className="h-80 overflow-hidden">
               <PendingApplications

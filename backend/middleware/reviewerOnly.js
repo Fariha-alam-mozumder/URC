@@ -3,7 +3,6 @@ import prisma from "../DB/db.config.js";
 
 const reviewerOnly = async (req, res, next) => {
   try {
-    // req.user is set by Authenticate (assumed)
     const userId = req.user?.user_id;
     if (!userId) {
       return res.status(401).json({ success: false, message: "Unauthorized" });
@@ -21,7 +20,6 @@ const reviewerOnly = async (req, res, next) => {
       });
     }
 
-    // Attach commonly-used ids
     req.context = {
       teacher_id: teacher.teacher_id,
       reviewer_id: teacher.reviewer.reviewer_id,

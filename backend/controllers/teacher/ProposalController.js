@@ -23,16 +23,13 @@ class ProposalController {
           .json({ errors: { proposal: "Proposal file is required" } });
       }
 
-      // ✅ NEW SIGNATURE: validate file (100MB cap, default allowed: PDF/DOC/DOCX)
       try {
         fileValidator(file, { maxSizeMB: 100 });
-        // If you want PDF-only, use:
-        // fileValidator(file, { maxSizeMB: 100, allowedMimes: ["application/pdf"] });
+        
       } catch (e) {
         return res.status(400).json({ errors: { proposal: e.message } });
       }
 
-      // Get teacher record for the logged-in user
       const teacher = await db.teacher.findFirst({
         where: { user_id: Number(req.user.id) }
       });

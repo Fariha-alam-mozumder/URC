@@ -98,8 +98,8 @@ class StudentTeamController {
                     pdf_path: true,
                     created_at: true,
                     file_size: true,
-                    status: true,                   // PENDING | UNDER_REVIEW | COMPLETED
-                    aggregated_decision: true,      // ACCEPT | REJECT | MINOR_REVISIONS | MAJOR_REVISIONS | null
+                    status: true,
+                    aggregated_decision: true,     
                     aggregated_decided_at: true,
                     team: {
                         select: {

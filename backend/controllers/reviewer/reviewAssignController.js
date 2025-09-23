@@ -4,10 +4,7 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 class DashReviewerAssignedController {
-  /**
-   * Get all assigned papers for the logged-in reviewer
-   * GET /reviewer/assigned-papers
-   */
+  
   static async getAssignedPapers(req, res) {
     try {
       const userId = req.user.user_id; // from auth middleware

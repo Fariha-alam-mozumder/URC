@@ -56,7 +56,6 @@ const authMiddleware = (req, res, next) => {
 
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-        // Normalize id types and provide both id & user_id for convenience
         if (decoded && typeof decoded.id !== "undefined") {
             decoded.id = Number(decoded.id);
             if (typeof decoded.user_id === "undefined") {

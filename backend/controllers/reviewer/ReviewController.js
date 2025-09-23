@@ -161,7 +161,7 @@ class ReviewController {
         });
       }
 
-      // ---- Validate payload ----
+      //  Validate payload
       const payload = {
         originality: Number(req.body.originality),
         methodology: Number(req.body.methodology),
@@ -174,16 +174,13 @@ class ReviewController {
       const validator = vine.compile(reviewSchema);
       const validated = await validator.validate(payload);
 
-      // ---- Optional annotated file upload ----
       let attachmentPath = null;
       const file = req.files?.review_file;
       if (file) {
-        // Validate size and mime type 
         fileValidator(file); 
         attachmentPath = await uploadFile(file, true, "pdf");
       }
 
-      // ---- Create review ----
       const avg =
         (validated.originality +
           validated.methodology +
@@ -212,7 +209,6 @@ class ReviewController {
         },
       });
 
-      // ---- Mark assignment completed (+ timestamps) ----
       const now = new Date();
       await prisma.reviewerassignment.update({
         where: { assignment_id: assignment.assignment_id },
@@ -223,13 +219,11 @@ class ReviewController {
         },
       });
 
-      // ---- Try finalization (admin-facing rollup & aggregate decision persistence) ----
       const { finalized, adminStatus, aggregated } = await finalizeIfCompleted(
         isProposal ? "proposal" : "paper",
         id
       );
 
-      // ---- Respond ----
       return res.status(201).json({
         success: true,
         message: "Review submitted",

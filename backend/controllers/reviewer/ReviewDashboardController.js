@@ -2,9 +2,7 @@
 import prisma from "../../DB/db.config.js";
 import logger from "../../config/logger.js";
 
-/**
- * Map ReviewDecision enum to UI-friendly status
- */
+
 const mapReviewDecisionToStatus = (decision) => {
   switch (decision) {
     case "ACCEPT":
@@ -19,9 +17,7 @@ const mapReviewDecisionToStatus = (decision) => {
   }
 };
 
-/**
- * Badge color helper for UI
- */
+
 const getStatusColorClass = (status) => {
   switch (status) {
     case "Approved":
@@ -35,30 +31,20 @@ const getStatusColorClass = (status) => {
   }
 };
 
-/**
- * Basic pagination parser
- */
+
 const parsePagination = (q = {}) => {
   const page = Math.max(1, parseInt(q.page || "1", 10));
   const limit = Math.min(100, Math.max(1, parseInt(q.limit || "50", 10)));
   return { page, limit, skip: (page - 1) * limit };
 };
 
-/**
- * Resolve reviewer_id from:
- * 1) reviewerOnly middleware (req.context.reviewer_id)
- * 2) authenticated user -> teacher -> reviewer lookup
- * 3) optional :reviewer_id route param (if present and valid)
- */
 const resolveReviewerId = async (req) => {
-  // 3) explicit param (if route includes it)
   const paramRid =
     req.params && req.params.reviewer_id
       ? parseInt(req.params.reviewer_id, 10)
       : null;
   if (paramRid && Number.isInteger(paramRid)) return paramRid;
 
-  // 1) middleware-provided context
   if (req?.context?.reviewer_id) return req.context.reviewer_id;
 
   const userId = req?.user?.user_id ?? req?.user?.id;
@@ -104,7 +90,7 @@ class ReviewDashboardController {
         success: true,
         stats: {
           total,
-          submitted: completed,     //"Submitted" = COMPLETED
+          submitted: completed,     
           inProgress,
           pending,
           overdue,
@@ -118,7 +104,6 @@ class ReviewDashboardController {
     }
   }
 
-  // ======  /api/reviewer/assignments  ======
   static async getMyAssignments(req, res) {
     try {
       const reviewer_id = await resolveReviewerId(req);
@@ -177,9 +162,8 @@ class ReviewDashboardController {
         const statusLabel = a.status
           .replace(/_/g, " ")
           .toLowerCase()
-          .replace(/^\w/, (c) => c.toUpperCase()); // "IN_PROGRESS" -> "In progress"
+          .replace(/^\w/, (c) => c.toUpperCase());
 
-        // Decide which button to show
         const action =
           a.status === "COMPLETED" ? "View" : "Review";
 

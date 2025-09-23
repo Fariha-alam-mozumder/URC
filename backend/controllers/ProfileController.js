@@ -5,7 +5,6 @@ import { imageValidator, uploadImage, removeImage, getImageUrl } from '../utils/
 const prisma = new PrismaClient();
 
 class ProfileController {
-  // Get user profile with role-specific data
   static async getUserProfile(req, res) {
     try {
       const { userId } = req.params;
@@ -83,12 +82,11 @@ class ProfileController {
         }
 
         case 'REVIEWER': {
-          // REVIEWER role users still have a teacher row with isReviewer = true
           const reviewerTeacher = await prisma.teacher.findFirst({
             where: { user_id: id, isReviewer: true },
             include: {
               department: true,
-              reviewer: true, // relation exists, but no extra fields needed
+              reviewer: true, 
             },
           });
 
@@ -131,7 +129,6 @@ class ProfileController {
     }
   }
 
-  // Get user preferences (schema-aligned)
   static async getUserPreferences(req, res) {
     try {
       const { userId } = req.params;
@@ -178,7 +175,7 @@ class ProfileController {
             where: { user_id: id },
             include: {
               department: true,
-              reviewer: true, // exists, but we only expose isReviewer from teacher
+              reviewer: true, 
             },
           });
           if (teacher) {
@@ -220,7 +217,6 @@ class ProfileController {
     }
   }
 
-  // Avatar upload - returns image_url for instant preview
   static async uploadAvatar(req, res) {
     try {
       const { userId } = req.params;
@@ -253,7 +249,6 @@ class ProfileController {
         const currentUser = await tx.user.findUnique({ where: { user_id: parsedUserId } });
         if (!currentUser) throw new Error('User not found');
 
-        // Remove old image if exists
         if (currentUser.profile_image) {
           try {
             removeImage(currentUser.profile_image);
@@ -262,7 +257,6 @@ class ProfileController {
           }
         }
 
-        // Save new image to /public/images
         const imageName = uploadImage(avatar);
         imagePath = `images/${imageName}`;
 
@@ -291,7 +285,6 @@ class ProfileController {
     }
   }
 
-  // Partial updates (no forced "name required" unless you change it)
   static async updateUserPreferences(req, res) {
     try {
       const { userId } = req.params;
@@ -316,7 +309,6 @@ class ProfileController {
         selected_domains,
       } = data;
 
-      // Validate only what is being changed
       if (password) {
         if (password.length < 6) {
           return res.status(400).json({ success: false, error: 'Password must be at least 6 characters long' });
@@ -351,7 +343,6 @@ class ProfileController {
         const user = await tx.user.findUnique({ where: { user_id: parsedUserId } });
         if (!user) throw new Error('User not found');
 
-        // Update user table
         const userUpdate = {};
         if (typeof name === 'string' && name.trim()) {
           userUpdate.name = name.trim();
@@ -363,7 +354,6 @@ class ProfileController {
           await tx.user.update({ where: { user_id: parsedUserId }, data: userUpdate });
         }
 
-        // Role-specific changes (only if provided)
         if (user.role === 'STUDENT' && (department_id !== undefined || roll_number !== undefined)) {
           const deptId = department_id !== undefined ? parseInt(department_id, 10) : undefined;
 
@@ -399,7 +389,6 @@ class ProfileController {
           }
         }
 
-        // Domains (only if provided)
         if (selected_domains !== undefined) {
           await tx.userdomain.deleteMany({ where: { user_id: parsedUserId } });
           if (Array.isArray(selected_domains) && selected_domains.length > 0) {
@@ -423,7 +412,6 @@ class ProfileController {
     }
   }
 
-  // Get all departments
   static async getDepartments(req, res) {
     try {
       const departments = await prisma.department.findMany({
@@ -440,7 +428,6 @@ class ProfileController {
     }
   }
 
-  // Get all domains
   static async getDomains(req, res) {
     try {
       const domains = await prisma.domain.findMany({
@@ -457,7 +444,6 @@ class ProfileController {
     }
   }
 
-  // Get domains for a specific department
   static async getDomainsByDepartment(req, res) {
     try {
       const { departmentId } = req.params;

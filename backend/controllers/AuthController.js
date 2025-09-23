@@ -13,7 +13,6 @@ import logger from "../config/logger.js";
 
 const vine = new Vine();
 
-// In-memory storage for pending registrations (use Redis in production)
 const pendingRegistrations = new Map();
 
 const AUTH_USER_INCLUDE = {
@@ -324,7 +323,7 @@ class AuthController {
         data: {
           name: data.name,
           email: data.email,
-          password: data.hashedPassword,      // already hashed in the token
+          password: data.hashedPassword,      
           role: data.role || 'GENERALUSER',
           isVerified: true,
         },
@@ -359,7 +358,6 @@ class AuthController {
         return res.status(401).json({ error: "Unauthorized access." });
       }
 
-      // Normalize role string
       const newRoleInput = (req.body?.newRole || "").toString().trim().toUpperCase();
 
       // Only allow TEACHER or REVIEWER
@@ -367,7 +365,6 @@ class AuthController {
         return res.status(400).json({ error: "Invalid role to switch." });
       }
 
-      // Fetch user
       const user = await prisma.user.findUnique({
         where: { user_id: userId },
       });

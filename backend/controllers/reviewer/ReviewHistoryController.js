@@ -2,9 +2,7 @@
 import prisma from "../../DB/db.config.js";
 import logger from "../../config/logger.js";
 
-/**
- * Map ReviewDecision enum to UI-friendly status
- */
+
 const mapReviewDecisionToStatus = (decision) => {
   switch (decision) {
     case "ACCEPT":
@@ -19,9 +17,6 @@ const mapReviewDecisionToStatus = (decision) => {
   }
 };
 
-/**
- * Badge color helper for UI
- */
 const getStatusColorClass = (status) => {
   switch (status) {
     case "Approved":
@@ -35,21 +30,13 @@ const getStatusColorClass = (status) => {
   }
 };
 
-/**
- * Basic pagination parser
- */
 const parsePagination = (q = {}) => {
   const page = Math.max(1, parseInt(q.page || "1", 10));
   const limit = Math.min(100, Math.max(1, parseInt(q.limit || "50", 10)));
   return { page, limit, skip: (page - 1) * limit };
 };
 
-/**
- * Resolve reviewer_id from:
- * 1) reviewerOnly middleware (req.context.reviewer_id)
- * 2) authenticated user -> teacher -> reviewer lookup
- * 3) optional :reviewer_id route param (if present and valid)
- */
+
 const resolveReviewerId = async (req) => {
   const paramRid =
     req.params && req.params.reviewer_id
@@ -71,12 +58,7 @@ const resolveReviewerId = async (req) => {
 };
 
 class ReviewHistoryController {
-  /**
-   * GET /api/reviewer/review-history
-   * GET /api/reviewer/history/:reviewer_id
-   * Returns all submitted reviews by this reviewer
-   * Supports search by title or team, status filter, and pagination
-   */
+ 
   static async getReviewHistory(req, res) {
     try {
       const reviewer_id = await resolveReviewerId(req);
@@ -89,7 +71,6 @@ class ReviewHistoryController {
       const { page, limit, skip } = parsePagination(req.query);
       const { search = "", status = "" } = req.query;
 
-      // Build dynamic where clause
       const whereClause = {
         reviewer_id,
         OR: [
@@ -101,7 +82,7 @@ class ReviewHistoryController {
       };
 
       if (status) {
-        // Map UI-friendly status to enum
+       
         const decisionMap = {
           Approved: "ACCEPT",
           Rejected: "REJECT",
@@ -177,11 +158,7 @@ class ReviewHistoryController {
     }
   }
 
-  /**
-   * GET /api/reviewer/stats/:reviewer_id
-   * GET /api/reviewer/stats/me
-   * Returns reviewer statistics including total completed reviews
-   */
+ 
   static async getReviewerStats(req, res) {
     try {
       const reviewer_id = await resolveReviewerId(req);
@@ -228,10 +205,7 @@ class ReviewHistoryController {
     }
   }
 
-  /**
-   * GET /api/reviewer/review-details/:review_id
-   * Returns a single review with all submission details
-   */
+ 
   static async getReviewDetails(req, res) {
     try {
       const { review_id } = req.params;

@@ -4,17 +4,9 @@ import fs from "fs/promises";
 import { createReadStream } from "fs";
 import prisma from "../../DB/db.config.js";
 
-/**
- * Safely resolve your storage path. You can:
- *  - hardcode your storage directory (e.g., ./storage/papers)
- *  - or inject via env (recommended)
- */
 const STORAGE_ROOT = process.env.STORAGE_ROOT || path.resolve(process.cwd(), "public/");
 
-/**
- * Turn DB pdf_path (which might be relative like 'uploads/papers/123.pdf'
- * or absolute) into a safe absolute path within STORAGE_ROOT.
- */
+
 function resolveAbsolutePath(pdf_path = "") {
   // Sanitize & normalize
   const clean = String(pdf_path).replace(/^\/+/, "");
@@ -38,7 +30,6 @@ export async function downloadPaper(req, res) {
       select: {
         pdf_path: true,
         paper_id: true,
-        // Optionally: visibility / ownership, domain, etc. for authorization
       },
     });
 
@@ -46,17 +37,10 @@ export async function downloadPaper(req, res) {
       return res.status(404).json({ success: false, message: "File not found" });
     }
 
-    // 🔒 Authorization (optional but recommended)
-    // Example: only logged-in users
-    // if (!req.user) return res.status(403).json({ success: false, message: "Forbidden" });
-    // Example: only certain roles:
-    // if (!["TEACHER", "STUDENT", "ADMIN"].includes(req.user.role)) {
-    //   return res.status(403).json({ success: false, message: "Forbidden" });
-    // }
+  
 
     const absolute = resolveAbsolutePath(paper.pdf_path);
 
-    // Confirm file exists and get size
     let stat;
     try {
       stat = await fs.stat(absolute);

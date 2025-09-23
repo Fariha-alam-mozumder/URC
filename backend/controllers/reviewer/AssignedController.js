@@ -3,10 +3,7 @@ import prisma from "../../DB/db.config.js";
 import logger from "../../config/logger.js";
 import { finalizeIfCompleted } from "../../utils/finalizeIfCompleted.js";
 
-/**
- * Resolve reviewer id from various possible req.user shapes.
- * Tries common fields: reviewer_id, reviewerId, teacher_id, teacherId, user_id, id
- */
+
 async function resolveReviewerId(req) {
   try {
     const u = req.user || {};
@@ -59,11 +56,7 @@ function parsePagination(query) {
 }
 
 class ReviewerAssignedController {
-  /**
-   * GET /api/reviewer/assigned-papers
-   * Query params: page, limit, status
-   * Returns { success: true, data: [...], pagination: { page, limit, total, pages } }
-   */
+ 
   static async getAssignedPapers(req, res) {
     try {
       const reviewer_id = await resolveReviewerId(req);
@@ -140,13 +133,12 @@ class ReviewerAssignedController {
 
         return {
           assignmentId: a.assignment_id,
-          // Friendly display id used by frontend
           id: p ? `RP-${String(p.paper_id).padStart(3, "0")}` : null,
           paperId: p?.paper_id ?? null,
           title: p?.title ?? "Untitled",
-          authors: authorsDisplay, // Updated to show all team members
-          author: authorsDisplay, // Alternative field name for compatibility
-          teamMembers: authors, // Structured list with names and emails
+          authors: authorsDisplay, 
+          author: authorsDisplay, 
+          teamMembers: authors, 
           submittedBy: p?.teacher?.user?.email ?? null,
           pdf_path: p?.pdf_path ?? null,
           file_size: p?.file_size ?? null,
@@ -170,11 +162,7 @@ class ReviewerAssignedController {
     }
   }
 
-  /**
-   * GET /api/reviewer/assigned-proposals
-   * Query params: page, limit, status
-   * Returns same shape as papers (but with proposal fields)
-   */
+  
   static async getAssignedProposals(req, res) {
     try {
       const reviewer_id = await resolveReviewerId(req);
@@ -254,9 +242,9 @@ class ReviewerAssignedController {
           id: pr ? `PR-${String(pr.proposal_id).padStart(3, "0")}` : null,
           proposalId: pr?.proposal_id ?? null,
           title: pr?.title ?? "Untitled",
-          authors: authorsDisplay, // Updated to show all team members
-          author: authorsDisplay, // Alternative field name for compatibility
-          teamMembers: authors, // Structured list with names and emails
+          authors: authorsDisplay, 
+          author: authorsDisplay, 
+          teamMembers: authors, 
           submittedBy: pr?.teacher?.user?.email ?? null,
           pdf_path: pr?.pdf_path ?? null,
           file_size: pr?.file_size ?? null,
@@ -280,11 +268,7 @@ class ReviewerAssignedController {
     }
   }
 
-  /**
-   * PATCH /api/reviewer/assignments/:id/status
-   * Body: { status: "IN_PROGRESS" | "COMPLETED" | "PENDING" | "OVERDUE" }
-   * - Validates ownership and allowed transitions
-   */
+  
   static async updateAssignmentStatus(req, res) {
     try {
       const reviewer_id = await resolveReviewerId(req);

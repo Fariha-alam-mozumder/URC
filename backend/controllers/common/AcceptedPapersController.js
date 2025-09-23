@@ -8,15 +8,6 @@ function fileUrl(pdf_path) {
   return `${base}/${clean}`;
 }
 
-/**
- * GET /api/public/accepted-papers
- * Query params:
- *  - search: string (title search)
- *  - department_id: number (filter)
- *  - domain_id: number (filter)
- *  - page: number (default 1)
- *  - limit: number (default 12)
- */
 export async function getAcceptedPapers(req, res) {
   try {
     const page = Math.max(1, parseInt(req.query.page || "1", 10));
@@ -26,7 +17,7 @@ export async function getAcceptedPapers(req, res) {
     const domainId = req.query.domain_id ? parseInt(req.query.domain_id, 10) : null;
 
     const where = {
-      aggregated_decision: "ACCEPT", // ← only accepted
+      aggregated_decision: "ACCEPT", 
     };
 
     const AND = [];
@@ -42,7 +33,7 @@ export async function getAcceptedPapers(req, res) {
       AND.push({ team: { domain_id: domainId } });
     }
 
-    // Filter by department via Domain -> DepartmentDomain (many-to-many)
+    // Filter by department via Domain as relationship with DepartmentDomain (many-to-many)
     if (departmentId) {
       AND.push({
         team: {
@@ -131,11 +122,7 @@ export async function getAcceptedPapers(req, res) {
   }
 }
 
-/**
- * GET /api/public/filters
- * Returns available departments and domains (topics)
- * Optional: include counts of accepted papers per dept/domain
- */
+
 export async function getPublicFilters(req, res) {
   try {
     const [departments, domains] = await Promise.all([

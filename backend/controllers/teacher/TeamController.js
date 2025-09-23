@@ -5,7 +5,6 @@ import { fileValidator, uploadFile } from "../../utils/helper.js";
 import { teamSchema } from "../../validations/teacher/teamValidation.js";
 
 const vine = new Vine();
-// FIXED: Use the correct enum values from Prisma schema
 const ROLE_ENUM = ["LEAD", "RESEARCHER", "ASSISTANT"];
 
 function toBool(v) {
@@ -26,20 +25,17 @@ class TeamController {
     try {
       const userId = Number(req.user.id);
 
-      // Find teacher dept
       const teacher = await db.teacher.findFirst({
         where: { user_id: userId },
         select: { department_id: true },
       });
       const department_id = teacher?.department_id ?? null;
 
-      // Domains tied to this user (preferred)
       let userDomains = await db.userdomain.findMany({
         where: { user_id: userId },
         include: { domain: { select: { domain_id: true, domain_name: true } } },
       });
 
-      // Fallback: if user has no userdomain rows, use dept's domains
       if ((!userDomains || userDomains.length === 0) && department_id) {
         const deptDomains = await db.departmentdomain.findMany({
           where: { department_id },
@@ -115,13 +111,12 @@ class TeamController {
             team_name: payload.team_name,
             team_description: payload.team_description || "",
             domain_id: payload.domain_id ?? null,
-            // Ensure these match Prisma enum values exactly
-            status: payload.status || "RECRUITING", // TeamStatus enum
-            visibility: payload.visibility || "PUBLIC", // TeamVisibility enum
+            status: payload.status || "RECRUITING", 
+            visibility: payload.visibility || "PUBLIC", 
             max_members: payload.max_members ?? null,
             isHiring: payload.isHiring || false,
             created_by_user_id: Number(req.user.id),
-            // created_at is auto-generated
+          
           },
         });
         console.log("Team created:", team);
@@ -143,7 +138,7 @@ class TeamController {
               data: {
                 team_id: team.team_id,
                 user_id: Number(member.user_id),
-                role_in_team: member.role_in_team, // Already validated above
+                role_in_team: member.role_in_team,
               },
             });
             console.log(
@@ -153,7 +148,7 @@ class TeamController {
         }
       } catch (dbErr) {
         console.error("DB operation failed:", dbErr);
-        // Log the specific error details
+       
         if (dbErr.code) {
           console.error("Prisma error code:", dbErr.code);
         }
@@ -163,7 +158,7 @@ class TeamController {
         throw dbErr;
       }
 
-      // Handle file upload (proposal)
+     
       console.log("req.body:", req.body);
       console.log("req.file:", req.file);
       console.log("req.files:", req.files);
@@ -172,7 +167,7 @@ class TeamController {
         req.files?.proposal || req.files?.file || req.files?.proposalFile;
 
       if (file) {
-        // Verify user is a teacher before creating proposal
+        
         const teacher = await db.teacher.findFirst({
           where: { user_id: Number(req.user.id) },
           select: { teacher_id: true },
@@ -185,8 +180,7 @@ class TeamController {
         }
 
         try {
-          // ✅ FIX: validate using the new helper signature
-          // Validates type (PDF/DOC/DOCX) and size (default 50MB)
+          
           fileValidator(file);
         } catch (e) {
           return res.status(400).json({ errors: { proposal: e.message } });
@@ -205,15 +199,15 @@ class TeamController {
             abstract: payload.proposal_abstract,
             pdf_path,
             file_size: file.size,
-            status: "PENDING", // PaperStatus enum
-            // Relations
+            status: "PENDING", 
+            
             team: {
-              connect: { team_id: team.team_id }, // connect to existing team
+              connect: { team_id: team.team_id },
             },
             teacher: {
-              connect: { teacher_id: teacher.teacher_id }, // connect to existing teacher
+              connect: { teacher_id: teacher.teacher_id },
             },
-            // created_at is auto-generated
+           
           },
         });
       }
@@ -229,7 +223,7 @@ class TeamController {
 
       console.error("Team creation error:", err);
 
-      // More specific error handling
+     
       if (err.code === "P2002") {
         return res
           .status(400)
@@ -248,7 +242,7 @@ class TeamController {
     }
   }
 
-  // ... rest of your methods remain the same
+
   static async getPotentialTeamMembers({
     departmentId,
     creatorUserId,
@@ -256,7 +250,6 @@ class TeamController {
     includeAllDepts = false,
     teamDomainId = null,
   }) {
-    // 1) Dept
     let deptId = departmentId ?? null;
     if (!deptId && !includeAllDepts) {
       if (!creatorUserId)
@@ -270,7 +263,6 @@ class TeamController {
       deptId = creatorTeacher.department_id;
     }
 
-    // 2) Domain set
     let domIds = Array.isArray(domainIds) ? domainIds : [];
     if (teamDomainId) {
       domIds = [Number(teamDomainId)];
@@ -285,13 +277,11 @@ class TeamController {
       domIds = ownDomains.map((d) => d.domain_id);
     }
 
-    // 3) Build domain filter if any
     const domainFilter =
       domIds && domIds.length
         ? { user: { userdomain: { some: { domain_id: { in: domIds } } } } }
         : {};
 
-    // 4) Students + Teachers in dept (+ domain filter) with domain information
     const students = await db.student.findMany({
       where: {
         ...(includeAllDepts ? {} : (deptId ? { department_id: deptId } : {})),
@@ -347,7 +337,6 @@ class TeamController {
       },
     });
 
-    // Helper function to get matching domains
     const getMatchingDomains = (userDomains) => {
       if (!domIds || domIds.length === 0) return [];
 
@@ -357,7 +346,6 @@ class TeamController {
         .map((ud) => ud.domain.domain_name);
     };
 
-    // Format the response with domain information
     const formatUser = (userRecord) => ({
       user_id: userRecord.user.user_id,
       name: userRecord.user.name,

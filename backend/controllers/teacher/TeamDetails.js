@@ -25,24 +25,21 @@ class TeamDetails {
                 orderBy: { created_at: "desc" },
             });
 
-            // FIX: check the right variable
             if (!team.length) {
                 return res.status(200).json({ message: "No teams found", data: [] });
             }
 
-            // Return raw field names the UI already uses
             const teams = team.map((t) => ({
                 team_id: t.team_id,
                 team_name: t.team_name ?? "Untitled Team",
                 team_description: t.team_description ?? "",
                 status: t.status ?? "UNKNOWN",
-                _count: t._count, // UI reads _count?.teammember
-                created_at: t.created_at, // raw timestamp
-                created_by_user: t.created_by_user, // keep if needed
+                _count: t._count, 
+                created_at: t.created_at,
+                created_by_user: t.created_by_user, 
                 domain: t.domain ? { domain_name: t.domain.domain_name } : null,
             }));
 
-            // FIX: cache after defining teams
             return res.status(200).json({ data: teams, fromCache: false });
         } catch (error) {
             console.error("Error fetching teams:", error);
@@ -108,7 +105,6 @@ class TeamDetails {
                 return res.status(404).json({ message: "Team not found" });
             }
 
-            // Map DB data to frontend-friendly format
             const teamCardData = {
                 id: team.team_id,
                 title: team.team_name || "Untitled Team",
@@ -164,7 +160,6 @@ class TeamDetails {
         }
     }
 
-    // Add this inside TeamController class
     static async addMembersToTeam(req, res) {
         try {
             const teamId = Number(req.params.id);
@@ -175,7 +170,6 @@ class TeamDetails {
                 return res.status(400).json({ error: "Members array is required" });
             }
 
-            // Validate roles
             const ROLE_ENUM = ["LEAD", "RESEARCHER", "ASSISTANT"];
             for (const m of members) {
                 if (!m.user_id) {
@@ -192,14 +186,11 @@ class TeamDetails {
                 m.role_in_team = role;
             }
 
-            // Check if team exists
             const team = await db.team.findUnique({ where: { team_id: teamId } });
             if (!team) return res.status(404).json({ error: "Team not found" });
 
-            // Add members to team
             const addedMembers = [];
             for (const m of members) {
-                // Skip if user is already a member
                 const existing = await db.teammember.findFirst({
                     where: { team_id: teamId, user_id: Number(m.user_id) },
                 });
@@ -342,7 +333,6 @@ class TeamDetails {
     }
 
 
-    // Team (authors) view: anonymized reviews for a PAPER
     static async getPublicReviewsForPaper(req, res) {
         try {
             const paperId = Number(req.params.paperId);
@@ -350,7 +340,6 @@ class TeamDetails {
             if (!paperId) return res.status(400).json({ success: false, message: "Invalid paper id" });
             if (!userId) return res.status(401).json({ success: false, message: "Unauthorized" });
 
-            // Fetch paper with its team to verify membership
             const paper = await db.paper.findUnique({
                 where: { paper_id: paperId },
                 include: {
@@ -365,14 +354,12 @@ class TeamDetails {
             });
             if (!paper) return res.status(404).json({ success: false, message: "Paper not found" });
 
-            // Authorization: must be a team member or team creator
             const isMember = paper.team?.teammember?.some((m) => Number(m.user_id) === userId);
             const isCreator = Number(paper.team?.created_by_user_id) === userId;
             if (!isMember && !isCreator) {
                 return res.status(403).json({ success: false, message: "Not allowed to view reviews for this paper" });
             }
 
-            // Pull only anonymized review data
             const withReviews = await db.paper.findUnique({
                 where: { paper_id: paperId },
                 select: {
@@ -381,8 +368,8 @@ class TeamDetails {
                     review: {
                         select: {
                             score: true,
-                            comments: true, // JSON string with rubric/feedback/attachment
-                            // DO NOT select reviewer identity fields here
+                            comments: true, 
+                           
                         },
                         orderBy: { reviewed_at: "asc" },
                     },
@@ -397,7 +384,7 @@ class TeamDetails {
                 ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length)
                 : null;
 
-            // Strip attachments, keep rubric + feedback
+            
             const comments = (withReviews?.review ?? []).map((r) => {
                 let c = {};
                 try { c = JSON.parse(r.comments || "{}"); } catch { }
@@ -419,7 +406,7 @@ class TeamDetails {
         }
     }
 
-    // Team (authors) view: anonymized reviews for a PROPOSAL
+    
     static async getPublicReviewsForProposal(req, res) {
         try {
             const proposalId = Number(req.params.proposalId);
@@ -427,7 +414,7 @@ class TeamDetails {
             if (!proposalId) return res.status(400).json({ success: false, message: "Invalid proposal id" });
             if (!userId) return res.status(401).json({ success: false, message: "Unauthorized" });
 
-            // Fetch proposal with its team to verify membership
+            
             const proposal = await db.proposal.findUnique({
                 where: { proposal_id: proposalId },
                 include: {
@@ -442,14 +429,14 @@ class TeamDetails {
             });
             if (!proposal) return res.status(404).json({ success: false, message: "Proposal not found" });
 
-            // Authorization: must be a team member or team creator
+            
             const isMember = proposal.team?.teammember?.some((m) => Number(m.user_id) === userId);
             const isCreator = Number(proposal.team?.created_by_user_id) === userId;
             if (!isMember && !isCreator) {
                 return res.status(403).json({ success: false, message: "Not allowed to view reviews for this proposal" });
             }
 
-            // Pull only anonymized review data
+            
             const withReviews = await db.proposal.findUnique({
                 where: { proposal_id: proposalId },
                 select: {
@@ -458,7 +445,7 @@ class TeamDetails {
                     review: {
                         select: {
                             score: true,
-                            comments: true, // JSON string with rubric/feedback/attachment
+                            comments: true, 
                         },
                         orderBy: { reviewed_at: "asc" },
                     },
@@ -523,7 +510,6 @@ class TeamDetails {
         }
     }
 
-    // Inside class TeamDetails
     static async updateStatus(req, res) {
         try {
             const teamId = Number(req.params.id);
@@ -542,14 +528,12 @@ class TeamDetails {
                 return res.status(422).json({ error: `Invalid status. Allowed: ${ALLOWED.join(", ")}` });
             }
 
-            // Fetch team + members once
             const team = await db.team.findUnique({
                 where: { team_id: teamId },
                 include: { teammember: { select: { user_id: true, role_in_team: true } } },
             });
             if (!team) return res.status(404).json({ error: "Team not found" });
 
-            // Authorization: creator OR a LEAD of this team
             const isCreator = Number(team.created_by_user_id) === userId;
             const isLead = team.teammember.some(
                 (m) => Number(m.user_id) === userId && m.role_in_team === "LEAD"
@@ -558,7 +542,6 @@ class TeamDetails {
                 return res.status(403).json({ error: "Only the creator or a LEAD can change status" });
             }
 
-            // Update
             const updated = await db.team.update({
                 where: { team_id: teamId },
                 data: { status: newStatus },

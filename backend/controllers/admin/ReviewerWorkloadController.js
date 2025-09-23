@@ -4,10 +4,7 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 class ReviewerWorkloadController {
-  /**
-   * GET /admin/reviewer-workload
-   * Returns reviewer workload stats
-   */
+
   static async getReviewerWorkload(req, res) {
     try {
       const reviewers = await prisma.reviewer.findMany({

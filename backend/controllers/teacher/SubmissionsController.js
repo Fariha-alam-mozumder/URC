@@ -14,7 +14,6 @@ class SubmissionsController {
             const userId = Number(req.user?.user_id ?? req.user?.id);
             if (!userId) return res.status(400).json({ message: "Missing user id" });
 
-            // Is the user also a teacher?
             const teacher = await db.teacher.findFirst({
                 where: { user_id: userId },
                 select: { teacher_id: true },
@@ -34,7 +33,6 @@ class SubmissionsController {
                 proposalOr.push({ submitted_by: teacher.teacher_id });
             }
 
-            // Filters
             const { domain_id, status, q } = req.query;
             const domainFilter = domain_id ? { team: { domain_id: Number(domain_id) } } : {};
             const decisionFilter = status ? { aggregated_decision: status } : {};
@@ -49,7 +47,6 @@ class SubmissionsController {
                 }
                 : {};
 
-            // Fetch papers
             const papers = await db.paper.findMany({
                 where: {
                     AND: [searchFilter, decisionFilter, domainFilter, { OR: paperOr }],
@@ -74,7 +71,6 @@ class SubmissionsController {
                 orderBy: { created_at: "desc" },
             });
 
-            // Fetch proposals
             const proposals = await db.proposal.findMany({
                 where: {
                     AND: [searchFilter, decisionFilter, domainFilter, { OR: proposalOr }],
@@ -99,7 +95,6 @@ class SubmissionsController {
                 orderBy: { created_at: "desc" },
             });
 
-            // Normalize into one list for the UI table - keep raw data for frontend formatting
             const items = [
                 ...papers.map((p) => ({
                     id: `paper-${p.paper_id}`,

@@ -9,7 +9,6 @@ class PaperController {
     console.log("Files received:", req.files);
 
     try {
-      // Validate paper metadata (title, abstract, team_id)
       const payload = await paperValidator.validate({
         ...req.body,
         team_id: Number(req.body.team_id),
@@ -23,11 +22,9 @@ class PaperController {
           .json({ errors: { paper: "Paper file is required" } });
       }
 
-      // ✅ NEW SIGNATURE: validate file (100MB cap, default allowed: PDF/DOC/DOCX)
       try {
         fileValidator(file, { maxSizeMB: 100 });
-        // If you want PDF-only, use:
-        // fileValidator(file, { maxSizeMB: 100, allowedMimes: ["application/pdf"] });
+
       } catch (e) {
         return res.status(400).json({ errors: { paper: e.message } });
       }
