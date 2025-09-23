@@ -5,7 +5,6 @@ const adminOnly = async (req, res, next) => {
   try {
     const userId = req.user.id;
     
-    // Check if user has admin role or is main admin
     const user = await prisma.user.findUnique({
       where: { user_id: userId },
       select: {
@@ -20,14 +19,12 @@ const adminOnly = async (req, res, next) => {
       });
     }
 
-    // Check if user is admin or main admin
     if (user.role !== 'ADMIN' && !user.isMainAdmin) {
       return res.status(403).json({
         error: "Access denied. Admin privileges required."
       });
     }
 
-    // Check if admin record exists in admin table
     const adminRecord = await prisma.admin.findFirst({
       where: { user_id: userId }
     });
@@ -38,7 +35,6 @@ const adminOnly = async (req, res, next) => {
       });
     }
 
-    // Add admin info to request for later use
     req.admin = {
       admin_id: adminRecord?.admin_id || null,
       isMainAdmin: user.isMainAdmin,
