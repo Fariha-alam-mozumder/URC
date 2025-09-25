@@ -251,7 +251,6 @@ class AdminPaperController {
               month: "2-digit",
               day: "2-digit",
             }),
-            // 👇 use aggregated_decision here too (pretty string)
             status: toPrettyDecision(proposal.aggregated_decision),
             reviewer: assignedReviewers || "Unassigned",
             team_name: proposal.team?.team_name ?? null,
