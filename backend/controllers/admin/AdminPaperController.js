@@ -126,7 +126,6 @@ class AdminPaperController {
               month: "2-digit",
               day: "2-digit",
             }),
-            // 👇 show pretty aggregated decision in UI
             status: toPrettyDecision(paper.aggregated_decision),
             reviewer: assignedReviewers || "Unassigned",
             team_name: paper.team?.team_name ?? null,
